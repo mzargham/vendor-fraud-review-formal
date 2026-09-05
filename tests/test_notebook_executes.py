@@ -61,6 +61,21 @@ def test_notebook_narrates_the_worked_examples(executed_outputs):
         assert marker in executed_outputs, f"missing worked example: {marker}"
 
 
+def test_notebook_shows_one_type_three_semantics(executed_outputs):
+    # GAP-04 ruling: the rule does not say what the number is. Exhibit a
+    # type signature and three type-satisfying metrics with different
+    # semantics, evaluated on the SAME answer matrix — the gate must fire
+    # under at least one and stay quiet under at least one, showing that
+    # correctly constructed is not the same as fit for purpose.
+    for metric in ("dissent-fraction", "strict-quorum-undecodable", "erasure-aware-undecodable"):
+        assert metric in executed_outputs, f"metric {metric} not exhibited"
+    assert "gate fires: True" in executed_outputs, "no metric fires the gate"
+    assert "gate fires: False" in executed_outputs, "no metric leaves the gate quiet"
+    assert "same answer matrix" in executed_outputs, (
+        "the demonstration does not state that all three ran on one matrix"
+    )
+
+
 def test_notebook_shows_the_wiring_and_lifecycle_levels(executed_outputs):
     assert "wiring rules: OK" in executed_outputs, "model wiring rules not demonstrated"
     assert "wiring rules: REFUSED" in executed_outputs, (

@@ -102,6 +102,20 @@ def test_every_gate_variable_cites_its_oracle(track_dataset):
     )
 
 
+def test_consensus_oracle_call_records_its_metric(track_dataset):
+    # GAP-04: which disagreement metric produced the number is itself an
+    # open policy choice, so the Track must at least RECORD which one a run
+    # used — recording is not endorsing.
+    rows = list(track_dataset.query("""
+        PREFIX vfr: <https://example.org/vfr#>
+        SELECT ?metric WHERE {
+            ?call a vfr:OracleCall ;
+                  vfr:service <urn:example:service:consensus-comparator> ;
+                  vfr:metric ?metric .
+        }"""))
+    assert len(rows) == 1, "the consensus comparator call must record its metric"
+
+
 def test_every_gate_decision_used_an_oracle_backed_reading(track_dataset):
     rows = list(track_dataset.query("""
         PREFIX vfr: <https://example.org/vfr#>

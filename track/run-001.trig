@@ -83,6 +83,10 @@ run:interface {
     run:oracle-call-consensus
         a vfr:OracleCall, prov:Activity ;
         vfr:service <urn:example:service:consensus-comparator> ;
+        # Which disagreement metric produced this number is an open policy
+        # choice (GAP-04): the Track records which one THIS run used;
+        # recording is not endorsing.
+        vfr:metric "strict-quorum-undecodable" ;
         vfr:requestPayload "{\"op\":\"vendor-fraud-review\",\"run\":\"run-001\",\"variable\":\"consensus_disagreement\",\"cogs\":[\"invoice-extraction-cog\",\"vendor-risk-cog\",\"anomaly-summary-cog\"]}" ;
         vfr:responseCode "200" ;
         vfr:responsePayload "{\"consensus_disagreement\":0.10}" ;

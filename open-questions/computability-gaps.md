@@ -73,7 +73,7 @@ future enrichment.
 
 ## GAP-04 — the semantics of `consensus_disagreement`
 
-**Status:** PENDING
+**Status:** ADJUDICATED (2026-09-04, see adjudication-log.md) — adjudicated OPEN
 **Locus:** WP §5.6: `- if: consensus_disagreement > 0.25`; §5.5 Consensus row
 ("Three Cogs classify a document and two must agree; outlier extractions
 flagged").
@@ -83,13 +83,24 @@ agree" maps to a number comparable with 0.25.
 **Substrate forces:** a typed quantity for the comparison to execute.
 **Possible readings:** (a) fraction of dissenting Cogs; (b) 1 − pairwise
 agreement rate; (c) a task-specific divergence score normalized to [0, 1].
-**Provisional reading in use:** an opaque scalar in [0, 1]; only the threshold
-comparison is exercised, no metric semantics assumed (model).
-**Adjudication note (2026-09-04):** remains PENDING by ruling — revisit when
-the compared spaces are known (bit-exact comparison, semantic distance, or
-another metric). If the comparison can be reduced to yes/no/cantTell facts
-being agreed or disagreed on, an error-correcting-code style interpretation
-becomes available.
+**Adjudicated reading in use:** deliberately open, with the openness made
+structural. The metric's TYPE is fixed (a fact-by-reader answer matrix,
+answers in {agree, no, cantTell}, mapped to a scalar in [0, 1] against the
+0.25 threshold — the abstract DisagreementMetric in the model), and three
+type-satisfying alternatives with different semantics are exhibited
+(dissent-fraction, strict-quorum-undecodable, erasure-aware-undecodable),
+evaluated on the same answer matrix in the notebook, where they disagree
+about whether the gate fires. No metric is chosen: a correctly constructed
+policy is not the same as a fit-for-purpose policy, and what is right for
+the job here is an open algorithmic policy design question — unlikely to
+have a unique correct answer, with many viable answers carrying different
+implications on incentives, and not limited to these three. The comparator
+oracle's metric slot is typed and unbound; a deployment binds it, and the
+Track records which metric a run used (recording is not endorsing).
+**Earlier deferral note (2026-09-04):** revisit when the compared spaces are
+known; if the comparison reduces to yes/no/cantTell facts, an
+error-correcting-code style interpretation becomes available — that
+reduction is now the type signature.
 
 ## GAP-05 — who provides the gate variables (oracle identity and citation)
 

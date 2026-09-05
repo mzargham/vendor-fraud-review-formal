@@ -102,9 +102,53 @@ package VendorFraudReview {
             port reading : ReadingWrite;
         }
 
+        abstract part def DisagreementMetric {
+            doc /* adjudicated: GAP-04 — the rule does not say what the
+               number is, and no metric is chosen HERE. This abstract def
+               is the type signature: a metric maps a fact-by-reader
+               answer matrix (answers in {agree, no, cantTell}) to a
+               scalar in [0, 1] comparable against the manifest's 0.25
+               threshold. Three type-satisfying alternatives with different
+               semantics follow; which is fit for purpose is an open
+               algorithmic policy design question, unlikely to have a
+               unique correct answer, with different implications on
+               incentives. The right answer is not limited to these three. */
+            attribute metricName : ScalarValues::String;
+        }
+
+        part def DissentFractionMetric :> DisagreementMetric {
+            doc /* Fraction of reader answers differing from each fact's
+               modal expressed value, counting cantTell as dissent.
+               Incentive implication: honest abstention is punished, so
+               readers are pushed to guess rather than say cantTell. Note:
+               on the paper's own section 5.5 example (three Cogs, two must
+               agree) this metric FIRES the gate at the 0.25 threshold,
+               contradicting the example's intent. */
+        }
+
+        part def StrictQuorumUndecodableMetric :> DisagreementMetric {
+            doc /* Fraction of facts where no value reaches a quorum of two
+               identical expressed answers; cantTell blocks quorum.
+               Incentive implication: abstention is conservative — it
+               escalates more runs to expert review, spending review
+               capacity. Consistent with the section 5.5 example. */
+        }
+
+        part def ErasureAwareUndecodableMetric :> DisagreementMetric {
+            doc /* Fraction of facts undecodable among EXPRESSED answers
+               only: cantTell is an erasure, not an error, so a lone
+               expressed voice among abstentions decodes. Incentive
+               implication: abstention shifts power to whoever still
+               answers. Consistent with the section 5.5 example. */
+        }
+
         part def ConsensusComparatorOracle :> OracleService {
-            doc /* provisional: GAP-04 (the disagreement metric is never
-               defined; an opaque scalar, threshold semantics only). */
+            doc /* adjudicated: GAP-04 — the metric slot below is typed by
+               the abstract DisagreementMetric and deliberately left
+               unbound: the model states that a metric of this type is
+               required and refuses to choose one. A deployment binds it;
+               the Track records which one a run used. */
+            part metric : DisagreementMetric;
             attribute returnedDisagreement : ScalarValues::Real;
             port reading : ReadingWrite;
         }

@@ -151,3 +151,26 @@ contribution. The gap entry and the seam doc comment reframe it as a
 capability the computational representation adds — an explicit topology the
 wiring rules can check — rather than an under-specification to be repaired
 in the source text.
+
+## 2026-09-04 — GAP-04 (adjudicated open)
+
+**Ruling (verbatim):** "given we don't want to push policy decisions. i
+think this is an excellent place to show breadth. Travis' rule doesn't say
+what the numer is so we can provide a type signature and three alternatives
+which are all type satisfying but have different semantics. then we can
+highlight that correctly constructed policies are not the same as fit for
+purpose polices and that what is 'right for the job' is an open question
+here. and the right answer is not limited to these 3 options. its an open
+algorithmic policy design question, which is likely to have no unique
+correct answer but rather many viable answers with different implications
+on incentives"
+
+**Changed:** the metric's type became a first-class abstract definition
+(DisagreementMetric) with three concrete type-satisfying specializations
+(dissent-fraction, strict-quorum-undecodable, erasure-aware-undecodable),
+each doc-commented with its semantics and incentive implication; the
+comparator oracle's metric slot is typed by the abstract def and
+deliberately unbound. The notebook evaluates all three on one answer
+matrix and shows the gate firing under some and not others — the same
+correctly-typed policy construction, different behavior. The Track records
+which metric a run used. Nothing anywhere selects a winner.
