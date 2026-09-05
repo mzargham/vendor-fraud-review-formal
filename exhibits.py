@@ -512,8 +512,28 @@ def check_track_shapes():
     def check(path):
         return validate(_dataset(path), shacl_graph=str(ROOT / "shapes" / "track.shapes.ttl"))
 
+    def local(node):
+        return str(node).rsplit("/", 1)[-1].rsplit("#", 1)[-1]
+
+    def describe(path):
+        ds = _dataset(path)
+        obligations = sorted(
+            local(o) for o in ds.subjects(
+                rdflib.RDF.type, rdflib.URIRef(VFR + "Obligation"))
+        )
+        discharges = sorted(
+            f"{local(a)} discharges {local(o)}"
+            for a, o in ds.subject_objects(rdflib.URIRef(VFR + "discharges"))
+        )
+        print(f"data checked: {path}")
+        print(f"  obligations raised  : {', '.join(obligations) or '(none)'}")
+        print(f"  discharging actions : {'; '.join(discharges) or '(none)'}")
+
+    describe("track/run-001.trig")
     conforms, _, _ = check("track/run-001.trig")
     print(f"run-001                          conforms: {conforms}")
+    print()
+    describe("counterexamples/track-missing-approval.trig")
     conforms, results, _ = check("counterexamples/track-missing-approval.trig")
     violations = sorted(
         results.subjects(rdflib.RDF.type, SH.ValidationResult),

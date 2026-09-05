@@ -180,6 +180,13 @@ def test_chapter_05_shows_the_shacl_inversion_and_the_outcomes(chapter_outputs):
     # must be distinguishable, not two identical message lines.
     assert "obligation-human-review" in text, "violation does not name its obligation"
     assert "obligation-human-approval" in text, "violation does not name its obligation"
+    # The data each conclusion was computed over is stated explicitly:
+    # both records show their obligations and discharging actions, so the
+    # contrast (same obligations, discharge present vs absent) is visible.
+    assert text.count("data checked:") >= 2, "the checked records are not made explicit"
+    assert "discharging actions : (none)" in text, (
+        "the counterexample's missing discharge is not shown in the data summary"
+    )
     assert "cantTell" in text, "the cantTell outcome is not demonstrated"
     assert "responseCode" in text, (
         "the oracle interface contract (service/payload/code/response) is not demonstrated"
