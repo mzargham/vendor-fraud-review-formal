@@ -31,7 +31,7 @@ def test_notebook_executes_without_error(executed_outputs):
     assert executed_outputs.strip(), "notebook executed but produced no output"
 
 
-def test_notebook_shows_the_satisfy_verdicts(executed_outputs):
+def test_notebook_shows_the_satisfy_exit_codes(executed_outputs):
     assert "satisfy exit code: 0" in executed_outputs, "clean run's exit 0 not shown"
     assert "satisfy exit code: 1" in executed_outputs, "counterexample's exit 1 not shown"
 

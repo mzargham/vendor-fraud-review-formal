@@ -22,7 +22,7 @@ vfr:author-openteams
 
 vfr:retrieval-whitepaper-rev9
     a prov:Activity ;
-    rdfs:label "Receipt of the whitepaper PDF from its author" ;
+    rdfs:label "Acquisition of the whitepaper PDF from its author" ;
     prov:endedAtTime "2026-09-04T00:00:00Z"^^xsd:dateTime .
 
 vfr:verification-whitepaper-rev9

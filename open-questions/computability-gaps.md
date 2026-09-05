@@ -5,7 +5,7 @@ what the executable substrate requires. Nothing here is silently repaired: where
 the build could not proceed without a choice, the most literal available reading
 was taken, marked `provisional: GAP-nn` at the point of use, and logged here.
 Every entry stays PENDING until an adjudication is recorded in
-`adjudication-log.md`. Candidate readings are listed without a choice being
+`adjudication-log.md`. Possible readings are listed without a choice being
 made in the entry; the provisional reading is only what the build currently
 runs with.
 
@@ -16,7 +16,7 @@ runs with.
 **Problem:** `high` is an unquoted symbol; the manifest declares no type or value
 set for `vendor_risk`. An executable comparison needs both.
 **Substrate forces:** an attribute type and a comparable literal.
-**Candidate readings:** (a) an enumeration (e.g. low / medium / high) declared
+**Possible readings:** (a) an enumeration (e.g. low / medium / high) declared
 somewhere upstream, perhaps by the vendor-risk-cog; (b) a free string compared
 to "high"; (c) an ordered scale with `high` a threshold on a numeric score.
 **Provisional reading in use:** (b) — `vendorRisk : String` compared to
@@ -39,7 +39,7 @@ is grammatically an action while `human_review_required` is grammatically a
 predicate.
 **Substrate forces:** one ontological kind per identifier before it can be
 constrained or queried.
-**Candidate readings:** (a) states of the Op instance; (b) obligations whose
+**Possible readings:** (a) states of the Op instance; (b) obligations whose
 discharge the Track must evidence; (c) invocations of workflow actions.
 **Provisional reading in use:** (a)/(b) hybrid — Boolean attributes that must
 hold whenever their gate condition holds (model), with the Track shapes
@@ -56,7 +56,7 @@ autonomous action" as something a Guard can check.
 value the gate reads, nor whether it is per-output, per-Cog, or per-run. Three
 Cogs run in this Op; each could carry its own confidence.
 **Substrate forces:** one referent for the gate's variable.
-**Candidate readings:** (a) the minimum across Cog outputs; (b) the
+**Possible readings:** (a) the minimum across Cog outputs; (b) the
 invoice-extraction Cog's confidence specifically (the §4.1 running example
 speaks of "low extraction confidence"); (c) a distinct confidence per Gate
 evaluation.
@@ -73,7 +73,7 @@ flagged").
 paper: not its range, not what it is computed over, not how "two of three must
 agree" maps to a number comparable with 0.25.
 **Substrate forces:** a typed quantity for the comparison to execute.
-**Candidate readings:** (a) fraction of dissenting Cogs; (b) 1 − pairwise
+**Possible readings:** (a) fraction of dissenting Cogs; (b) 1 − pairwise
 agreement rate; (c) a task-specific divergence score normalized to [0, 1].
 **Provisional reading in use:** an opaque scalar in [0, 1]; only the threshold
 comparison is exercised, no metric semantics assumed (model).

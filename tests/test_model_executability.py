@@ -1,4 +1,4 @@
-"""The manifest's gate logic computes, says yes and no honestly, and survives projection."""
+"""The manifest's gate logic computes, says yes and no honestly, and survives conversion."""
 import rdflib
 
 from conftest import CX_MODEL, MODEL, run_sysml

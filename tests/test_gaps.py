@@ -26,14 +26,14 @@ def _substrate_files():
     return files
 
 
-def _gap_ids_in_register():
+def _gap_ids():
     text = GAPS.read_text()
     return set(re.findall(r"^##\s+(GAP-\d+)", text, flags=re.M)), text
 
 
-def test_gap_register_exists_with_status_lines():
-    ids, text = _gap_ids_in_register()
-    assert ids, "computability-gaps.md holds no entries; the register must exist and be populated as gaps arise"
+def test_gap_entries_exist_with_status_lines():
+    ids, text = _gap_ids()
+    assert ids, "computability-gaps.md holds no entries; the gap file must exist and be populated as gaps arise"
     for gap_id in ids:
         entry = text.split(gap_id, 1)[1]
         assert re.search(r"\*\*Status:\*\*\s+(PENDING|ADJUDICATED)", entry), (
@@ -42,14 +42,14 @@ def test_gap_register_exists_with_status_lines():
 
 
 def test_every_provisional_marker_has_a_pending_gap_entry():
-    ids, text = _gap_ids_in_register()
+    ids, text = _gap_ids()
     for f in _substrate_files():
         for marker in re.findall(r"provisional:\s*(GAP-\d+)", f.read_text()):
-            assert marker in ids, f"{f.name} marks {marker} but the register has no such entry"
+            assert marker in ids, f"{f.name} marks {marker} but computability-gaps.md has no such entry"
 
 
 def test_every_adjudication_references_an_existing_gap():
-    ids, _ = _gap_ids_in_register()
+    ids, _ = _gap_ids()
     adjudicated = set(re.findall(r"(GAP-\d+)", ADJUDICATIONS.read_text()))
     unknown = adjudicated - ids
     assert not unknown, f"adjudication log references unknown gap ids: {unknown}"
