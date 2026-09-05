@@ -53,15 +53,53 @@ def test_counterexample_run_fails_satisfy():
     )
 
 
-def test_counterexample_catches_both_failure_kinds():
-    # Adjudication GAP-02: an obligation is distinct from its discharge. The
-    # counterexample must show BOTH ways a run can be wrong: the gate fired
-    # but no obligation was raised, and an obligation was raised but never
-    # discharged by a concrete action.
+def test_counterexample_catches_three_failure_kinds():
+    # Three distinct ways a run can be wrong: the gate fired but no
+    # obligation was raised (component level); an obligation was raised but
+    # never discharged (system level, GAP-02); and the Op stopped but
+    # emitted output anyway (aggregate level, GAP-06 — section 5.2: "the Op
+    # stops before external transmission").
     r = run_sysml(str(CX_MODEL), "-satisfy=RunConfigurations")
-    assert r.stdout.count("fails") >= 2, (
-        f"expected a gate violation and a discharge violation:\n{r.stdout}"
+    assert r.stdout.count("fails") >= 3, (
+        f"expected gate, discharge, and stopped-but-emitted violations:\n{r.stdout}"
     )
+    for marker in ("unattendedGate01", "undischargedSystem01", "emittedSystem02"):
+        assert f"{marker} fails" in r.stdout, (
+            f"missing the {marker} violation:\n{r.stdout}"
+        )
+
+
+def test_model_declares_three_check_levels():
+    # Component (GATE-, INTERFACE-), wiring (WIRE-), and system (SYSTEM-)
+    # checks all present in the model and all surviving conversion.
+    source = MODEL.read_text()
+    for rid in ("GATE-01", "GATE-02", "GATE-03", "GATE-04", "INTERFACE-01",
+                "WIRE-01", "WIRE-02", "WIRE-03", "WIRE-04",
+                "SYSTEM-01", "SYSTEM-02", "SYSTEM-03"):
+        assert f"<'{rid}'>" in source, f"{rid} missing from the model"
+    r = run_sysml(str(MODEL), "-convert", "ttl")
+    for rid in ("WIRE-01", "SYSTEM-01", "SYSTEM-02"):
+        assert rid in r.stdout, f"{rid} did not survive -convert ttl"
+
+
+def test_lifecycle_traces_reach_their_terminal_states():
+    # The aggregate is not just an attribute: the assembly's lifecycle runs.
+    # Trace output is the only honest post-run evidence.
+    stopped = run_sysml(str(MODEL), "-trace", "-instantiate",
+                        "VendorFraudReview::ExerciseContexts::stoppedContext")
+    assert "running -> stopped" in stopped.stdout, (
+        f"stopped context never reached the stopped state:\n{stopped.stdout[-2000:]}"
+    )
+    assert "running -> completed" not in stopped.stdout
+    completed = run_sysml(str(MODEL), "-trace", "-instantiate",
+                          "VendorFraudReview::ExerciseContexts::completedContext")
+    assert "running -> completed" in completed.stdout, (
+        f"completed context never reached the completed state:\n{completed.stdout[-2000:]}"
+    )
+    assert "running -> stopped" not in completed.stdout
+    again = run_sysml(str(MODEL), "-trace", "-instantiate",
+                      "VendorFraudReview::ExerciseContexts::stoppedContext")
+    assert again.stdout == stopped.stdout, "trace is not byte-stable"
 
 
 def test_conversion_is_deterministic_and_keeps_the_gates():

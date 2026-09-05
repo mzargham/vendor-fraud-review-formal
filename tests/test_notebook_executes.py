@@ -49,15 +49,29 @@ def test_notebook_narrates_the_worked_examples(executed_outputs):
     # Narrated scenarios: the happy path, each gate binding (obligation
     # discharged vs neglected), and the threshold rule catching a mislabel.
     for marker in (
-        "scenario 'happy-path': POLICY SATISFIED",
-        "scenario 'low-confidence-reviewed': POLICY SATISFIED",
+        "scenario 'happy-path': POLICY SATISFIED — aggregate: executed",
+        "scenario 'low-confidence-reviewed': POLICY SATISFIED — aggregate: executed",
         "scenario 'low-confidence-neglected': POLICY VIOLATED",
-        "scenario 'split-cogs-expert-reviewed': POLICY SATISFIED",
-        "scenario 'pii-stop-and-escalate': POLICY SATISFIED",
-        "scenario 'high-risk-vendor-approved': POLICY SATISFIED",
+        "scenario 'split-cogs-expert-reviewed': POLICY SATISFIED — aggregate: executed",
+        "scenario 'pii-stop-and-escalate': POLICY SATISFIED — aggregate: noOp",
+        "scenario 'pii-stopped-but-emitted': POLICY VIOLATED",
+        "scenario 'high-risk-vendor-approved': POLICY SATISFIED — aggregate: executed",
         "scenario 'mislabeled-confidence': POLICY VIOLATED",
     ):
         assert marker in executed_outputs, f"missing worked example: {marker}"
+
+
+def test_notebook_shows_the_wiring_and_lifecycle_levels(executed_outputs):
+    assert "wiring rules: OK" in executed_outputs, "model wiring rules not demonstrated"
+    assert "wiring rules: REFUSED" in executed_outputs, (
+        "the miswired counterexample's refusal is not demonstrated"
+    )
+    assert "running -> stopped" in executed_outputs, (
+        "the stopped lifecycle trace is not demonstrated"
+    )
+    assert "running -> completed" in executed_outputs, (
+        "the completed lifecycle trace is not demonstrated"
+    )
 
 
 def test_worked_examples_invoke_the_committed_policy(executed_outputs):
