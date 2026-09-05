@@ -25,6 +25,12 @@ vfr:GapShape
         sh:message "A gap must record how it was surfaced." ] ;
     sh:property [ sh:path vfr:status ; sh:minCount 1 ;
         sh:message "A gap must state its status." ] ;
+    sh:property [ sh:path vfr:substrateForces ; sh:minCount 1 ;
+        sh:message "A gap must state what the substrate forces: the decision prose could avoid." ] ;
+    sh:property [ sh:path vfr:possibleReadings ; sh:minCount 1 ;
+        sh:message "A gap must list the readings that were on the table." ] ;
+    sh:property [ sh:path vfr:readingInUse ; sh:minCount 1 ;
+        sh:message "A gap must state the adjudicated reading in use." ] ;
     sh:property [ sh:path [ sh:inversePath vfr:resolves ] ; sh:minCount 1 ;
         sh:message "A gap must be resolved by a recorded ruling; until then the reading in force is provisional." ] .
 

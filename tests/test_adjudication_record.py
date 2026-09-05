@@ -81,6 +81,21 @@ def test_every_implementation_anchor_resolves(record):
         assert anchor in path.read_text(), f"{impl}: anchor {anchor!r} not found in {in_file}"
 
 
+def test_gaps_page_is_generated_from_the_record():
+    # computability-gaps.md is a view of the record, byte-identical to a
+    # fresh render — one source of truth, no drift.
+    import sys
+
+    sys.path.insert(0, str(ROOT / "checks"))
+    import render_gaps
+
+    assert render_gaps.PAGE.read_text() == render_gaps.render(), (
+        "computability-gaps.md has drifted from adjudications.ttl; "
+        "regenerate with checks/render_gaps.py"
+    )
+    assert "GENERATED from adjudications.ttl" in render_gaps.PAGE.read_text()
+
+
 def test_record_conforms_and_the_unattributed_counterexample_fails(record):
     conforms, _, report = validate(record, shacl_graph=str(RECORD_SHAPES))
     assert conforms, f"the adjudication record fails its own shapes:\n{report}"

@@ -16,7 +16,10 @@ adj:cx-gap
     vfr:cites vfr:source-whitepaper-rev9 ;
     vfr:surfacedOn "2026-09-04"^^xsd:date ;
     vfr:surfacedHow "constructed counterexample" ;
-    vfr:status "adjudicated" .
+    vfr:status "adjudicated" ;
+    vfr:substrateForces "nothing; this gap exists to test the shapes" ;
+    vfr:possibleReadings "(a) none" ;
+    vfr:readingInUse "(a)" .
 
 adj:cx-ruling
     a vfr:Ruling ;
