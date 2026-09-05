@@ -145,20 +145,27 @@ def _gates():
     return out
 
 
-def show_policy_parameters():
-    source = MODEL.read_text()
-    block = re.search(
-        r"part def ValidationStrategyParameters \{.*?\n        \}", source, re.S
+def _parameters_block():
+    return re.search(
+        r"part def ValidationStrategyParameters \{.*?\n        \}", MODEL.read_text(), re.S
     ).group(0)
+
+
+def show_policy_parameters():
     gates = _gates()
     rows = []
-    for name, typ, value in re.findall(r"attribute (\w+) : ([\w:]+) = ([\w.:]+);", block):
+    for name, typ, value in re.findall(
+        r"attribute (\w+) : ([\w:]+) = ([\w.:]+);", _parameters_block()
+    ):
         backing = next(
             (f"{gid}: - if: {rule}" for gid, rule, _t, c in gates if name in c), ""
         )
         rows.append((("code", name), ("code", value), typ.split("::")[-1], ("code", backing)))
     _table(("Parameter", "Value", "Type", "Manifest rule it backs"), rows)
-    print(_dedent(block))
+
+
+def show_policy_parameters_source():
+    print(_dedent(_parameters_block()))
 
 
 def show_gate_checks():
@@ -167,6 +174,9 @@ def show_gate_checks():
         for gid, rule, then, constraint in _gates()
     ]
     _table(("Gate", "Manifest condition, verbatim", "Manifest consequence", "As evaluated"), rows)
+
+
+def show_gate_source():
     example = re.search(
         r"requirement def <'GATE-01'>.*?\n        \}", MODEL.read_text(), re.S
     ).group(0)
