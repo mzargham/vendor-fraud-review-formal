@@ -45,6 +45,36 @@ def _pdf():
     return next((ROOT / "sources").glob("*.pdf"))
 
 
+def _dedent(block):
+    """Dedent a model excerpt whose first line starts mid-source (its match
+    begins at the keyword, so only the continuation lines carry indent)."""
+    lines = block.splitlines()
+    indents = [
+        len(l) - len(l.lstrip()) for l in lines[1:] if l.strip()
+    ] or [0]
+    cut = min(indents)
+    return "\n".join(
+        [lines[0].strip()] + [l[cut:] if l.strip() else "" for l in lines[1:]]
+    )
+
+
+def _table(headers, rows):
+    """Render an HTML table; a ("code", text) cell renders monospace."""
+    import html as html_mod
+    from IPython.display import HTML, display
+
+    def cell(c):
+        if isinstance(c, tuple) and c[0] == "code":
+            return f'<td style="text-align:left"><code>{html_mod.escape(c[1])}</code></td>'
+        return f'<td style="text-align:left">{html_mod.escape(str(c))}</td>'
+
+    head = "".join(f"<th>{html_mod.escape(h)}</th>" for h in headers)
+    body = "\n".join("<tr>" + "".join(cell(c) for c in row) + "</tr>" for row in rows)
+    display(HTML(
+        f"<table>\n<thead><tr>{head}</tr></thead>\n<tbody>\n{body}\n</tbody>\n</table>"
+    ))
+
+
 # ---------------------------------------------------------------- chapter 01
 
 def show_toolchain():
@@ -100,22 +130,57 @@ def vocabulary_table():
 
 # ---------------------------------------------------------------- chapter 02
 
+def _gates():
+    """(gate id, manifest if-line, manifest then-token, constraint) per gate,
+    parsed from the model text — the doc quotes and the evaluated rule come
+    from the same block."""
+    out = []
+    for gid, body in re.findall(
+        r"requirement def <'(GATE-\d+)'> \w+ \{(.*?)\n        \}", MODEL.read_text(), re.S
+    ):
+        rule = re.search(r"- if: ([^\n]*)", body).group(1).strip()
+        then = re.search(r"then: (\w+)", body).group(1)
+        constraint = re.search(r"require constraint \{ (.*?) \}", body).group(1)
+        out.append((gid, rule, then, constraint))
+    return out
+
+
 def show_policy_parameters():
     source = MODEL.read_text()
-    print(re.search(r"part def ValidationStrategyParameters .*?\n        }", source, re.S).group(0))
+    block = re.search(
+        r"part def ValidationStrategyParameters \{.*?\n        \}", source, re.S
+    ).group(0)
+    gates = _gates()
+    rows = []
+    for name, typ, value in re.findall(r"attribute (\w+) : ([\w:]+) = ([\w.:]+);", block):
+        backing = next(
+            (f"{gid}: - if: {rule}" for gid, rule, _t, c in gates if name in c), ""
+        )
+        rows.append((("code", name), ("code", value), typ.split("::")[-1], ("code", backing)))
+    _table(("Parameter", "Value", "Type", "Manifest rule it backs"), rows)
+    print(_dedent(block))
 
 
 def show_gate_checks():
-    source = MODEL.read_text()
-    for block in re.findall(r"requirement def <'GATE-\d+'>.*?\n        }", source, re.S)[:1]:
-        print(block)
+    rows = [
+        (gid, ("code", f"- if: {rule}"), ("code", f"then: {then}"), ("code", constraint))
+        for gid, rule, then, constraint in _gates()
+    ]
+    _table(("Gate", "Manifest condition, verbatim", "Manifest consequence", "As evaluated"), rows)
+    example = re.search(
+        r"requirement def <'GATE-01'>.*?\n        \}", MODEL.read_text(), re.S
+    ).group(0)
+    print(_dedent(example))
 
 
 def show_seams():
-    source = MODEL.read_text()
-    print("\n".join(
-        l.strip() for l in source.splitlines() if "connect" in l and "interface" in l
-    ))
+    rows = [
+        (("code", name), typ, ("code", src), ("code", dst))
+        for name, typ, src, dst in re.findall(
+            r"interface (\w+) : (\w+Seam) connect (\S+) to (\S+);", MODEL.read_text()
+        )
+    ]
+    _table(("Seam", "Interface type", "From (supplier port)", "To (consumer port)"), rows)
 
 
 def validate_and_satisfy():
@@ -364,7 +429,7 @@ def show_metric_definitions():
     for block in re.findall(
         r"(?:abstract )?part def \w+Metric[^\n]*\{.*?\n        \}", source, re.S
     ):
-        print(block)
+        print(_dedent(block))
         print()
 
 

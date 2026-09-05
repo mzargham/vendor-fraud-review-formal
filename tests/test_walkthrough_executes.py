@@ -97,6 +97,17 @@ def test_chapter_02_shows_the_satisfy_exit_codes(chapter_outputs):
     assert "confidenceThreshold" in text, "the factored policy parameters are not demonstrated"
 
 
+def test_chapter_02_renders_model_excerpts_readably(chapter_outputs):
+    # Raw part-def dumps are not readable for the ML/DS audience: the
+    # parameters, gates, and seams must each render as a parsed table
+    # (derived from the model text, not retyped), and the verbatim
+    # source excerpts shown must be dedented to the margin.
+    text = chapter_outputs["02-op-as-assembly"]
+    assert text.count("<table") >= 3, "params, gates, and seams must render as tables"
+    assert "- if: confidence" in text, "gate table must carry the manifest rules"
+    assert "\n            attribute" not in text, "source excerpts must be dedented"
+
+
 def test_chapter_02_shows_the_wiring_and_lifecycle_levels(chapter_outputs):
     text = chapter_outputs["02-op-as-assembly"]
     assert "wiring rules: OK" in text, "model wiring rules not demonstrated"
