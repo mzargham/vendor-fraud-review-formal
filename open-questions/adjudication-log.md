@@ -103,3 +103,25 @@ quotes each literal now appears exactly once, enforced by test. The Track
 records the parameter values in force per run — which is his own §5.3
 ("the model versions and configuration parameters") made executable — and
 an execution that omits them fails the shapes.
+
+## 2026-09-04 — GAP-06, and the assembly directive
+
+**Ruling (verbatim):** "this reveals that we need to account for aggregate
+outputs. we successfully navigated the rules but the aggregate is no-op.
+which is different than successfully navigating the rules and executing.
+my intuition is that we've severely underutilitized the opensysml tool for
+its ability to define abstract and concrete parts, then wire them together
+along ports. this is what allows us to assemble complex workflows with both
+component level checks, wiring level checks, and system level checks with
+one toolchain"
+
+**Changed:** the Op became an assembly of abstract/concrete parts wired
+along ports (oracles → policy engine → human action / summary cog), with
+checks at three levels in one toolchain: the verbatim gates at component
+level; seam integrity at wiring level (WIRE-01..04 in satisfy, structural
+conformance in code over the conversion — validate accepts a mismatched
+connect, probed); obligations-discharged, stop-means-no-output (§5.2
+verbatim), and aggregate-outcome coherence at system level. AggregateOutcome
+{executed, noOp} names the distinction; the assembly's lifecycle (running →
+stopped | completed) runs under trace. GAP-07 (track.include final_output
+for stopped runs) and GAP-08 (wiring topology) logged PENDING.

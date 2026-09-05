@@ -115,3 +115,60 @@ the reading it evaluated; shapes refuse unsourced readings and calls without
 a response code (track/run-001.trig, shapes/track.shapes.ttl,
 queries/interface.rq). Service identities are urn:example placeholders
 pending real endpoints.
+
+## GAP-06 — aggregate outcome: navigating the rules vs executing
+
+**Status:** ADJUDICATED (2026-09-04, see adjudication-log.md)
+**Locus:** WP §5.6 gates block (`then: stop_and_escalate`) against §5.2:
+"If a Privacy Guard detects sensitive information, the Op stops before
+external transmission."; §4.5 defines an Op by the outcome it delivers.
+**Problem:** the manifest's constraints can all hold on a run that stopped —
+and equally on a run that stopped and transmitted anyway. Nothing in a flat
+rendering distinguishes successfully navigating the rules with a no-op
+aggregate from navigating the rules and executing.
+**Substrate forces:** an explicit aggregate: what the composed Op actually
+did, distinct from which rules held.
+**Possible readings:** (a) out of scope, gates are advisory routing only;
+(b) the aggregate is an output fact (emitted or not) constrained by the
+gates; (c) the aggregate is a lifecycle terminal state (completed vs
+stopped) with the output fact derived.
+**Adjudicated reading in use:** (b)+(c) — `AggregateOutcome {executed, noOp}`
+on the assembly, SYSTEM-02 (stop means no output, §5.2 verbatim), SYSTEM-03
+(outcome coherence), and a lifecycle on the assembly (running → stopped |
+completed) exercised under trace.
+
+## GAP-07 — `track.include` lists `final_output` unconditionally
+
+**Status:** PENDING
+**Locus:** WP §5.6 manifest, `track: include: - final_output`; §5.2 "the Op
+stops before external transmission".
+**Problem:** a stopped run has no final output to retain, yet the manifest's
+retention list is unconditional. Either a stopped run's Track is permitted
+to omit `final_output`, or the stop record itself counts as the final
+output, or the manifest intends `include` as "include when produced".
+**Substrate forces:** nothing yet — the committed Track (run-001) is an
+executed run with an output, so the tension is latent. It binds the moment a
+stopped run's Track is written.
+**Possible readings:** (a) conditional inclusion (include when produced);
+(b) the stop-and-escalation record is the final output of a stopped run;
+(c) unconditional, so a stopped run's Track is non-conformant by design.
+**Provisional reading in use:** none — Track and shapes unchanged pending
+adjudication.
+
+## GAP-08 — the Op's internal wiring topology
+
+**Status:** PENDING
+**Locus:** WP §4.5 (an Op composes Cogs, Frames, a supervising model,
+integration logic) and the §5.6 manifest (lists of frames, cogs, guards,
+gates) — no dataflow between them is ever drawn.
+**Problem:** assembling the Op as components wired along ports requires a
+topology the paper does not state: which component feeds which, where the
+guards sit on the flow, what reaches the output producer.
+**Substrate forces:** drawn seams.
+**Possible readings:** (a) a pipeline in the order the cogs are listed;
+(b) a hub topology — a supervising engine mediates all flows; (c) guard
+placement per lifecycle stage (§5.4) with gates inline on each seam.
+**Provisional reading in use:** (b) — oracles → policy engine → human
+action / summary cog (model/vendor-fraud-review.sysml, the seams in
+VendorFraudReviewOp), drawn from the §4.1/§4.5 narrative. Marked
+provisional at the ReadingSeam definition.

@@ -10,10 +10,15 @@ substrate, using only open standards:
 - **SKOS** — the paper's concepts (Op, Cog, Frame, Guard, Gate, Track, and
   more), definitions verbatim from a sha256-pinned snapshot of the PDF, each
   machine-checked against the source text.
-- **OpenSysML** (pinned v0.4.3) — the four gates as `implies` constraints,
-  evaluated over concrete runs: the clean run holds, the escalated run holds
-  because the human step is engaged, and a counterexample run with no human
-  in the loop fails with exit 1.
+- **OpenSysML** (pinned v0.4.3) — the Op as an assembly of abstract and
+  concrete parts wired along ports, checked at three levels in one
+  toolchain: component (the four gates as `implies` constraints), wiring
+  (seam integrity in satisfy; structural seam conformance in code over the
+  conversion), and system (obligations discharged across components; a
+  stopped Op emits nothing; the aggregate outcome — executed vs noOp — must
+  cohere). The assembly's lifecycle (running → stopped | completed) runs
+  under trace. Counterexamples fail one per level, and a miswired seam is
+  refused by the wiring rules.
 - **PROV-O + EARL** — one execution Track: automatic Guard results (passed,
   failed, cantTell), fired Gates, and a named human approval (`earl:manual`).
 - **SHACL** — shapes derived from the manifest's own `track.include` list,
