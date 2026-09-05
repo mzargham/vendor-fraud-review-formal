@@ -9,7 +9,8 @@
 # escalated run modeled in model/vendor-fraud-review.sysml (confidence 0.71
 # fires GATE-01; vendor_risk "high" fires GATE-04; a named human approves).
 # Graph layout: interface / evidence / decisions / approvals / provenance.
-# All names and values are synthetic demonstration data.
+# All names and values are fabricated demonstration data; the named
+# approver is an invented person, not a real one.
 
 run:provenance {
     run:execution

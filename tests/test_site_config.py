@@ -62,6 +62,22 @@ def test_every_citation_key_resolves():
     assert not unresolved, f"citation keys with no bib entry: {sorted(unresolved)}"
 
 
+def test_fabricated_example_data_is_disclosed():
+    # The whitepaper provides the manifest, not data: the run record, its
+    # named human actors, and the scenario narratives are fabricated. The
+    # walkthrough must say so where that data is presented.
+    assert "fabricated" in INDEX.read_text(), (
+        "index.md does not disclose the fabricated example data"
+    )
+    for stem in ("03-worked-examples", "05-the-track"):
+        path = next(p for p in CHAPTERS if p.stem == stem)
+        md = "\n".join(
+            c.source for c in nbformat.read(path, as_version=4).cells
+            if c.cell_type == "markdown"
+        )
+        assert "fabricated" in md, f"{path.name} does not disclose its fabricated data"
+
+
 def test_index_opens_with_the_translation_not_audit_preamble():
     text = INDEX.read_text()
     assert "translation, not an audit" in text, "the framing preamble is missing"

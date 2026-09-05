@@ -20,6 +20,15 @@ concrete Op manifest is well suited to this kind of demonstration. The
 wider architecture (Intelligence Hubs, Frames, the accountability plane
 as a whole) is cited but not modeled.
 
+One more boundary. The whitepaper provides the manifest, not data:
+every run shown here is fabricated example data, constructed to
+exercise the specification. That includes the recorded execution and
+its named approver, the vendors, invoices, and oracle readings in the
+worked examples, and the human actors in the narration. The named
+people are inventions, not real persons; they appear because the record
+requires a named accountable party. None of this content comes from the
+paper or from any real organization.
+
 > An Op is not complete unless it declares how its work will be
 > verified.
 >
