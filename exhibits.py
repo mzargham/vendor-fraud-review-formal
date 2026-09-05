@@ -501,50 +501,59 @@ def _dataset(path):
     return ds
 
 
-def check_track_shapes():
+def _local(node):
+    return str(node).rsplit("/", 1)[-1].rsplit("#", 1)[-1]
+
+
+def _check_shapes(path):
+    from pyshacl import validate
+
+    return validate(_dataset(path), shacl_graph=str(ROOT / "shapes" / "track.shapes.ttl"))
+
+
+def _describe_track(path):
+    import rdflib
+
+    ds = _dataset(path)
+    obligations = sorted(
+        _local(o) for o in ds.subjects(rdflib.RDF.type, rdflib.URIRef(VFR + "Obligation"))
+    )
+    discharges = sorted(
+        f"{_local(a)} discharges {_local(o)}"
+        for a, o in ds.subject_objects(rdflib.URIRef(VFR + "discharges"))
+    )
+    print(f"data checked: {path}")
+    print(f"  obligations raised  : {', '.join(obligations) or '(none)'}")
+    if discharges:
+        print("  discharging actions :")
+        for d in discharges:
+            print(f"    {d}")
+    else:
+        print("  discharging actions : (none)")
+
+
+def check_run_001_shapes():
+    _describe_track("track/run-001.trig")
+    conforms, _, _ = _check_shapes("track/run-001.trig")
+    print(f"conforms: {conforms}")
+
+
+def refuse_missing_approval_track():
     import textwrap
 
     import rdflib
-    from pyshacl import validate
 
     SH = rdflib.Namespace("http://www.w3.org/ns/shacl#")
-
-    def check(path):
-        return validate(_dataset(path), shacl_graph=str(ROOT / "shapes" / "track.shapes.ttl"))
-
-    def local(node):
-        return str(node).rsplit("/", 1)[-1].rsplit("#", 1)[-1]
-
-    def describe(path):
-        ds = _dataset(path)
-        obligations = sorted(
-            local(o) for o in ds.subjects(
-                rdflib.RDF.type, rdflib.URIRef(VFR + "Obligation"))
-        )
-        discharges = sorted(
-            f"{local(a)} discharges {local(o)}"
-            for a, o in ds.subject_objects(rdflib.URIRef(VFR + "discharges"))
-        )
-        print(f"data checked: {path}")
-        print(f"  obligations raised  : {', '.join(obligations) or '(none)'}")
-        print(f"  discharging actions : {'; '.join(discharges) or '(none)'}")
-
-    describe("track/run-001.trig")
-    conforms, _, _ = check("track/run-001.trig")
-    print(f"run-001                          conforms: {conforms}")
-    print()
-    describe("counterexamples/track-missing-approval.trig")
-    conforms, results, _ = check("counterexamples/track-missing-approval.trig")
+    _describe_track("counterexamples/track-missing-approval.trig")
+    conforms, results, _ = _check_shapes("counterexamples/track-missing-approval.trig")
     violations = sorted(
         results.subjects(rdflib.RDF.type, SH.ValidationResult),
         key=lambda v: str(results.value(v, SH.focusNode)),
     )
-    print(f"missing-approval counterexample  conforms: {conforms} "
-          f"({len(violations)} violations, one per undischarged obligation)")
+    print(f"conforms: {conforms} ({len(violations)} violations, one per undischarged obligation)")
     for i, v in enumerate(violations, 1):
-        focus = str(results.value(v, SH.focusNode)).rsplit("/", 1)[-1].rsplit("#", 1)[-1]
         message = str(results.value(v, SH.resultMessage))
-        print(f"\n  violation {i} — focus node: {focus}")
+        print(f"\n  violation {i} — focus node: {_local(results.value(v, SH.focusNode))}")
         print(textwrap.indent(textwrap.fill(message, width=66), "    "))
 
 
