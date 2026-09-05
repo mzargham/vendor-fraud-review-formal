@@ -145,6 +145,11 @@ def test_chapter_04_shows_one_type_three_semantics(chapter_outputs):
     text = chapter_outputs["04-one-type-three-semantics"]
     for metric in ("dissent-fraction", "strict-quorum-undecodable", "erasure-aware-undecodable"):
         assert metric in text, f"metric {metric} not exhibited"
+    # GAP-04 clarification: the answer type is a nullable Boolean — the
+    # checker's reply to "do you agree with the datum?" — not a label set.
+    assert "nullable Bool" in text, "the nullable-Boolean answer type is not stated"
+    assert "cannot tell" in text, "null's cannot-tell semantics are not stated"
+    assert "null" in text.replace("nullable", ""), "no null answers shown in the matrix"
     assert "gate fires: True" in text, "no metric fires the gate"
     assert "gate fires: False" in text, "no metric leaves the gate quiet"
     assert "same answer matrix" in text, (

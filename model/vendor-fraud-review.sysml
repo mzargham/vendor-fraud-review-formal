@@ -105,10 +105,18 @@ package VendorFraudReview {
         abstract part def DisagreementMetric {
             doc /* adjudicated: GAP-04 — the rule does not say what the
                number is, and no metric is chosen HERE. This abstract def
-               is the type signature: a metric maps a fact-by-reader
-               answer matrix (answers in {agree, no, cantTell}) to a
-               scalar in [0, 1] comparable against the manifest's 0.25
-               threshold. Three type-satisfying alternatives with different
+               is the type signature: a metric maps a fact-by-checker
+               answer matrix of nullable Booleans to a scalar in [0, 1]
+               comparable against the manifest's 0.25 threshold. Each
+               answer is one checker's reply, given the datum as context
+               and irrespective of which Cog produced it, to the question
+               "do you agree with the datum?": True = agree, False =
+               disagree, null = cannot tell (the outcome the Track
+               records as earl:cantTell). Checkers are factored apart
+               from generators: the Cog that produced a datum may itself
+               answer False when asked whether it stands; no producer is
+               assumed to file True (GAP-04 clarification, 2026-09-04).
+               Three type-satisfying alternatives with different
                semantics follow; which is fit for purpose is an open
                algorithmic policy design question, unlikely to have a
                unique correct answer, with different implications on
@@ -117,27 +125,27 @@ package VendorFraudReview {
         }
 
         part def DissentFractionMetric :> DisagreementMetric {
-            doc /* Fraction of reader answers differing from each fact's
-               modal expressed value, counting cantTell as dissent.
-               Incentive implication: honest abstention is punished, so
-               readers are pushed to guess rather than say cantTell. Note:
-               on the paper's own section 5.5 example (three Cogs, two must
+            doc /* Fraction of answers that are not True: disagreement and
+               null (cannot tell) both count as dissent. Incentive
+               implication: honest abstention is punished, so checkers are
+               pushed to affirm rather than say cannot tell. Note: on the
+               paper's own section 5.5 example (three Cogs, two must
                agree) this metric FIRES the gate at the 0.25 threshold,
                contradicting the example's intent. */
         }
 
         part def StrictQuorumUndecodableMetric :> DisagreementMetric {
-            doc /* Fraction of facts where no value reaches a quorum of two
-               identical expressed answers; cantTell blocks quorum.
-               Incentive implication: abstention is conservative — it
+            doc /* Fraction of facts where no answer value reaches a quorum
+               of two identical non-null answers; null blocks quorum.
+               Incentive implication: abstention is conservative: it
                escalates more runs to expert review, spending review
                capacity. Consistent with the section 5.5 example. */
         }
 
         part def ErasureAwareUndecodableMetric :> DisagreementMetric {
-            doc /* Fraction of facts undecodable among EXPRESSED answers
-               only: cantTell is an erasure, not an error, so a lone
-               expressed voice among abstentions decodes. Incentive
+            doc /* Fraction of facts undecodable among non-null answers
+               only: null (cannot tell) is an erasure, not an error, so a
+               lone expressed voice among abstentions decodes. Incentive
                implication: abstention shifts power to whoever still
                answers. Consistent with the section 5.5 example. */
         }

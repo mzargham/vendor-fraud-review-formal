@@ -370,15 +370,18 @@ def run_scenario(name, readings, recorded):
 
 # ---------------------------------------------------------------- chapter 04
 
-DisagreementMetric = Callable[[Sequence[Sequence[str]]], float]
+# GAP-04 clarification (2026-09-04): an answer is a nullable Boolean — one
+# checker's reply, given the datum as context, to "do you agree with the
+# datum?". True = agree, False = disagree, None = cannot tell. Checkers are
+# factored apart from generators: a producing Cog may answer False about
+# its own datum.
+DisagreementMetric = Callable[[Sequence[Sequence[bool | None]]], float]
 
 
 def dissent_fraction(matrix):
     dissents = total = 0
     for fact in matrix:
-        expressed = [v for v in fact if v != "?"]
-        modal = max(set(expressed), key=expressed.count) if expressed else None
-        dissents += sum(1 for v in fact if v != modal)
+        dissents += sum(1 for v in fact if v is not True)
         total += len(fact)
     return dissents / total
 
@@ -386,7 +389,7 @@ def dissent_fraction(matrix):
 def strict_quorum_undecodable(matrix):
     undecodable = 0
     for fact in matrix:
-        expressed = [v for v in fact if v != "?"]
+        expressed = [v for v in fact if v is not None]
         if not expressed or max(expressed.count(v) for v in set(expressed)) < 2:
             undecodable += 1
     return undecodable / len(matrix)
@@ -395,7 +398,7 @@ def strict_quorum_undecodable(matrix):
 def erasure_aware_undecodable(matrix):
     undecodable = 0
     for fact in matrix:
-        expressed = [v for v in fact if v != "?"]
+        expressed = [v for v in fact if v is not None]
         if not expressed or max(expressed.count(v) for v in set(expressed)) * 2 <= len(expressed):
             undecodable += 1
     return undecodable / len(matrix)
@@ -408,26 +411,28 @@ METRICS: dict[str, DisagreementMetric] = {
 }
 
 ANSWER_MATRIX = [
-    ["A", "A", "A"],
-    ["A", "A", "A"],
-    ["A", "A", "A"],
-    ["A", "A", "B"],
-    ["A", "A", "?"],
-    ["A", "B", "?"],
-    ["A", "B", "C"],
-    ["A", "?", "?"],
+    [True, True, True],
+    [True, True, True],
+    [True, True, True],
+    [True, True, False],
+    [True, True, None],
+    [True, False, None],
+    [False, None, True],
+    [True, None, None],
 ]
 
 
 def evaluate_metrics():
     print("type signature: DisagreementMetric = "
-          "(facts x readers answer matrix, '?' = cantTell) -> [0, 1]\n")
+          "(fact x checker answer matrix of nullable Bool; "
+          "True = agree, False = disagree, null = cannot tell) -> [0, 1]\n")
     threshold = float(re.search(
         r"consensusDisagreementThreshold : ScalarValues::Real = ([0-9.]+)",
         MODEL.read_text()).group(1))
-    print(f"same answer matrix for all three metrics ({len(ANSWER_MATRIX)} facts x 3 readers):")
+    token = {True: "True ", False: "False", None: "null "}
+    print(f"same answer matrix for all three metrics ({len(ANSWER_MATRIX)} facts x 3 checkers):")
     for i, fact in enumerate(ANSWER_MATRIX, 1):
-        print(f"  f{i}: " + " ".join(fact))
+        print(f"  f{i}: " + " ".join(token[v] for v in fact))
     print(f"threshold (from the model, single point of definition): > {threshold}\n")
     for name, metric in METRICS.items():
         value = metric(ANSWER_MATRIX)

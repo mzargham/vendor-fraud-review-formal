@@ -198,3 +198,30 @@ discharge: it requires a declared mode and a named accountable party
 (prov:wasAssociatedWith), with the accountable-counterparty assumption
 marked as the adjudicator's own interpretation. Walkthrough narration
 (index and chapter 2) reworded to match.
+
+## 2026-09-04 — GAP-04 (type clarified)
+
+**Ruling (verbatim):** "'{agree, no, cantTell}' -> '{True, False, Null}'
+but further clarified as {agree, diagree, cannot tell} basically we want
+the base data type to be nullable Bool for better type checking support
+but the semantics are given a datum as context (irrespective of which Cog
+produced it) there is a check bool check that can bet True, False or null
+which is the answer do you agree with the datum. optionally we can assume
+the cog which produced the datum in question files True but in my
+experience its best to factor checkers apart from generators so its
+strictly possible for a cog to produce a datum and still return false
+when asked if that data is true. this clarification is going to need an
+adjudication record"
+
+**Changed:** the DisagreementMetric type's answer domain moved from the
+label set {agree, no, cantTell} to a nullable Boolean: each entry is one
+checker's reply, given the datum as context, to "do you agree with the
+datum?" (True / False / null = cannot tell, corresponding to the Track's
+earl:cantTell). The abstract def's doc, the three concrete metric docs,
+the Python implementations (Sequence[Sequence[bool | None]]), the example
+answer matrix, and the chapter narration all reworded; the metric values
+on the example matrix are unchanged (0.333 / 0.375 / 0.250), so the
+one-fires-one-stays-quiet demonstration is preserved. Checkers are
+factored apart from generators in both the model doc and the narration:
+no producer is assumed to file True about its own datum. The openness of
+the metric CHOICE is untouched; only its type got sharper.

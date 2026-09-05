@@ -84,9 +84,9 @@ agree" maps to a number comparable with 0.25.
 **Possible readings:** (a) fraction of dissenting Cogs; (b) 1 − pairwise
 agreement rate; (c) a task-specific divergence score normalized to [0, 1].
 **Adjudicated reading in use:** deliberately open, with the openness made
-structural. The metric's TYPE is fixed (a fact-by-reader answer matrix,
-answers in {agree, no, cantTell}, mapped to a scalar in [0, 1] against the
-0.25 threshold — the abstract DisagreementMetric in the model), and three
+structural. The metric's TYPE is fixed (a fact-by-checker answer matrix of
+nullable Booleans mapped to a scalar in [0, 1] against the 0.25 threshold —
+the abstract DisagreementMetric in the model), and three
 type-satisfying alternatives with different semantics are exhibited
 (dissent-fraction, strict-quorum-undecodable, erasure-aware-undecodable),
 evaluated on the same answer matrix in the notebook, where they disagree
@@ -101,6 +101,14 @@ Track records which metric a run used (recording is not endorsing).
 known; if the comparison reduces to yes/no/cantTell facts, an
 error-correcting-code style interpretation becomes available — that
 reduction is now the type signature.
+**Type clarified (2026-09-04, see adjudication-log.md):** the answer base
+type is a nullable Boolean, for type-checking support. Given a datum as
+context, and irrespective of which Cog produced it, a checker answers "do
+you agree with the datum?": True = agree, False = disagree, null = cannot
+tell (the Track's earl:cantTell). Checkers are factored apart from
+generators: a Cog that produced a datum may itself answer False when asked
+whether it stands; the optional convention that a producer files True about
+its own output is NOT assumed.
 
 ## GAP-05 — who provides the gate variables (oracle identity and citation)
 
