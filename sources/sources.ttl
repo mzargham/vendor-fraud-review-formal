@@ -1,0 +1,36 @@
+@prefix vfr: <https://example.org/vfr#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix dcterms: <http://purl.org/dc/terms/> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+vfr:source-whitepaper-rev9
+    a prov:Entity ;
+    rdfs:label "The Distributed AI Economy: Intelligence Hubs, Frames, Cogs, Ops, and the Accountability Plane" ;
+    dcterms:creator vfr:author-openteams ;
+    dcterms:issued "2026-08"^^xsd:gYearMonth ;
+    vfr:revision "Revision 9" ;
+    vfr:sourceType "pdf" ;
+    vfr:contentHash "5dabf2bec9cde59e5cc5bfa38eb08d3cd536daf20a6e6d7e815d76cd401dbe41" ;
+    vfr:snapshot "5dabf2bec9cde59e5cc5bfa38eb08d3cd536daf20a6e6d7e815d76cd401dbe41.pdf" ;
+    prov:wasAttributedTo vfr:author-openteams ;
+    prov:wasGeneratedBy vfr:retrieval-whitepaper-rev9 .
+
+vfr:author-openteams
+    a prov:Agent ;
+    rdfs:label "OpenTeams (Travis Oliphant)" .
+
+vfr:retrieval-whitepaper-rev9
+    a prov:Activity ;
+    rdfs:label "Receipt of the whitepaper PDF from its author" ;
+    prov:endedAtTime "2026-09-04T00:00:00Z"^^xsd:dateTime .
+
+vfr:verification-whitepaper-rev9
+    a prov:Activity ;
+    rdfs:label "Checksum verification of the committed snapshot" ;
+    vfr:verificationMethod "sha256" ;
+    vfr:verificationNote "content-addressed snapshot; sha256 matches the held file" ;
+    prov:used vfr:source-whitepaper-rev9 ;
+    prov:endedAtTime "2026-09-04T00:00:00Z"^^xsd:dateTime .
+
+vfr:source-whitepaper-rev9 vfr:wasVerifiedBy vfr:verification-whitepaper-rev9 .

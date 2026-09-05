@@ -1,0 +1,92 @@
+@prefix vfr: <https://example.org/vfr#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+
+# Every skos:definition below is verbatim from the cited source (the pinned
+# whitepaper snapshot); tests/test_definitions_verbatim.py enforces this
+# against the PDF itself. Locators are section numbers in Revision 9.
+
+vfr:scheme-op-concepts
+    a skos:ConceptScheme ;
+    skos:prefLabel "Vendor Fraud Review Op — concept scheme" ;
+    prov:wasDerivedFrom vfr:source-whitepaper-rev9 .
+
+vfr:IntelligenceHub
+    a skos:Concept ;
+    skos:prefLabel "Intelligence Hub" ;
+    skos:definition "An Intelligence Hub is a particular configuration of open source components that are deployed inside an organizational perimeter." ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:locator "§3.3" ;
+    skos:inScheme vfr:scheme-op-concepts .
+
+vfr:OrganizationalMemory
+    a skos:Concept ;
+    skos:prefLabel "Organizational Memory" ;
+    skos:definition "Organizational Memory is the persistent context substrate of the Intelligence Hub and used by the Ops and Cogs to create organizational coherency and alignment." ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:locator "§3.4" ;
+    skos:inScheme vfr:scheme-op-concepts .
+
+vfr:Agent
+    a skos:Concept ;
+    skos:prefLabel "Agent" ;
+    skos:definition "An agent, precisely, is a Cog engaged through an Op, given identity and memory by the Hub." ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:locator "§4.2" ;
+    skos:inScheme vfr:scheme-op-concepts .
+
+vfr:Frame
+    a skos:Concept ;
+    skos:prefLabel "Frame" ;
+    skos:definition "A Frame is a scoped, text-based artifact — a file or folder of files using an open protocol — that carries the cultural and operational context within which work happens." ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:locator "§4.3" ;
+    skos:inScheme vfr:scheme-op-concepts .
+
+vfr:Cog
+    a skos:Concept ;
+    skos:prefLabel "Cog" ;
+    skos:definition "A Cog is a discrete, AI-powered worker. It is the atomic unit of AI work within the system." ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:locator "§4.4" ;
+    skos:inScheme vfr:scheme-op-concepts .
+
+vfr:Op
+    a skos:Concept ;
+    skos:prefLabel "Op" ;
+    skos:definition "An Op is the application of the distributed AI economy. It is the orchestrated, supervised AI workflow that a human at the keyboard usually invokes or launches." ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:locator "§4.5" ;
+    skos:inScheme vfr:scheme-op-concepts .
+
+vfr:Guard
+    a skos:Concept ;
+    skos:prefLabel "Guard" ;
+    skos:definition "A Guard is a reusable verification and protection component that checks whether the output or action of a Cog or Op is correct, safe, policy-compliant, and ready for use." ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:locator "§5.1" ;
+    skos:inScheme vfr:scheme-op-concepts .
+
+vfr:Gate
+    a skos:Concept ;
+    skos:prefLabel "Gate" ;
+    skos:definition "A Gate is a decision point in an Op where the results of one or more Guards determine what happens next. Guards check. Gates decide." ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:locator "§5.2" ;
+    skos:inScheme vfr:scheme-op-concepts .
+
+vfr:Track
+    a skos:Concept ;
+    skos:prefLabel "Track" ;
+    skos:definition "A Track is the durable record of an Op or Cog execution. It captures what happened, what context was used, what Cogs were invoked, what Guards ran, which Gates were passed or failed, what sources were consulted, what humans approved, and what final outputs or actions were produced." ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:locator "§5.3" ;
+    skos:inScheme vfr:scheme-op-concepts .
+
+vfr:ValidationStrategy
+    a skos:Concept ;
+    skos:prefLabel "Validation Strategy" ;
+    skos:definition "Every Op declares a Validation Strategy: which Guards are used, where Gates occur, what Tracks are retained, and when human review is required." ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:locator "§5.6" ;
+    skos:inScheme vfr:scheme-op-concepts .
