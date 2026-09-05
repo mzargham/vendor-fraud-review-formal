@@ -20,6 +20,17 @@ QUERIES = ROOT / "queries"
 GAPS = ROOT / "open-questions" / "computability-gaps.md"
 ADJUDICATIONS = ROOT / "open-questions" / "adjudication-log.md"
 NOTEBOOK = ROOT / "demonstration.ipynb"
+INDEX = ROOT / "index.md"
+MYST_CONFIG = ROOT / "myst.yml"
+REFERENCES = ROOT / "references.bib"
+CHAPTERS = [
+    ROOT / "chapters" / "01-pinned-source.ipynb",
+    ROOT / "chapters" / "02-op-as-assembly.ipynb",
+    ROOT / "chapters" / "03-worked-examples.ipynb",
+    ROOT / "chapters" / "04-one-type-three-semantics.ipynb",
+    ROOT / "chapters" / "05-the-track.ipynb",
+    ROOT / "chapters" / "06-open-questions.ipynb",
+]
 
 VFR = "https://example.org/vfr#"
 EARL = "http://www.w3.org/ns/earl#"
