@@ -34,7 +34,8 @@ regen() {
     && git diff --quiet -- generated/
 }
 step "generated/ regenerates byte-identically" 0 regen
-step "tests: full suite (verbatim, model, shapes, queries, gaps, notebook)" 0 uv run pytest -q
+step "site: myst build --html" 0 uv run myst build --html
+step "tests: full suite (verbatim, model, shapes, queries, gaps, walkthrough)" 0 uv run pytest -q
 
 RESULT=$([ "$FAIL" -eq 0 ] && echo PASS || echo FAIL)
 printf '{"sha":"%s","dirty":%s,"time":"%s","steps":{%s},"result":"%s"}\n' \

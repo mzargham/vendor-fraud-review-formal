@@ -1,6 +1,7 @@
 toolchain/bin/
 checks/out/
 _build/
+node_modules/
 .venv/
 __pycache__/
 .pytest_cache/

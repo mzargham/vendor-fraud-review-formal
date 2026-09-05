@@ -28,16 +28,20 @@ substrate, using only open standards:
 
 ## Read it
 
-The primary artifact is the notebook — every claim in it is the output of an
-executed cell, including narrated worked examples that mock the oracles and
-drive each scenario (the happy path, every gate binding with its obligation
-discharged or neglected, a mislabeled category) through the committed policy
-text itself:
+The primary artifact is a chaptered MyST walkthrough (`index.md` plus the
+six executed notebooks in `chapters/`): each chapter opens with what the
+whitepaper says, quoted and cited against the pinned snapshot
+(machine-checked verbatim), then executes and interprets. Worked examples
+mock the oracles and drive each scenario (the happy path, every gate
+binding with its obligation discharged or neglected, a halt honored and a
+halt ignored, a mislabeled category) through the committed policy text
+itself. The committed cell outputs are asserted equal to a fresh
+execution, so the rendered site shows exactly what execution shows.
 
 ```sh
 uv sync
-uv run jupyter lab demonstration.ipynb   # interactive
-npx mystmd start                         # rendered MyST site
+uv run myst start                        # the walkthrough, served locally
+uv run jupyter lab                       # the chapter notebooks, interactive
 ```
 
 ## Run the checks
