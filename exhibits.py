@@ -557,12 +557,46 @@ def refuse_missing_approval_track():
         print(textwrap.indent(textwrap.fill(message, width=66), "    "))
 
 
+_PREFIXES = {
+    "https://example.org/vfr/track/run-001#": "run:",
+    "https://example.org/vfr#": "vfr:",
+    "http://www.w3.org/ns/earl#": "earl:",
+    "http://www.w3.org/ns/prov#": "prov:",
+}
+
+
+def _short(value):
+    s = str(value)
+    for ns, prefix in _PREFIXES.items():
+        if s.startswith(ns):
+            return prefix + s[len(ns):]
+    return s
+
+
+def _result_table(res):
+    import rdflib
+
+    rows = []
+    for row in res:
+        cells = []
+        for v in row:
+            if v is None:
+                cells.append("")
+            elif isinstance(v, rdflib.URIRef):
+                cells.append(("code", _short(v)))
+            else:
+                cells.append(str(v))
+        rows.append(tuple(cells))
+    if rows:
+        _table([str(v) for v in res.vars], rows)
+    else:
+        print("(no rows)")
+
+
 def show_query(name):
     ds = _dataset("track/run-001.trig")
     res = ds.query((ROOT / "queries" / name).read_text())
-    print(" | ".join(str(v) for v in res.vars))
-    for row in res:
-        print(" | ".join(str(v) for v in row))
+    _result_table(res)
     return res
 
 
@@ -572,8 +606,7 @@ def compare_governance():
     cx = _dataset("counterexamples/track-missing-approval.trig")
     cx_res = cx.query((ROOT / "queries" / "governance.rq").read_text())
     print(f"violations on the counterexample: {len(cx_res)}")
-    for row in cx_res:
-        print("  " + " | ".join(str(v) for v in row))
+    _result_table(cx_res)
 
 
 def show_interface():

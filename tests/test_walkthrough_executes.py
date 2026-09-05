@@ -187,6 +187,13 @@ def test_chapter_05_shows_the_shacl_inversion_and_the_outcomes(chapter_outputs):
     assert "discharging actions : (none)" in text, (
         "the counterexample's missing discharge is not shown in the data summary"
     )
+    # Query results render as tables with prefixed names, not pipe-joined
+    # text rows with full URIs.
+    assert text.count("<table") >= 2, "query results must render as tables"
+    assert "earl:cantTell" in text, "URIs in query results must render prefixed"
+    assert "http://www.w3.org/ns/earl#cantTell" not in text, (
+        "full URIs leak into the rendered query results"
+    )
     assert "cantTell" in text, "the cantTell outcome is not demonstrated"
     assert "responseCode" in text, (
         "the oracle interface contract (service/payload/code/response) is not demonstrated"
