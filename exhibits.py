@@ -740,6 +740,69 @@ def show_adjudication_record():
     _table(("Gap", "Problem", "Surfaced", "Status", "Resolution"), rows)
 
 
+def show_gap_characterizations():
+    import html as html_mod
+
+    import rdflib
+    from IPython.display import HTML, display
+
+    g = _adjudication_graph()
+    V = rdflib.Namespace(VFR)
+    blocks = []
+    for gap in sorted(g.subjects(rdflib.RDF.type, V.ComputabilityGap), key=str):
+        fields = [
+            ("Locus", g.value(gap, V.locusDetail)),
+            ("Problem", g.value(gap, V.problem)),
+            ("Surfaced", f"{g.value(gap, V.surfacedOn)}: {g.value(gap, V.surfacedHow)}"),
+            ("The substrate forces", g.value(gap, V.substrateForces)),
+            ("Readings considered", g.value(gap, V.possibleReadings)),
+            ("Reading in use", g.value(gap, V.readingInUse)),
+        ]
+        note = g.value(gap, V.note)
+        if note is not None:
+            fields.append(("Notes", note))
+        items = "\n".join(
+            f'<li style="text-align:left"><strong>{label}:</strong> '
+            f"{html_mod.escape(str(value))}</li>"
+            for label, value in fields
+        )
+        blocks.append(
+            f'<p style="text-align:left"><strong>{_local(gap)} — '
+            f"{html_mod.escape(str(g.value(gap, rdflib.RDFS.label)))}</strong> "
+            f"[{g.value(gap, V.status)}]</p>\n<ul>\n{items}\n</ul>"
+        )
+    display(HTML("\n".join(blocks)))
+
+
+def show_rulings_log():
+    import html as html_mod
+
+    import rdflib
+    from IPython.display import HTML, display
+
+    g = _adjudication_graph()
+    V = rdflib.Namespace(VFR)
+    PROV = rdflib.Namespace("http://www.w3.org/ns/prov#")
+    entries = sorted(
+        ((int(g.value(n, V.order)), n) for n in set(g.subjects(V.order, None))),
+    )
+    blocks = []
+    for order, node in entries:
+        text = g.value(node, V.rulingText) or g.value(node, V.noteText)
+        blocks.append(
+            f'<p style="text-align:left"><strong>{order}. '
+            f"{html_mod.escape(str(g.value(node, V.entryTitle)))}</strong> "
+            f"({g.value(node, PROV.generatedAtTime)}, "
+            f"{_local(g.value(node, PROV.wasAttributedTo))})</p>\n"
+            f'<blockquote style="text-align:left">{html_mod.escape(str(text))}'
+            "</blockquote>\n"
+            f'<p style="text-align:left"><em>Changed:</em> '
+            f"{html_mod.escape(str(g.value(node, V.changeNote)))}</p>"
+        )
+    display(HTML("\n".join(blocks)))
+    print(f"log entries rendered: {len(entries)}")
+
+
 def show_judgment_trace():
     import rdflib
 

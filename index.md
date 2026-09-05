@@ -10,8 +10,8 @@ translation, not an audit. Where the translation had to fill a gap, the
 gap belongs to the limits of the written form, not to oversights by the
 author; prose can leave open what an executable substrate must decide.
 Where filling those gaps required judgment calls, they are ours, and each
-one is acknowledged and logged with its ruling in the appendix rather
-than silently blended into the model.
+one is acknowledged and logged with its ruling in the judgment record
+rather than silently blended into the model.
 
 The scope is deliberately narrow. This is not the full scope of the
 whitepaper; it is one piece of it, the section 5.6 Vendor Fraud Review
@@ -91,8 +91,9 @@ output. The chapters build in order, but each stands on its own:
 6. **Open questions** — everything the translation could not settle
    without judgment, and the rulings in force.
 
-The appendix holds the full list of computability gaps and the log of
-rulings, verbatim.
+The open-questions chapter renders the full record: every gap
+characterized, every ruling verbatim, and the trace from implemented
+code back to the judgment it rests on.
 
 ## Running it
 

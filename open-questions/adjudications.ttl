@@ -8,11 +8,10 @@
 # downstream of judgment calls: where the text corpus under-specified what
 # an implementation requires, each gap was flagged and characterized, a
 # named adjudicator ruled, and implementations derive from the rulings.
-# This file is the single source of truth for that chain. The two markdown
-# pages beside it (computability-gaps.md, adjudication-log.md) are
-# GENERATED views, rendered by checks/render_gaps.py and
-# checks/render_log.py; the checks refuse a page that drifts. Ruling and
-# note texts are the adjudicator's words verbatim.
+# This file is the single source of truth for that chain; the
+# walkthrough's open-questions chapter renders it in full (summary,
+# characterizations, the ordered rulings log, and the code-to-judgment
+# trace). Ruling and note texts are the adjudicator's words verbatim.
 
 adj:mzargham
     a prov:Agent, prov:Person ;
@@ -368,8 +367,8 @@ adj:impl-mode-property
     prov:wasDerivedFrom adj:ruling-gap09 .
 
 # ------------------------------------------------- gap details
-# Full characterizations, rendered into open-questions/computability-gaps.md
-# by checks/render_gaps.py (that page is a generated view of this record).
+# Full characterizations, rendered in the walkthrough's open-questions
+# chapter.
 
 adj:GAP-01
     vfr:locusDetail "WP §5.6, gates block: `- if: vendor_risk == high` / `then: human_approval_required`" ;
@@ -395,7 +394,7 @@ adj:GAP-04
     vfr:possibleReadings "(a) fraction of dissenting Cogs; (b) 1 − pairwise agreement rate; (c) a task-specific divergence score normalized to [0, 1]." ;
     vfr:readingInUse """deliberately open, with the openness made structural. The metric's TYPE is fixed (a fact-by-checker answer matrix of nullable Booleans mapped to a scalar in [0, 1] against the 0.25 threshold — the abstract DisagreementMetric in the model), and three type-satisfying alternatives with different semantics are exhibited (dissent-fraction, strict-quorum-undecodable, erasure-aware-undecodable), evaluated on the same answer matrix in the notebook, where they disagree about whether the gate fires. No metric is chosen: a correctly constructed policy is not the same as a fit-for-purpose policy, and what is right for the job here is an open algorithmic policy design question — unlikely to have a unique correct answer, with many viable answers carrying different implications on incentives, and not limited to these three. The comparator oracle's metric slot is typed and unbound; a deployment binds it, and the Track records which metric a run used (recording is not endorsing).""" ;
     vfr:note """**Earlier deferral note (2026-09-04):** revisit when the compared spaces are known; if the comparison reduces to yes/no/cantTell facts, an error-correcting-code style interpretation becomes available — that reduction is now the type signature.
-**Type clarified (2026-09-04, see adjudication-log.md):** the answer base type is a nullable Boolean, for type-checking support. Given a datum as context, and irrespective of which Cog produced it, a checker answers "do you agree with the datum?": True = agree, False = disagree, null = cannot tell (the Track's earl:cantTell). Checkers are factored apart from generators: a Cog that produced a datum may itself answer False when asked whether it stands; the optional convention that a producer files True about its own output is NOT assumed.""" .
+**Type clarified (2026-09-04, ruling logged in this record):** the answer base type is a nullable Boolean, for type-checking support. Given a datum as context, and irrespective of which Cog produced it, a checker answers "do you agree with the datum?": True = agree, False = disagree, null = cannot tell (the Track's earl:cantTell). Checkers are factored apart from generators: a Cog that produced a datum may itself answer False when asked whether it stands; the optional convention that a producer files True about its own output is NOT assumed.""" .
 
 adj:GAP-05
     vfr:locusDetail """WP §5.6 gates block and §4.5 Op composition — the manifest names the variables its gates read (`confidence`, `consensus_disagreement`, `sensitive_data_detected`, `vendor_risk`) but never declares what service provides each value, what was asked of it, or what came back. §5.3 lists "input data and source references" among Track contents without binding them to the gate variables.""" ;
@@ -428,9 +427,9 @@ adj:GAP-09
     vfr:readingInUse """(b), extended 2026-09-04: review and approval are manifest-named human (§5.6 tokens), expert review is paper-named human by the §5.1/§5.5 prose ("routes sampled or high-risk outputs to human review"; "Human or known-expert judgment"), and only the escalation target's actor is unspecified — there the discharging actor is another system outside the modeled boundary, with a counterparty assumed accountable (the adjudicator's interpretation). The component is CounterpartyAction; attribute names keep the manifest's tokens. The discharging-action shape requires a declared mode (manual or automatic) and a named accountable party rather than requiring every discharge to be manual; a per-obligation-type mode constraint is noted as future work.""" .
 
 # ---------------------------------------- log entries (order, titles,
-# change notes). The adjudication-log.md page is generated from these by
-# checks/render_log.py; ruling and note texts are the adjudicator's words
-# verbatim, change notes describe what moved in the substrate.
+# change notes), rendered in the walkthrough's open-questions chapter;
+# ruling and note texts are the adjudicator's words verbatim, change
+# notes describe what moved in the substrate.
 
 adj:ruling-gap01 vfr:order 1 ; vfr:entryTitle "GAP-01" ;
     vfr:changeNote """`vendorRisk` retyped from String to `enum def RiskLevel {high, low, unknown}`; GATE-04 compares against `RiskLevel::high`; the enum's doc comment flags the interpretation and the future risk-model enhancement point (model/vendor-fraud-review.sysml).""" .

@@ -37,8 +37,8 @@ Each layer is machine-checked; nothing below is a prose-only claim.
    downstream of judgment calls. Every gap the translation surfaced, the
    ruling that resolved it (verbatim, attributed, dated), and the
    implementations that resulted are RDF
-   (`open-questions/adjudications.ttl`); the appendix pages are
-   generated views of it.
+   (`open-questions/adjudications.ttl`); the walkthrough's
+   open-questions chapter renders it in full.
 
 ## Read it
 
@@ -58,9 +58,9 @@ checks/run-checks.sh
 
 One script: pinned toolchain, strict validation, the satisfy sweep, the
 counterexamples that must fail, byte-identical regeneration of every
-generated artifact (conversion, query results, both appendix pages, both
-derived counterexamples), the site build, and the full test suite. It
-ends with a single `CHECKS: PASS|FAIL` line.
+generated artifact (conversion, query results, both derived
+counterexamples), the site build, and the full test suite. It ends with
+a single `CHECKS: PASS|FAIL` line.
 
 ## Layout
 
@@ -73,7 +73,7 @@ ends with a single `CHECKS: PASS|FAIL` line.
 | `shapes/` | SHACL over the Track, the judgment record, and the trace |
 | `queries/` | the five section 5.3 purposes as SPARQL |
 | `counterexamples/` | negatives every checking layer must refuse |
-| `open-questions/` | the judgment record and its two generated pages |
+| `open-questions/` | the judgment record (adjudications.ttl) |
 | `chapters/`, `index.md` | the walkthrough (executed notebooks + front door) |
 | `exhibits.py` | the committed machinery the chapter cells call |
 | `checks/`, `tests/` | the gate script, renderers, and test suite |

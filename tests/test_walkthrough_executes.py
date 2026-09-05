@@ -237,6 +237,15 @@ def test_chapter_06_lists_every_adjudicated_gap(chapter_outputs):
     # with their counterexample.
     assert "mzargham" in text, "the named adjudicator does not appear in the record"
     assert text.count("<table") >= 2, "the record and the trace must render as tables"
+    # The chapter is the record's only rendered view: full per-gap
+    # characterizations and the ordered rulings log render from the TTL.
+    assert "Readings considered:" in text, "gap characterizations are not rendered"
+    assert "Reading in use:" in text, "the adjudicated readings are not rendered"
+    entries = len(set(record.subjects(rdflib.URIRef(VFR + "order"), None)))
+    assert f"log entries rendered: {entries}" in text, (
+        "the rulings log does not render every ordered entry"
+    )
+    assert "GAP-04 (type clarified)" in text, "entry titles are not rendered"
     assert "conforms: True" in text, "the record's shape conformance is not shown"
     assert "conforms: False" in text, "the unattributed counterexample is not refused"
     assert "adjudicator" in text, "the attribution requirement is not surfaced"

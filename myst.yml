@@ -48,9 +48,5 @@ project:
         - file: chapters/04-one-type-three-semantics.ipynb
         - file: chapters/05-the-track.ipynb
         - file: chapters/06-open-questions.ipynb
-    - title: Appendix
-      children:
-        - file: open-questions/computability-gaps.md
-        - file: open-questions/adjudication-log.md
 site:
   template: book-theme

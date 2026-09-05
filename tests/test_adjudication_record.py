@@ -8,13 +8,11 @@ chain lives in RDF (open-questions/adjudications.ttl) and is held to the
 same discipline as everything else: complete fields, verbatim ruling
 text, resolvable implementation anchors, shapes with a counterexample.
 """
-import re
-
 import pytest
 import rdflib
 from pyshacl import validate
 
-from conftest import GAPS, ROOT, VFR
+from conftest import ROOT, VFR
 
 RECORD = ROOT / "open-questions" / "adjudications.ttl"
 RECORD_SHAPES = ROOT / "shapes" / "adjudication.shapes.ttl"
@@ -29,18 +27,6 @@ def record():
     g = rdflib.Graph()
     g.parse(RECORD, format="turtle")
     return g
-
-
-def test_every_markdown_gap_is_in_the_record_and_vice_versa(record):
-    md_ids = set(re.findall(r"^##\s+(GAP-\d+)", GAPS.read_text(), flags=re.M))
-    rdf_ids = {
-        str(g).rsplit("#", 1)[-1]
-        for g in record.subjects(rdflib.RDF.type, V.ComputabilityGap)
-    }
-    assert rdf_ids == md_ids, (
-        f"gap ids diverge between the record and the markdown: "
-        f"only in RDF {rdf_ids - md_ids}, only in markdown {md_ids - rdf_ids}"
-    )
 
 
 def test_gap_locators_name_real_sections(record, pdf_sections):
@@ -88,19 +74,6 @@ def test_every_resolving_ruling_has_an_implementation(record):
         assert impls, f"{ruling} resolved a gap but derives no implementation"
 
 
-def test_log_page_is_generated_from_the_record():
-    import sys
-
-    sys.path.insert(0, str(ROOT / "checks"))
-    import render_log
-
-    assert render_log.PAGE.read_text() == render_log.render(), (
-        "adjudication-log.md has drifted from adjudications.ttl; "
-        "regenerate with checks/render_log.py"
-    )
-    assert "GENERATED from adjudications.ttl" in render_log.PAGE.read_text()
-
-
 def test_every_implementation_anchor_resolves(record):
     impls = list(record.subjects(rdflib.RDF.type, V.Implementation))
     assert len(impls) >= 12, "expected implementations for every ruling"
@@ -112,21 +85,6 @@ def test_every_implementation_anchor_resolves(record):
         path = ROOT / in_file
         assert path.exists(), f"{impl}: file does not exist: {in_file}"
         assert anchor in path.read_text(), f"{impl}: anchor {anchor!r} not found in {in_file}"
-
-
-def test_gaps_page_is_generated_from_the_record():
-    # computability-gaps.md is a view of the record, byte-identical to a
-    # fresh render — one source of truth, no drift.
-    import sys
-
-    sys.path.insert(0, str(ROOT / "checks"))
-    import render_gaps
-
-    assert render_gaps.PAGE.read_text() == render_gaps.render(), (
-        "computability-gaps.md has drifted from adjudications.ttl; "
-        "regenerate with checks/render_gaps.py"
-    )
-    assert "GENERATED from adjudications.ttl" in render_gaps.PAGE.read_text()
 
 
 def test_record_conforms_and_the_unattributed_counterexample_fails(record):

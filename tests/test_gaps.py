@@ -1,14 +1,16 @@
 """The no-silent-alteration rule is itself machine-checked.
 
-Every `provisional: GAP-nn` marker in the substrate has a matching entry
-in the generated gaps page (a view of the judgment record), and every
-adjudication references an existing gap id. A reading stays provisional
-until a ruling by the named adjudicator is recorded.
+Every `provisional: GAP-nn` or `adjudicated: GAP-nn` marker in the
+substrate names a gap that exists in the judgment record
+(open-questions/adjudications.ttl). A reading stays provisional until a
+ruling by the named adjudicator is recorded.
 """
 import re
 from pathlib import Path
 
-from conftest import ADJUDICATIONS, GAPS, ROOT
+import rdflib
+
+from conftest import RECORD, ROOT, VFR
 
 SUBSTRATE_GLOBS = (
     "model/*.sysml",
@@ -32,29 +34,26 @@ def _substrate_files():
 
 
 def _gap_ids():
-    text = GAPS.read_text()
-    return set(re.findall(r"^##\s+(GAP-\d+)", text, flags=re.M)), text
-
-
-def test_gap_entries_exist_with_status_lines():
-    ids, text = _gap_ids()
-    assert ids, "computability-gaps.md holds no entries; the gap file must exist and be populated as gaps arise"
-    for gap_id in ids:
-        entry = text.split(gap_id, 1)[1]
-        assert re.search(r"\*\*Status:\*\*\s+(PENDING|ADJUDICATED)", entry), (
-            f"{gap_id} carries no Status line"
+    g = rdflib.Graph()
+    g.parse(RECORD, format="turtle")
+    return {
+        str(gap).rsplit("#", 1)[-1]
+        for gap in g.subjects(
+            rdflib.RDF.type, rdflib.URIRef(VFR + "ComputabilityGap")
         )
+    }
 
 
-def test_every_provisional_marker_has_a_pending_gap_entry():
-    ids, text = _gap_ids()
+def test_the_record_holds_gaps():
+    assert _gap_ids(), "the judgment record holds no gaps"
+
+
+def test_every_gap_marker_names_a_recorded_gap():
+    ids = _gap_ids()
     for f in _substrate_files():
-        for marker in re.findall(r"provisional:\s*(GAP-\d+)", f.read_text()):
-            assert marker in ids, f"{f.name} marks {marker} but computability-gaps.md has no such entry"
-
-
-def test_every_adjudication_references_an_existing_gap():
-    ids, _ = _gap_ids()
-    adjudicated = set(re.findall(r"(GAP-\d+)", ADJUDICATIONS.read_text()))
-    unknown = adjudicated - ids
-    assert not unknown, f"adjudication log references unknown gap ids: {unknown}"
+        for marker in re.findall(
+            r"(?:provisional|adjudicated):\s*(GAP-\d+)", f.read_text()
+        ):
+            assert marker in ids, (
+                f"{f.name} marks {marker} but the judgment record has no such gap"
+            )

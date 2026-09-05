@@ -6,9 +6,9 @@ package VendorFraudReview {
        system-level checks (obligations discharged across components;
        aggregate outcome). Every gate is the direct implication form of
        a manifest line quoted verbatim in its doc comment. Interpretive
-       choices are logged in open-questions/computability-gaps.md;
-       adjudicated entries carry the ruling recorded in
-       open-questions/adjudication-log.md. */
+       choices are recorded, with the adjudicator's rulings verbatim, in
+       open-questions/adjudications.ttl; model/trace.ttl maps every
+       named element here to its provenance. */
 
     package Manifest {
 
