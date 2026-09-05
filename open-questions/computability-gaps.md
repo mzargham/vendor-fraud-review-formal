@@ -11,7 +11,7 @@ runs with.
 
 ## GAP-01 — the type of `vendor_risk` and the value `high`
 
-**Status:** PENDING
+**Status:** ADJUDICATED (2026-09-04, see adjudication-log.md)
 **Locus:** WP §5.6, gates block: `- if: vendor_risk == high` / `then: human_approval_required`
 **Problem:** `high` is an unquoted symbol; the manifest declares no type or value
 set for `vendor_risk`. An executable comparison needs both.
@@ -19,12 +19,14 @@ set for `vendor_risk`. An executable comparison needs both.
 **Possible readings:** (a) an enumeration (e.g. low / medium / high) declared
 somewhere upstream, perhaps by the vendor-risk-cog; (b) a free string compared
 to "high"; (c) an ordered scale with `high` a threshold on a numeric score.
-**Provisional reading in use:** (b) — `vendorRisk : String` compared to
-`"high"` (model/vendor-fraud-review.sysml).
+**Adjudicated reading in use:** (a) — an enumeration {high, low, unknown}
+(`RiskLevel` in model/vendor-fraud-review.sysml). Flagged as an
+interpretation, and as a place where modeling could be enhanced with an
+actual risk model in the future.
 
 ## GAP-02 — what a `then:` clause names
 
-**Status:** PENDING
+**Status:** ADJUDICATED (2026-09-04, see adjudication-log.md)
 **Locus:** WP §5.6, gates block: `then: human_review_required`,
 `then: expert_review_required`, `then: stop_and_escalate`,
 `then: human_approval_required`; and §5.2 ("A Gate may allow the Op to
@@ -41,14 +43,16 @@ predicate.
 constrained or queried.
 **Possible readings:** (a) states of the Op instance; (b) obligations whose
 discharge the Track must evidence; (c) invocations of workflow actions.
-**Provisional reading in use:** (a)/(b) hybrid — Boolean attributes that must
-hold whenever their gate condition holds (model), with the Track shapes
-additionally requiring a recorded human approval when a Gate fired
-(shapes/track.shapes.ttl).
+**Adjudicated reading in use:** decomposed, no hybrids. State, obligation
+(a required action, abstract, not yet materialized), and concrete action are
+distinct: state implies obligation (the GATE requirements); a concrete action
+discharges the obligation and must also mutate state (the DISCHARGE-01
+requirement in the model; vfr:Obligation / vfr:discharges / prov:generated in
+the Track, enforced by shapes/track.shapes.ttl).
 
 ## GAP-03 — the provenance and granularity of `confidence`
 
-**Status:** PENDING
+**Status:** ADJUDICATED (2026-09-04, see adjudication-log.md)
 **Locus:** WP §5.6: `- confidence-guard` (in_flight) and
 `- if: confidence < 0.80`; §5.1 lists "whether confidence is too low for
 autonomous action" as something a Guard can check.
@@ -60,8 +64,12 @@ Cogs run in this Op; each could carry its own confidence.
 invoice-extraction Cog's confidence specifically (the §4.1 running example
 speaks of "low extraction confidence"); (c) a distinct confidence per Gate
 evaluation.
-**Provisional reading in use:** one per-run scalar, produced by the
-confidence Guard and read by GATE-01 (model + track/run-001.trig).
+**Adjudicated reading in use:** a confidence level enumeration {high, low,
+unknown} alongside the raw scalar, bound at the manifest's 0.80 boundary
+(`ConfidenceLevel` and INTERFACE-01 in model/vendor-fraud-review.sysml). The
+simplified scheme serves as an interface contract with the guard that
+produces it; likely requires its own confidence model eventually — noted for
+future enrichment.
 
 ## GAP-04 — the semantics of `consensus_disagreement`
 
@@ -77,3 +85,8 @@ agree" maps to a number comparable with 0.25.
 agreement rate; (c) a task-specific divergence score normalized to [0, 1].
 **Provisional reading in use:** an opaque scalar in [0, 1]; only the threshold
 comparison is exercised, no metric semantics assumed (model).
+**Adjudication note (2026-09-04):** remains PENDING by ruling — revisit when
+the compared spaces are known (bit-exact comparison, semantic distance, or
+another metric). If the comparison can be reduced to yes/no/cantTell facts
+being agreed or disagreed on, an error-correcting-code style interpretation
+becomes available.

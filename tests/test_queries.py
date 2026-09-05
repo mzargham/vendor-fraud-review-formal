@@ -26,7 +26,28 @@ def test_governance_no_unapproved_gate_firings_on_run_001(track_dataset):
 
 def test_governance_catches_the_counterexample(cx_track_dataset):
     rows = _query(cx_track_dataset, "governance.rq")
-    assert rows, "governance query missed the counterexample's unapproved Gate firing"
+    assert rows, "governance query missed the counterexample's undischarged obligations"
+
+
+def test_obligations_are_discharged_by_state_mutating_actions(track_dataset):
+    # Adjudication GAP-02: the action that discharges an obligation must also
+    # mutate state. Every obligation in run-001 must have a discharging action
+    # that generated a new state entity.
+    rows = list(track_dataset.query("""
+        PREFIX vfr: <https://example.org/vfr#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        SELECT ?obligation WHERE {
+            ?obligation a vfr:Obligation .
+            FILTER NOT EXISTS {
+                ?action vfr:discharges ?obligation ;
+                        prov:generated ?newState .
+            }
+        }"""))
+    assert rows == [], f"obligations without a state-mutating discharge: {rows}"
+    count = list(track_dataset.query(
+        "PREFIX vfr: <https://example.org/vfr#> "
+        "SELECT (COUNT(?o) AS ?n) WHERE { ?o a vfr:Obligation }"))
+    assert int(count[0][0]) == 2, "run-001 should raise exactly two obligations"
 
 
 def test_trust_outcome_distribution_is_fully_visible(track_dataset):

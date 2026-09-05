@@ -10,22 +10,31 @@
 # - the gate consequents that require a human.
 # A Track that fails these is missing something the manifest says it retains.
 
-vfr:GateDecisionApprovalShape
+vfr:GateDecisionObligationShape
     a sh:NodeShape ;
     sh:targetClass vfr:GateDecision ;
     sh:property [
-        sh:path [ sh:inversePath vfr:answers ] ;
+        sh:path [ sh:inversePath vfr:raisedBy ] ;
         sh:minCount 1 ;
-        sh:message "Gate fired but no human approval answers it (section 5.6: human_approvals are part of the Track)." ;
+        sh:message "Gate fired but raised no obligation (its then-clause names a required action)." ;
     ] .
 
-vfr:ApprovalShape
+vfr:ObligationShape
     a sh:NodeShape ;
-    sh:targetSubjectsOf vfr:answers ;
+    sh:targetClass vfr:Obligation ;
+    sh:property [
+        sh:path [ sh:inversePath vfr:discharges ] ;
+        sh:minCount 1 ;
+        sh:message "Obligation raised but not discharged: no human approval action recorded (section 5.6: human_approvals are part of the Track)." ;
+    ] .
+
+vfr:DischargingActionShape
+    a sh:NodeShape ;
+    sh:targetSubjectsOf vfr:discharges ;
     sh:property [
         sh:path earl:mode ;
         sh:hasValue earl:manual ;
-        sh:message "An approval answering a Gate must be an earl:manual assertion." ;
+        sh:message "An action discharging an obligation must be an earl:manual assertion." ;
     ] ;
     sh:property [
         sh:path prov:wasAssociatedWith ;
@@ -36,6 +45,11 @@ vfr:ApprovalShape
         sh:path vfr:rationale ;
         sh:minCount 1 ;
         sh:message "A human approval must carry a rationale." ;
+    ] ;
+    sh:property [
+        sh:path prov:generated ;
+        sh:minCount 1 ;
+        sh:message "An action that discharges an obligation must also mutate state (record what it generated)." ;
     ] .
 
 vfr:AssertionShape

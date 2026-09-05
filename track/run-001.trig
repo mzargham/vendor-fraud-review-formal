@@ -90,6 +90,19 @@ run:decisions {
         vfr:consequent "human_approval_required" ;
         prov:wasInformedBy run:guard-vendor-risk-reading .
 
+    # Obligations raised by the fired gates (adjudicated: GAP-02 — a
+    # then-clause names an obligation: a required action, abstract, not yet
+    # materialized; a concrete action discharges it and must mutate state).
+    run:obligation-human-review
+        a vfr:Obligation ;
+        rdfs:label "human review required" ;
+        vfr:raisedBy run:gate-decision-01 .
+
+    run:obligation-human-approval
+        a vfr:Obligation ;
+        rdfs:label "human approval required" ;
+        vfr:raisedBy run:gate-decision-02 .
+
     run:guard-vendor-risk-reading
         a earl:Assertion ;
         rdfs:label "vendor risk reading (in_flight)" ;
@@ -101,22 +114,31 @@ run:decisions {
 }
 
 run:approvals {
-    # The human approval answering both fired gates — earl:manual, named agent.
+    # The concrete action: a human review, earl:manual with a named agent,
+    # discharging both raised obligations AND mutating state (it generates
+    # the post-review case state — an action that discharges an obligation
+    # must also mutate state, per the GAP-02 ruling).
     run:approval-01
-        a earl:Assertion ;
+        a earl:Assertion, prov:Activity ;
         rdfs:label "human review and approval of the vendor flag" ;
         earl:test <urn:example:step:human-review> ;
         earl:subject run:execution ;
         earl:mode earl:manual ;
         earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
                       earl:info "flag upheld after review" ] ;
-        vfr:answers run:gate-decision-01, run:gate-decision-02 ;
+        vfr:discharges run:obligation-human-review, run:obligation-human-approval ;
         vfr:rationale "Reviewed the three lowest-confidence extractions against the invoice PDFs; amounts and dates check out. The risk score is driven by the 40 percent month-over-month invoice volume increase; flagging for procurement follow-up is warranted." ;
         prov:used run:evidence-invoice-batch, run:evidence-vendor-risk-score ;
+        prov:generated run:state-after-review ;
         prov:wasAssociatedWith run:approver-rivera ;
         prov:qualifiedAssociation [ a prov:Association ;
                                     prov:agent run:approver-rivera ;
                                     prov:hadRole vfr:role-accounts-payable-analyst ] .
+
+    run:state-after-review
+        a prov:Entity ;
+        rdfs:label "Case state after human review: flag upheld, both obligations discharged" ;
+        prov:wasGeneratedBy run:approval-01 .
 
     run:approver-rivera
         a prov:Agent, prov:Person ;

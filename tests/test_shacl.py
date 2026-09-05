@@ -46,3 +46,6 @@ def test_track_missing_approval_counterexample_fails():
     assert "approval" in report.lower(), (
         f"violation message does not name the missing human approval:\n{report}"
     )
+    assert "obligation" in report.lower(), (
+        f"violation message does not name the undischarged obligation (GAP-02 ruling):\n{report}"
+    )

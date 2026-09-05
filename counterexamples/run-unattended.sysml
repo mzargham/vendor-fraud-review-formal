@@ -1,19 +1,16 @@
 package VendorFraudReviewUnattended {
-    doc /* Negative counterpart: the same manifest gates, with a run whose
-       extraction confidence fires GATE-01 while no human review step is
-       engaged. Satisfy on RunConfigurations must FAIL (exit 1) — this file
-       proves the gate algebra can say no. Self-contained on purpose. */
+    doc /* Negative counterparts: the same manifest gates and discharge rule,
+       with two runs that must FAIL satisfy (exit 1). unattendedRun: the gate
+       condition holds but no obligation was raised. undischargedRun: the
+       obligation was raised but no concrete action discharged it
+       (adjudicated: GAP-02 — obligation and discharge are distinct).
+       Self-contained on purpose. */
 
     package Manifest {
         part def VendorFraudReviewOp {
             attribute confidence : ScalarValues::Real;
-            attribute consensusDisagreement : ScalarValues::Real;
-            attribute sensitiveDataDetected : ScalarValues::Boolean;
-            attribute vendorRisk : ScalarValues::String;
             attribute humanReviewRequired : ScalarValues::Boolean;
-            attribute expertReviewRequired : ScalarValues::Boolean;
-            attribute stopAndEscalate : ScalarValues::Boolean;
-            attribute humanApprovalRequired : ScalarValues::Boolean;
+            attribute humanReviewPerformed : ScalarValues::Boolean;
         }
 
         requirement def <'GATE-01'> ConfidenceGate {
@@ -23,29 +20,40 @@ package VendorFraudReviewUnattended {
             subject op : VendorFraudReviewOp;
             require constraint { op.confidence < 0.80 implies op.humanReviewRequired }
         }
+
+        requirement def <'DISCHARGE-01'> ObligationsDischarged {
+            subject op : VendorFraudReviewOp;
+            require constraint { op.humanReviewRequired implies op.humanReviewPerformed }
+        }
     }
 
     package RunConfigurations {
         part def UnattendedRun :> Manifest::VendorFraudReviewOp {
             doc /* Confidence 0.71 fires GATE-01, but human_review_required
-               is false: the Op proceeded with no human in the loop. */
+               is false: the Op proceeded with no obligation raised. */
             attribute :>> confidence = 0.71;
-            attribute :>> consensusDisagreement = 0.10;
-            attribute :>> sensitiveDataDetected = false;
-            attribute :>> vendorRisk = "low";
             attribute :>> humanReviewRequired = false;
-            attribute :>> expertReviewRequired = false;
-            attribute :>> stopAndEscalate = false;
-            attribute :>> humanApprovalRequired = false;
+            attribute :>> humanReviewPerformed = false;
+        }
+
+        part def UndischargedRun :> Manifest::VendorFraudReviewOp {
+            doc /* The obligation was raised — and never discharged by any
+               concrete action. */
+            attribute :>> confidence = 0.71;
+            attribute :>> humanReviewRequired = true;
+            attribute :>> humanReviewPerformed = false;
         }
 
         part unattendedRun : UnattendedRun;
+        part undischargedRun : UndischargedRun;
 
         requirement unattendedGate01 : Manifest::ConfidenceGate { subject op = unattendedRun; }
+        requirement undischargedDischarge01 : Manifest::ObligationsDischarged { subject op = undischargedRun; }
 
         verification def UnattendedRunCase {
             objective {
                 verify unattendedGate01;
+                verify undischargedDischarge01;
             }
         }
         verification unattendedRunCase : UnattendedRunCase;

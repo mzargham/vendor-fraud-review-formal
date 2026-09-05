@@ -11,7 +11,8 @@
 # Graph layout: evidence / decisions / approvals / provenance.
 # All names and values are synthetic demonstration data.
 # COUNTEREXAMPLE: identical to run-001 except the approvals graph is absent —
-# two gates fired and no human approval was recorded. Must fail the track shapes.
+# two obligations were raised and no concrete action discharged them. Must
+# fail the track shapes.
 
 run:provenance {
     run:execution
@@ -91,6 +92,19 @@ run:decisions {
         vfr:condition "vendor_risk == high" ;
         vfr:consequent "human_approval_required" ;
         prov:wasInformedBy run:guard-vendor-risk-reading .
+
+    # Obligations raised by the fired gates (adjudicated: GAP-02 — a
+    # then-clause names an obligation: a required action, abstract, not yet
+    # materialized; a concrete action discharges it and must mutate state).
+    run:obligation-human-review
+        a vfr:Obligation ;
+        rdfs:label "human review required" ;
+        vfr:raisedBy run:gate-decision-01 .
+
+    run:obligation-human-approval
+        a vfr:Obligation ;
+        rdfs:label "human approval required" ;
+        vfr:raisedBy run:gate-decision-02 .
 
     run:guard-vendor-risk-reading
         a earl:Assertion ;

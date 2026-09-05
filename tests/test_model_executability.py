@@ -25,6 +25,17 @@ def test_counterexample_run_fails_satisfy():
     )
 
 
+def test_counterexample_catches_both_failure_kinds():
+    # Adjudication GAP-02: an obligation is distinct from its discharge. The
+    # counterexample must show BOTH ways a run can be wrong: the gate fired
+    # but no obligation was raised, and an obligation was raised but never
+    # discharged by a concrete action.
+    r = run_sysml(str(CX_MODEL), "-satisfy=RunConfigurations")
+    assert r.stdout.count("fails") >= 2, (
+        f"expected a gate violation and a discharge violation:\n{r.stdout}"
+    )
+
+
 def test_conversion_is_deterministic_and_keeps_the_gates():
     first = run_sysml(str(MODEL), "-convert", "ttl")
     second = run_sysml(str(MODEL), "-convert", "ttl")
