@@ -521,13 +521,22 @@ adj:impl-interface01 prov:wasDerivedFrom adj:note-categories .
 adj:note-learning
     a vfr:DesignNote ;
     vfr:order 15 ;
-    vfr:entryTitle "design note: learning acts on the system; debugging verifies it" ;
+    vfr:entryTitle "design note: learning acts on the system" ;
     prov:wasAttributedTo adj:mzargham ;
     prov:generatedAtTime "2026-09-05"^^xsd:date ;
-    vfr:noteText """learning needs work. its not about evaluating within the current ops its about the ability to calibrate them: change parameters or add/remove gates, switch policies if a particular one is not generating the intended behavior. learning acts on the system allowing it to adapt rather than within the system as it is currently constituted
+    vfr:noteText """learning needs work. its not about evaluating within the current ops its about the ability to calibrate them: change parameters or add/remove gates, switch policies if a particular one is not generating the intended behavior. learning acts on the system allowing it to adapt rather than within the system as it is currently constituted""" ;
+    vfr:changeNote """the Learning demonstration was reworked from a within-run signal listing into a calibration view: each signal is mapped to the part of the system it acts on — the factored parameter behind the gate it calibrates through (a single point of definition, so changing a threshold is one edit), the gate set itself where a guard finding has no gate attached, or the operator's policy choice. The section 5.3 grounding is the bullet's own words: the signals improve Frames, Cogs, Ops, and Guards — the constituents change. learning.rq gained the gate linkage (findings through the gate decisions they informed, reviews through the obligations they discharged); exhibits.show_learning computes the signal-to-adaptation-surface mapping from the query joined against the model's gates and parameters.""" .
 
-debugging relates to verificaiton--> ensuring correct implementation of what is specified. learning related to validation --> ensuring the op is fit for purpose and allows change in response to changing circumstances""" ;
-    vfr:changeNote """the Learning demonstration was reworked from a within-run signal listing into a calibration view: each signal is mapped to the part of the system it acts on — the factored parameter behind the gate it calibrates through (a single point of definition, so changing a threshold is one edit), the gate set itself where a guard finding has no gate attached, or the operator's policy choice. The section 5.3 grounding is the bullet's own words: the signals improve Frames, Cogs, Ops, and Guards — the constituents change. learning.rq gained the gate linkage (findings through the gate decisions they informed, reviews through the obligations they discharged); exhibits.show_learning computes the signal-to-adaptation-surface mapping from the query joined against the model's gates and parameters. The Debugging narration was reframed as the verification-side counterpart (implementation correct to the specification), with the verification/validation split explicitly attributed to the adjudicator, distinct from the paper's umbrella use of Validation.""" .
+adj:note-build-right
+    a vfr:DesignNote ;
+    vfr:order 16 ;
+    vfr:entryTitle "design note: build it right vs build the right thing" ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-05"^^xsd:date ;
+    vfr:noteText """debugging relates to verificaiton--> ensuring correct implementation of what is specified. learning related to validation --> ensuring the op is fit for purpose and allows change in response to changing circumstances
+
+you don't need to use my verification / validation language if you can manage to make the point using the language from travis' paper. though i do think its worth an annotation on the verification is build it right and validation is build the right thing since that distinction is incredibly helpful -- helpful enough to document it as a logged suggestion from me""" ;
+    vfr:changeNote """the walkthrough narration makes the point in the paper's own language: Debugging looks backward at whether the Op behaved as its declared specification says; Learning looks forward at whether the declared specification itself should change. The verification/validation pairing (verification is build it right; validation is build the right thing) is retained HERE, as a logged suggestion from the adjudicator, available to raise with the author — it does not appear as walkthrough framing, and the paper's umbrella use of Validation is left undisturbed.""" .
 
 adj:impl-learning-calibration
     a vfr:Implementation, prov:Entity ;
