@@ -66,7 +66,10 @@ def check_pinned_source():
 
 
 def vocabulary_table():
+    import html as html_mod
+
     import rdflib
+    from IPython.display import HTML, display
     from rdflib.namespace import SKOS
 
     g = _graph()
@@ -76,10 +79,23 @@ def vocabulary_table():
         label = str(next(g.objects(c, SKOS.prefLabel)))
         definition = str(next(g.objects(c, SKOS.definition)))
         locator = str(next(g.objects(c, rdflib.URIRef(VFR + "locator"))))
-        rows.append((locator, label, _norm(definition) in pdf_text, definition))
-    for locator, label, verbatim, definition in sorted(rows):
-        print(f"{locator:6} {label:24} verbatim: {verbatim}")
-        print(f"       {definition[:96]}...")
+        rows.append((locator, label, definition, _norm(definition) in pdf_text))
+    body = "\n".join(
+        "<tr>"
+        f"<td>{locator}</td>"
+        f"<td><strong>{html_mod.escape(label)}</strong></td>"
+        f'<td style="text-align:left">{html_mod.escape(definition)}</td>'
+        f"<td>{'✓ verbatim' if verbatim else '✗ NOT IN SOURCE'}</td>"
+        "</tr>"
+        for locator, label, definition, verbatim in sorted(rows)
+    )
+    display(HTML(
+        "<table>\n<thead><tr>"
+        "<th>§</th><th>Concept</th>"
+        "<th>Definition, verbatim from the pinned snapshot</th>"
+        "<th>Checked</th>"
+        "</tr></thead>\n<tbody>\n" + body + "\n</tbody>\n</table>"
+    ))
 
 
 # ---------------------------------------------------------------- chapter 02

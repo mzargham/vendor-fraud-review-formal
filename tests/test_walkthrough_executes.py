@@ -18,8 +18,12 @@ def _cell_text(cell):
     for out in cell.get("outputs", []):
         if out.get("output_type") == "stream":
             chunks.append(out.get("text", ""))
-        elif "text/plain" in out.get("data", {}):
-            chunks.append(out["data"]["text/plain"])
+        else:
+            data = out.get("data", {})
+            for mime in ("text/markdown", "text/html", "text/plain"):
+                if mime in data:
+                    chunks.append(data[mime])
+                    break
     return "".join(chunks)
 
 
@@ -78,7 +82,12 @@ def test_committed_outputs_equal_fresh_execution(executed_chapters):
 def test_chapter_01_pins_the_source_and_the_vocabulary(chapter_outputs):
     text = chapter_outputs["01-pinned-source"]
     assert "match         : True" in text, "snapshot hash agreement not shown"
-    assert text.count("verbatim: True") >= 10, "verbatim vocabulary table not shown"
+    assert text.count("✓ verbatim") >= 10, "verbatim vocabulary table not shown"
+    # Definitions are full text, never truncated: the longest one must end
+    # with its own final phrase.
+    assert "when human review is required." in text, (
+        "vocabulary definitions are truncated in the rendered table"
+    )
 
 
 def test_chapter_02_shows_the_satisfy_exit_codes(chapter_outputs):
