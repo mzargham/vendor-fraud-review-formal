@@ -589,3 +589,19 @@ adj:impl-oracle-definition
     vfr:inFile "model/vendor-fraud-review.sysml" ;
     vfr:anchor "An oracle is a process" ;
     prov:wasDerivedFrom adj:note-oracle-term .
+
+adj:note-pdf-redistribution
+    a vfr:DesignNote ;
+    vfr:order 19 ;
+    vfr:entryTitle "design note: the pinned snapshot may be redistributed, cited" ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-05"^^xsd:date ;
+    vfr:noteText """pdf redistribution with citation back to source is fine""" ;
+    vfr:changeNote """the source entity in sources/sources.ttl gained a redistribution statement pointing back to this note; the README's license section states that the snapshot is redistributed with citation and remains outside the repository license. The full citation lives in references.bib (oliphant2026) and on every locator in the substrate.""" .
+
+adj:impl-redistribution-note
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the redistribution statement on the pinned source's provenance" ;
+    vfr:inFile "sources/sources.ttl" ;
+    vfr:anchor "redistributionNote" ;
+    prov:wasDerivedFrom adj:note-pdf-redistribution .

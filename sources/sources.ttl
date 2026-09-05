@@ -14,7 +14,8 @@ vfr:source-whitepaper-rev9
     vfr:contentHash "5dabf2bec9cde59e5cc5bfa38eb08d3cd536daf20a6e6d7e815d76cd401dbe41" ;
     vfr:snapshot "5dabf2bec9cde59e5cc5bfa38eb08d3cd536daf20a6e6d7e815d76cd401dbe41.pdf" ;
     prov:wasAttributedTo vfr:author-openteams ;
-    prov:wasGeneratedBy vfr:retrieval-whitepaper-rev9 .
+    prov:wasGeneratedBy vfr:retrieval-whitepaper-rev9 ;
+    vfr:redistributionNote "Redistributed with citation back to its source, per the adjudicator's 2026-09-05 statement recorded in open-questions/adjudications.ttl. The snapshot remains the author's work and is not covered by the repository license." .
 
 vfr:author-openteams
     a prov:Agent ;

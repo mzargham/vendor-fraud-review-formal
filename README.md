@@ -102,5 +102,7 @@ The original content of this repository (the model, vocabulary
 structure, shapes, queries, judgment record, walkthrough, and tooling)
 is licensed under [CC BY-SA 4.0](LICENSE). The pinned whitepaper
 snapshot in `sources/` and the verbatim quotations drawn from it remain
-the property of their author; they are included as the pinned source of
-this translation and are not covered by the repository license.
+the property of their author and are not covered by the repository
+license; the snapshot is redistributed with citation back to its source
+(`references.bib`, `sources/sources.ttl`), per the statement recorded
+in the judgment record.
