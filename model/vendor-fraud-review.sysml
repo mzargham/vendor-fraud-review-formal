@@ -202,14 +202,16 @@ package VendorFraudReview {
             doc /* The concrete actions that discharge obligations
                (adjudicated: GAP-02 — a concrete action discharges an
                obligation and must also mutate state; the Track evidences
-               both). Who acts: the manifest names a human for review
-               (GATE-01) and approval (GATE-04), and those attribute
-               names keep the manifest's words. For expert review and
-               escalation the paper does not specify the actor, and none
-               is assumed here: the actor is another system outside the
+               both). Who acts: three of the four actions are paper-named
+               human — review and approval by the section 5.6 manifest
+               tokens, expert review by the section 5.1/5.5 prose ("routes
+               sampled or high-risk outputs to human review"; "Human or
+               known-expert judgment"). Attribute names keep the
+               manifest's words. Only the escalation target is
+               unspecified: there the actor is another system outside the
                modeled boundary, acting on the Op, with a counterparty
-               assumed accountable for its behavior (provisional:
-               GAP-09). */
+               assumed accountable for its behavior (adjudicated: GAP-09,
+               extended 2026-09-04). */
             attribute humanReviewPerformed : ScalarValues::Boolean;
             attribute expertReviewPerformed : ScalarValues::Boolean;
             attribute escalationPerformed : ScalarValues::Boolean;
@@ -242,7 +244,7 @@ package VendorFraudReview {
         interface def ObligationSeam {
             doc /* Raised obligations cross to the counterparty that
                discharges them: human where the manifest says so,
-               otherwise unspecified (provisional: GAP-09). */
+               otherwise unspecified (adjudicated: GAP-09). */
             end supplier : ObligationWrite;
             end consumer : ~ObligationWrite;
         }
@@ -390,7 +392,7 @@ package VendorFraudReview {
             doc /* adjudicated: GAP-02 — a closed run must show every raised
                obligation discharged by a concrete action; genuinely a
                system property: raised in the policy engine, discharged in
-               the counterparty actions (provisional: GAP-09 on who may
+               the counterparty actions (adjudicated: GAP-09 on who may
                act). */
             subject op : VendorFraudReviewOp;
             require constraint { op.policyEngine.humanReviewRequired implies op.counterparty.humanReviewPerformed }

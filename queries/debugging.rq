@@ -1,0 +1,26 @@
+# Track purpose "Debugging — developers can understand why an Op failed
+# or behaved unexpectedly" (WP section 5.3), as a computation: for each
+# automatic guard result that did not pass, the recorded explanation and,
+# where a gate evaluated an oracle-provided value on the strength of that
+# guard, the cited call that produced the value.
+PREFIX vfr: <https://example.org/vfr#>
+PREFIX earl: <http://www.w3.org/ns/earl#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+
+SELECT ?guard ?outcome ?info ?service ?responsePayload
+WHERE {
+    ?guard a earl:Assertion ;
+           earl:mode earl:automatic ;
+           earl:result ?r .
+    ?r earl:outcome ?outcome ;
+       earl:info ?info .
+    FILTER(?outcome != earl:passed)
+    OPTIONAL {
+        ?gateDecision prov:wasInformedBy ?guard ;
+                      prov:used ?reading .
+        ?reading prov:wasGeneratedBy ?call .
+        ?call vfr:service ?service ;
+              vfr:responsePayload ?responsePayload .
+    }
+}
+ORDER BY ?guard

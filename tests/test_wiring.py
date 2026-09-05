@@ -17,6 +17,18 @@ SYSML = rdflib.Namespace("https://www.omg.org/spec/SysML#")
 SYSX = rdflib.Namespace("urn:opensysml:sysml:")
 
 
+def test_validate_strict_accepts_the_miswired_connect():
+    # The reason the wiring rules live in code: the pinned validator
+    # accepts a type-mismatched connect. Executed, not folklore — if a
+    # future toolchain rejects it, this fails and the split can be
+    # reconsidered.
+    r = run_sysml(str(MISWIRED), "-validate", "-strict")
+    assert r.returncode == 0, (
+        "the pinned validator now rejects the miswired connect; "
+        "the rationale for code-level wiring rules changed"
+    )
+
+
 def _converted(path):
     r = run_sysml(str(path), "-convert", "ttl")
     assert r.returncode == 0, f"-convert ttl failed for {path}:\n{r.stderr}"

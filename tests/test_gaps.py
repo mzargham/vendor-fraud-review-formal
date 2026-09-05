@@ -11,11 +11,15 @@ from conftest import ADJUDICATIONS, GAPS, ROOT
 
 SUBSTRATE_GLOBS = (
     "model/*.sysml",
+    "model/*.ttl",
     "vocabulary/*.ttl",
     "track/*.trig",
     "shapes/*.ttl",
     "queries/*.rq",
     "counterexamples/*",
+    "exhibits.py",
+    "index.md",
+    "chapters/*.ipynb",
 )
 
 

@@ -32,7 +32,9 @@ regen() {
   toolchain/bin/sysml model/vendor-fraud-review.sysml -convert ttl > generated/vendor-fraud-review.ttl \
     && uv run python checks/render_queries.py \
     && uv run python checks/render_gaps.py \
-    && git diff --quiet -- generated/ open-questions/computability-gaps.md
+    && uv run python checks/render_log.py \
+    && uv run python checks/render_counterexamples.py \
+    && git diff --quiet -- generated/ open-questions/computability-gaps.md open-questions/adjudication-log.md counterexamples/run-unattended.sysml counterexamples/track-missing-approval.trig
 }
 step "generated/ regenerates byte-identically" 0 regen
 step "site: myst build --html" 0 uv run myst build --html

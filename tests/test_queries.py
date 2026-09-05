@@ -132,6 +132,31 @@ def test_every_gate_decision_used_an_oracle_backed_reading(track_dataset):
     assert rows == [], f"gate decisions that evaluated values with no citable oracle call: {rows}"
 
 
+def test_learning_signals_include_reviews_and_findings(track_dataset):
+    # WP section 5.3 Learning: "corrections and human reviews become
+    # signals for improving Frames, Cogs, Ops, and Guards."
+    rows = [r.asdict() for r in _query(track_dataset, "learning.rq")]
+    kinds = {str(r["kind"]) for r in rows}
+    assert kinds == {"human review", "guard finding"}, (
+        f"learning signals must span reviews and findings: {kinds}"
+    )
+    assert any("kind" in r and str(r["kind"]) == "human review" and r["detail"]
+               for r in rows), "the human review's rationale is not among the signals"
+
+
+def test_debugging_chains_findings_to_their_oracle_calls(track_dataset):
+    # WP section 5.3 Debugging: "developers can understand why an Op
+    # failed or behaved unexpectedly."
+    rows = [r.asdict() for r in _query(track_dataset, "debugging.rq")]
+    assert rows, "debugging query returned nothing"
+    outcomes = {str(r["outcome"]).rsplit("#", 1)[-1] for r in rows}
+    assert {"failed", "cantTell"} <= outcomes, (
+        f"the non-passing outcomes are not all visible: {outcomes}"
+    )
+    with_call = [r for r in rows if r.get("service") is not None]
+    assert with_call, "no finding chains through to its cited oracle call"
+
+
 def test_trust_outcome_distribution_is_fully_visible(track_dataset):
     rows = [r.asdict() for r in _query(track_dataset, "trust.rq")]
     assert rows, "trust query returned nothing"

@@ -14,7 +14,7 @@ import pytest
 import rdflib
 from pyshacl import validate
 
-from conftest import ADJUDICATIONS, GAPS, ROOT, VFR, normalized
+from conftest import GAPS, ROOT, VFR
 
 RECORD = ROOT / "open-questions" / "adjudications.ttl"
 RECORD_SHAPES = ROOT / "shapes" / "adjudication.shapes.ttl"
@@ -43,6 +43,13 @@ def test_every_markdown_gap_is_in_the_record_and_vice_versa(record):
     )
 
 
+def test_gap_locators_name_real_sections(record, pdf_sections):
+    for gap in record.subjects(rdflib.RDF.type, V.ComputabilityGap):
+        for part in str(record.value(gap, V.locator)).split(","):
+            sec = part.strip()
+            assert sec in pdf_sections, f"{gap}: locator {sec!r} names no section"
+
+
 def test_every_gap_is_fully_characterized(record):
     for gap in record.subjects(rdflib.RDF.type, V.ComputabilityGap):
         for prop in (rdflib.RDFS.label, V.problem, V.locator, V.cites,
@@ -52,20 +59,46 @@ def test_every_gap_is_fully_characterized(record):
         assert rulings, f"{gap} has no resolving ruling"
 
 
-def test_every_ruling_is_attributed_dated_and_verbatim(record):
-    log = normalized(ADJUDICATIONS.read_text())
-    rulings = list(record.subjects(rdflib.RDF.type, V.Ruling))
-    assert len(rulings) >= 10, "expected at least ten rulings in the record"
-    for ruling in rulings:
-        agent = record.value(ruling, PROV.wasAttributedTo)
-        assert agent is not None, f"{ruling} names no adjudicator"
-        assert "mzargham" in str(agent), f"{ruling} attributed to {agent}, not mzargham"
-        assert record.value(ruling, PROV.generatedAtTime) is not None, f"{ruling} undated"
-        text = record.value(ruling, V.rulingText)
-        assert text is not None, f"{ruling} carries no ruling text"
-        assert normalized(str(text)) in log, (
-            f"{ruling} text is not verbatim from adjudication-log.md"
-        )
+def test_every_ruling_and_note_is_attributed_dated_and_ordered(record):
+    rulings = set(record.subjects(rdflib.RDF.type, V.Ruling))
+    notes = set(record.subjects(rdflib.RDF.type, V.DesignNote))
+    assert len(rulings) == 12, "twelve rulings expected in the record"
+    assert len(notes) == 2, "two design notes expected in the record"
+    orders = []
+    for entry in rulings | notes:
+        agent = record.value(entry, PROV.wasAttributedTo)
+        assert agent is not None, f"{entry} names no adjudicator"
+        assert "mzargham" in str(agent), f"{entry} attributed to {agent}, not mzargham"
+        assert record.value(entry, PROV.generatedAtTime) is not None, f"{entry} undated"
+        text = record.value(entry, V.rulingText) or record.value(entry, V.noteText)
+        assert text is not None, f"{entry} carries no verbatim text"
+        assert record.value(entry, V.changeNote) is not None, f"{entry} has no change note"
+        orders.append(int(record.value(entry, V.order)))
+    assert sorted(orders) == list(range(1, len(orders) + 1)), (
+        "log entry order must be a contiguous sequence"
+    )
+
+
+def test_every_resolving_ruling_has_an_implementation(record):
+    exempt = {"ruling-gap04-deferral"}
+    for ruling in record.subjects(rdflib.RDF.type, V.Ruling):
+        if str(ruling).rsplit("#", 1)[-1] in exempt:
+            continue
+        impls = list(record.subjects(PROV.wasDerivedFrom, ruling))
+        assert impls, f"{ruling} resolved a gap but derives no implementation"
+
+
+def test_log_page_is_generated_from_the_record():
+    import sys
+
+    sys.path.insert(0, str(ROOT / "checks"))
+    import render_log
+
+    assert render_log.PAGE.read_text() == render_log.render(), (
+        "adjudication-log.md has drifted from adjudications.ttl; "
+        "regenerate with checks/render_log.py"
+    )
+    assert "GENERATED from adjudications.ttl" in render_log.PAGE.read_text()
 
 
 def test_every_implementation_anchor_resolves(record):

@@ -1,0 +1,12 @@
+@prefix trace: <https://example.org/vfr/trace#> .
+@prefix vfr:   <https://example.org/vfr#> .
+
+# Counterexample: a trace entry with a name and a kind but no provenance
+# of any sort. Must fail shapes/trace.shapes.ttl — an element that traces
+# neither to the source, nor to a judgment, nor to a scaffolding rationale
+# has no place in the model.
+
+trace:cx_orphan
+    a vfr:ModelElement ;
+    vfr:elementName "OrphanWidget" ;
+    vfr:kind "part def" .

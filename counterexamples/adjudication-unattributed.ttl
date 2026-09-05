@@ -25,4 +25,7 @@ adj:cx-ruling
     a vfr:Ruling ;
     vfr:resolves adj:cx-gap ;
     prov:generatedAtTime "2026-09-04"^^xsd:date ;
+    vfr:order 999 ;
+    vfr:entryTitle "a constructed counterexample" ;
+    vfr:changeNote "nothing" ;
     vfr:rulingText "an unattributed ruling" .

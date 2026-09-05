@@ -42,7 +42,29 @@ vfr:RulingShape
     sh:property [ sh:path prov:wasAttributedTo ; sh:minCount 1 ;
         sh:message "A ruling must name its adjudicator (prov:wasAttributedTo): judgment is attributed, never anonymous." ] ;
     sh:property [ sh:path prov:generatedAtTime ; sh:minCount 1 ;
-        sh:message "A ruling must be dated." ] .
+        sh:message "A ruling must be dated." ] ;
+    sh:property [ sh:path vfr:changeNote ; sh:minCount 1 ;
+        sh:message "A ruling must record what changed in the substrate as a result." ] ;
+    sh:property [ sh:path vfr:order ; sh:minCount 1 ;
+        sh:message "A ruling must carry its position in the log's chronological order." ] ;
+    sh:property [ sh:path vfr:entryTitle ; sh:minCount 1 ;
+        sh:message "A ruling must carry its log entry title." ] .
+
+vfr:DesignNoteShape
+    a sh:NodeShape ;
+    sh:targetClass vfr:DesignNote ;
+    sh:property [ sh:path vfr:noteText ; sh:minCount 1 ;
+        sh:message "A design note must carry its text verbatim." ] ;
+    sh:property [ sh:path prov:wasAttributedTo ; sh:minCount 1 ;
+        sh:message "A design note must name its author: judgment is attributed, never anonymous." ] ;
+    sh:property [ sh:path prov:generatedAtTime ; sh:minCount 1 ;
+        sh:message "A design note must be dated." ] ;
+    sh:property [ sh:path vfr:changeNote ; sh:minCount 1 ;
+        sh:message "A design note must record its standing in the substrate." ] ;
+    sh:property [ sh:path vfr:order ; sh:minCount 1 ;
+        sh:message "A design note must carry its position in the log's chronological order." ] ;
+    sh:property [ sh:path vfr:entryTitle ; sh:minCount 1 ;
+        sh:message "A design note must carry its log entry title." ] .
 
 vfr:ImplementationShape
     a sh:NodeShape ;

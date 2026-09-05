@@ -1,0 +1,28 @@
+# Track purpose "Learning — corrections and human reviews become signals
+# for improving Frames, Cogs, Ops, and Guards" (WP section 5.3), as a
+# computation: every human review with its rationale, and every automatic
+# guard finding that did not pass, is an improvement signal the run left
+# behind.
+PREFIX vfr: <https://example.org/vfr#>
+PREFIX earl: <http://www.w3.org/ns/earl#>
+
+SELECT ?signal ?kind ?detail
+WHERE {
+    {
+        ?signal a earl:Assertion ;
+                earl:mode earl:manual ;
+                vfr:rationale ?detail .
+        BIND("human review" AS ?kind)
+    }
+    UNION
+    {
+        ?signal a earl:Assertion ;
+                earl:mode earl:automatic ;
+                earl:result ?r .
+        ?r earl:outcome ?outcome ;
+           earl:info ?detail .
+        FILTER(?outcome != earl:passed)
+        BIND("guard finding" AS ?kind)
+    }
+}
+ORDER BY ?kind ?signal

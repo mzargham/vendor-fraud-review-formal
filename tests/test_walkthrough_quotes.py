@@ -37,17 +37,25 @@ def _chapter_markdown(path):
     return "\n".join(c.source for c in nb.cells if c.cell_type == "markdown")
 
 
-def test_every_cited_quote_is_verbatim_from_the_snapshot(pdf_text):
+def test_every_cited_quote_is_verbatim_within_its_cited_section(pdf_sections):
+    import re
+
     sources = [("index.md", INDEX.read_text())]
     sources += [(p.name, _chapter_markdown(p)) for p in CHAPTERS]
     checked = 0
     for name, markdown in sources:
         for quote, citation in _cited_quotes(markdown):
             assert quote, f"{name}: a cited blockquote carries no quoted text"
-            assert normalized(quote) in pdf_text, (
-                f"{name}: quote is not verbatim from the pinned snapshot: {quote!r}"
+            locators = ["§" + m for m in re.findall(r"§(\d+\.\d+)", citation)]
+            assert locators, f"{name}: citation lacks a section locator: {citation!r}"
+            for locator in locators:
+                assert locator in pdf_sections, (
+                    f"{name}: locator {locator!r} names no section"
+                )
+            assert any(normalized(quote) in pdf_sections[l] for l in locators), (
+                f"{name}: quote is not verbatim within its cited section(s) "
+                f"{locators}: {quote!r}"
             )
-            assert "§" in citation, f"{name}: citation lacks a section locator: {citation!r}"
             checked += 1
     assert checked >= 6, "the walkthrough should quote the pinned source throughout"
 

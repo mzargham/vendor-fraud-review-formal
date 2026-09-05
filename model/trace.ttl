@@ -1,0 +1,446 @@
+@prefix trace: <https://example.org/vfr/trace#> .
+@prefix adj:   <https://example.org/vfr/adjudications#> .
+@prefix vfr:   <https://example.org/vfr#> .
+@prefix rdfs:  <http://www.w3.org/2000/01/rdf-schema#> .
+
+# The model traceability map. Every named element of
+# model/vendor-fraud-review.sysml traces to its provenance: grounded in
+# the pinned whitepaper (vfr:groundedIn locator, quotes verified verbatim
+# inside the cited section by the test suite), derived from a recorded
+# ruling or design note of the named adjudicator (the judgment record in
+# open-questions/adjudications.ttl), or declared scaffolding with a
+# rationale (toolchain idioms needed to exercise the specification).
+# Completeness in both directions is machine-checked
+# (tests/test_model_trace.py); the shapes in shapes/trace.shapes.ttl
+# refuse an element that traces to nothing.
+
+trace:completedContext
+    a vfr:ModelElement ;
+    vfr:elementName "completedContext" ;
+    vfr:kind "context" ;
+    vfr:scaffoldRationale "trace context: drives the lifecycle to completed under -trace -instantiate" .
+
+trace:stoppedContext
+    a vfr:ModelElement ;
+    vfr:elementName "stoppedContext" ;
+    vfr:kind "context" ;
+    vfr:scaffoldRationale "trace context: drives the lifecycle to stopped under -trace -instantiate" .
+
+trace:AggregateOutcome
+    a vfr:ModelElement ;
+    vfr:elementName "AggregateOutcome" ;
+    vfr:kind "enum def" ;
+    vfr:groundedIn "§5.2" ;
+    vfr:quote """the Op stops before external transmission""" ;
+    vfr:derivedFromRuling adj:ruling-gap06 .
+
+trace:ConfidenceLevel
+    a vfr:ModelElement ;
+    vfr:elementName "ConfidenceLevel" ;
+    vfr:kind "enum def" ;
+    vfr:derivedFromRuling adj:ruling-gap03 ;
+    vfr:derivedFromNote adj:note-categories .
+
+trace:RiskLevel
+    a vfr:ModelElement ;
+    vfr:elementName "RiskLevel" ;
+    vfr:kind "enum def" ;
+    vfr:derivedFromRuling adj:ruling-gap01 ;
+    vfr:derivedFromNote adj:note-categories .
+
+trace:ClearanceSeam
+    a vfr:ModelElement ;
+    vfr:elementName "ClearanceSeam" ;
+    vfr:kind "interface def" ;
+    vfr:derivedFromRuling adj:ruling-gap08 .
+
+trace:ObligationSeam
+    a vfr:ModelElement ;
+    vfr:elementName "ObligationSeam" ;
+    vfr:kind "interface def" ;
+    vfr:derivedFromRuling adj:ruling-gap08 ;
+    vfr:derivedFromRuling adj:ruling-gap09 .
+
+trace:ProceedWire
+    a vfr:ModelElement ;
+    vfr:elementName "ProceedWire" ;
+    vfr:kind "interface def" ;
+    vfr:scaffoldRationale "driver-to-assembly signal seam for exercising the lifecycle under trace" .
+
+trace:ReadingSeam
+    a vfr:ModelElement ;
+    vfr:elementName "ReadingSeam" ;
+    vfr:kind "interface def" ;
+    vfr:derivedFromRuling adj:ruling-gap08 .
+
+trace:StopWire
+    a vfr:ModelElement ;
+    vfr:elementName "StopWire" ;
+    vfr:kind "interface def" ;
+    vfr:scaffoldRationale "driver-to-assembly signal seam for exercising the lifecycle under trace" .
+
+trace:Clearance
+    a vfr:ModelElement ;
+    vfr:elementName "Clearance" ;
+    vfr:kind "item def" ;
+    vfr:derivedFromRuling adj:ruling-gap08 .
+
+trace:Escalation
+    a vfr:ModelElement ;
+    vfr:elementName "Escalation" ;
+    vfr:kind "item def" ;
+    vfr:derivedFromRuling adj:ruling-gap08 ;
+    vfr:derivedFromRuling adj:ruling-gap06 .
+
+trace:Obligation
+    a vfr:ModelElement ;
+    vfr:elementName "Obligation" ;
+    vfr:kind "item def" ;
+    vfr:derivedFromRuling adj:ruling-gap08 ;
+    vfr:derivedFromRuling adj:ruling-gap02 .
+
+trace:Proceed
+    a vfr:ModelElement ;
+    vfr:elementName "Proceed" ;
+    vfr:kind "item def" ;
+    vfr:derivedFromRuling adj:ruling-gap08 ;
+    vfr:derivedFromRuling adj:ruling-gap06 .
+
+trace:Reading
+    a vfr:ModelElement ;
+    vfr:elementName "Reading" ;
+    vfr:kind "item def" ;
+    vfr:derivedFromRuling adj:ruling-gap08 .
+
+trace:Summary
+    a vfr:ModelElement ;
+    vfr:elementName "Summary" ;
+    vfr:kind "item def" ;
+    vfr:derivedFromRuling adj:ruling-gap08 .
+
+trace:confidenceThreshold
+    a vfr:ModelElement ;
+    vfr:elementName "confidenceThreshold" ;
+    vfr:kind "parameter" ;
+    vfr:groundedIn "§5.6" ;
+    vfr:quote """confidence < 0.80""" ;
+    vfr:derivedFromNote adj:note-parameters .
+
+trace:consensusDisagreementThreshold
+    a vfr:ModelElement ;
+    vfr:elementName "consensusDisagreementThreshold" ;
+    vfr:kind "parameter" ;
+    vfr:groundedIn "§5.6" ;
+    vfr:quote """consensus_disagreement > 0.25""" ;
+    vfr:derivedFromNote adj:note-parameters .
+
+trace:vendorRiskTrigger
+    a vfr:ModelElement ;
+    vfr:elementName "vendorRiskTrigger" ;
+    vfr:kind "parameter" ;
+    vfr:groundedIn "§5.6" ;
+    vfr:quote """vendor_risk == high""" ;
+    vfr:derivedFromNote adj:note-parameters .
+
+trace:AnomalySummaryCog
+    a vfr:ModelElement ;
+    vfr:elementName "AnomalySummaryCog" ;
+    vfr:kind "part def" ;
+    vfr:groundedIn "§5.6" ;
+    vfr:quote """anomaly-summary-cog""" .
+
+trace:CleanRun
+    a vfr:ModelElement ;
+    vfr:elementName "CleanRun" ;
+    vfr:kind "part def" ;
+    vfr:scaffoldRationale "exercise configuration: a clean executed run binding values for the satisfy sweep" .
+
+trace:ConsensusComparatorOracle
+    a vfr:ModelElement ;
+    vfr:elementName "ConsensusComparatorOracle" ;
+    vfr:kind "part def" ;
+    vfr:groundedIn "§5.6" ;
+    vfr:quote """consensus-guard""" ;
+    vfr:derivedFromRuling adj:ruling-gap04 ;
+    vfr:derivedFromRuling adj:ruling-gap05 .
+
+trace:CounterpartyAction
+    a vfr:ModelElement ;
+    vfr:elementName "CounterpartyAction" ;
+    vfr:kind "part def" ;
+    vfr:groundedIn "§5.6, §5.1, §5.5" ;
+    vfr:quote """human_review_required""" ;
+    vfr:derivedFromRuling adj:ruling-gap09 ;
+    vfr:derivedFromRuling adj:ruling-gap02 .
+
+trace:DisagreementMetric
+    a vfr:ModelElement ;
+    vfr:elementName "DisagreementMetric" ;
+    vfr:kind "part def" ;
+    vfr:derivedFromRuling adj:ruling-gap04 ;
+    vfr:derivedFromRuling adj:ruling-gap04-clarification .
+
+trace:DissentFractionMetric
+    a vfr:ModelElement ;
+    vfr:elementName "DissentFractionMetric" ;
+    vfr:kind "part def" ;
+    vfr:derivedFromRuling adj:ruling-gap04 .
+
+trace:ErasureAwareUndecodableMetric
+    a vfr:ModelElement ;
+    vfr:elementName "ErasureAwareUndecodableMetric" ;
+    vfr:kind "part def" ;
+    vfr:derivedFromRuling adj:ruling-gap04 .
+
+trace:EscalatedRun
+    a vfr:ModelElement ;
+    vfr:elementName "EscalatedRun" ;
+    vfr:kind "part def" ;
+    vfr:scaffoldRationale "exercise configuration mirroring the recorded run in track/run-001.trig" .
+
+trace:EscalationDriver
+    a vfr:ModelElement ;
+    vfr:elementName "EscalationDriver" ;
+    vfr:kind "part def" ;
+    vfr:scaffoldRationale "sibling driver delivering the stop signal under the pinned executor" .
+
+trace:ExtractionConfidenceOracle
+    a vfr:ModelElement ;
+    vfr:elementName "ExtractionConfidenceOracle" ;
+    vfr:kind "part def" ;
+    vfr:groundedIn "§5.6" ;
+    vfr:quote """confidence-guard""" ;
+    vfr:derivedFromRuling adj:ruling-gap05 .
+
+trace:OpComponent
+    a vfr:ModelElement ;
+    vfr:elementName "OpComponent" ;
+    vfr:kind "part def" ;
+    vfr:scaffoldRationale "common typing base for the assembly's components; a toolchain idiom, not a source concept" .
+
+trace:OracleService
+    a vfr:ModelElement ;
+    vfr:elementName "OracleService" ;
+    vfr:kind "part def" ;
+    vfr:derivedFromRuling adj:ruling-gap05 .
+
+trace:PolicyEngine
+    a vfr:ModelElement ;
+    vfr:elementName "PolicyEngine" ;
+    vfr:kind "part def" ;
+    vfr:groundedIn "§4.5" ;
+    vfr:quote """A supervising model that may coordinate Cog execution""" ;
+    vfr:derivedFromRuling adj:ruling-gap08 .
+
+trace:ProceedDriver
+    a vfr:ModelElement ;
+    vfr:elementName "ProceedDriver" ;
+    vfr:kind "part def" ;
+    vfr:scaffoldRationale "sibling driver delivering the proceed signal under the pinned executor" .
+
+trace:SensitiveDataScannerOracle
+    a vfr:ModelElement ;
+    vfr:elementName "SensitiveDataScannerOracle" ;
+    vfr:kind "part def" ;
+    vfr:groundedIn "§5.6" ;
+    vfr:quote """sensitive-data-guard""" ;
+    vfr:derivedFromRuling adj:ruling-gap05 .
+
+trace:StrictQuorumUndecodableMetric
+    a vfr:ModelElement ;
+    vfr:elementName "StrictQuorumUndecodableMetric" ;
+    vfr:kind "part def" ;
+    vfr:derivedFromRuling adj:ruling-gap04 .
+
+trace:ValidationStrategyParameters
+    a vfr:ModelElement ;
+    vfr:elementName "ValidationStrategyParameters" ;
+    vfr:kind "part def" ;
+    vfr:groundedIn "§5.3" ;
+    vfr:quote """the model versions and configuration parameters""" ;
+    vfr:derivedFromNote adj:note-parameters .
+
+trace:VendorFraudReviewOp
+    a vfr:ModelElement ;
+    vfr:elementName "VendorFraudReviewOp" ;
+    vfr:kind "part def" ;
+    vfr:groundedIn "§5.6" ;
+    vfr:quote """op: name: vendor-fraud-review""" ;
+    vfr:derivedFromRuling adj:ruling-gap06 ;
+    vfr:derivedFromRuling adj:ruling-gap08 .
+
+trace:VendorRiskOracle
+    a vfr:ModelElement ;
+    vfr:elementName "VendorRiskOracle" ;
+    vfr:kind "part def" ;
+    vfr:groundedIn "§5.6" ;
+    vfr:quote """vendor-risk-cog""" ;
+    vfr:derivedFromRuling adj:ruling-gap05 .
+
+trace:ClearanceWrite
+    a vfr:ModelElement ;
+    vfr:elementName "ClearanceWrite" ;
+    vfr:kind "port def" ;
+    vfr:derivedFromRuling adj:ruling-gap08 .
+
+trace:ObligationWrite
+    a vfr:ModelElement ;
+    vfr:elementName "ObligationWrite" ;
+    vfr:kind "port def" ;
+    vfr:derivedFromRuling adj:ruling-gap08 .
+
+trace:ProceedIn
+    a vfr:ModelElement ;
+    vfr:elementName "ProceedIn" ;
+    vfr:kind "port def" ;
+    vfr:derivedFromRuling adj:ruling-gap08 ;
+    vfr:derivedFromRuling adj:ruling-gap06 .
+
+trace:ReadingWrite
+    a vfr:ModelElement ;
+    vfr:elementName "ReadingWrite" ;
+    vfr:kind "port def" ;
+    vfr:derivedFromRuling adj:ruling-gap08 .
+
+trace:StopIn
+    a vfr:ModelElement ;
+    vfr:elementName "StopIn" ;
+    vfr:kind "port def" ;
+    vfr:derivedFromRuling adj:ruling-gap08 ;
+    vfr:derivedFromRuling adj:ruling-gap06 .
+
+trace:SummaryWrite
+    a vfr:ModelElement ;
+    vfr:elementName "SummaryWrite" ;
+    vfr:kind "port def" ;
+    vfr:derivedFromRuling adj:ruling-gap08 .
+
+trace:GATE_01
+    a vfr:ModelElement ;
+    vfr:elementName "GATE-01" ;
+    vfr:kind "requirement def" ;
+    vfr:groundedIn "§5.6" ;
+    vfr:quote """- if: confidence < 0.80 then: human_review_required""" .
+
+trace:GATE_02
+    a vfr:ModelElement ;
+    vfr:elementName "GATE-02" ;
+    vfr:kind "requirement def" ;
+    vfr:groundedIn "§5.6" ;
+    vfr:quote """- if: consensus_disagreement > 0.25 then: expert_review_required""" .
+
+trace:GATE_03
+    a vfr:ModelElement ;
+    vfr:elementName "GATE-03" ;
+    vfr:kind "requirement def" ;
+    vfr:groundedIn "§5.6" ;
+    vfr:quote """- if: sensitive_data_detected then: stop_and_escalate""" .
+
+trace:GATE_04
+    a vfr:ModelElement ;
+    vfr:elementName "GATE-04" ;
+    vfr:kind "requirement def" ;
+    vfr:groundedIn "§5.6" ;
+    vfr:quote """- if: vendor_risk == high then: human_approval_required""" ;
+    vfr:derivedFromRuling adj:ruling-gap01 .
+
+trace:INTERFACE_01
+    a vfr:ModelElement ;
+    vfr:elementName "INTERFACE-01" ;
+    vfr:kind "requirement def" ;
+    vfr:derivedFromRuling adj:ruling-gap03 ;
+    vfr:derivedFromNote adj:note-categories .
+
+trace:SYSTEM_01
+    a vfr:ModelElement ;
+    vfr:elementName "SYSTEM-01" ;
+    vfr:kind "requirement def" ;
+    vfr:derivedFromRuling adj:ruling-gap02 ;
+    vfr:derivedFromRuling adj:ruling-gap06 .
+
+trace:SYSTEM_02
+    a vfr:ModelElement ;
+    vfr:elementName "SYSTEM-02" ;
+    vfr:kind "requirement def" ;
+    vfr:groundedIn "§5.2" ;
+    vfr:quote """If a Privacy Guard detects sensitive information, the Op stops before external transmission.""" ;
+    vfr:derivedFromRuling adj:ruling-gap06 .
+
+trace:SYSTEM_03
+    a vfr:ModelElement ;
+    vfr:elementName "SYSTEM-03" ;
+    vfr:kind "requirement def" ;
+    vfr:derivedFromRuling adj:ruling-gap06 .
+
+trace:WIRE_01
+    a vfr:ModelElement ;
+    vfr:elementName "WIRE-01" ;
+    vfr:kind "requirement def" ;
+    vfr:derivedFromRuling adj:ruling-gap06 .
+
+trace:WIRE_02
+    a vfr:ModelElement ;
+    vfr:elementName "WIRE-02" ;
+    vfr:kind "requirement def" ;
+    vfr:derivedFromRuling adj:ruling-gap06 .
+
+trace:WIRE_03
+    a vfr:ModelElement ;
+    vfr:elementName "WIRE-03" ;
+    vfr:kind "requirement def" ;
+    vfr:derivedFromRuling adj:ruling-gap06 .
+
+trace:WIRE_04
+    a vfr:ModelElement ;
+    vfr:elementName "WIRE-04" ;
+    vfr:kind "requirement def" ;
+    vfr:derivedFromRuling adj:ruling-gap06 .
+
+trace:clearanceSeam
+    a vfr:ModelElement ;
+    vfr:elementName "clearanceSeam" ;
+    vfr:kind "seam" ;
+    vfr:derivedFromRuling adj:ruling-gap08 .
+
+trace:confidenceSeam
+    a vfr:ModelElement ;
+    vfr:elementName "confidenceSeam" ;
+    vfr:kind "seam" ;
+    vfr:derivedFromRuling adj:ruling-gap08 .
+
+trace:consensusSeam
+    a vfr:ModelElement ;
+    vfr:elementName "consensusSeam" ;
+    vfr:kind "seam" ;
+    vfr:derivedFromRuling adj:ruling-gap08 .
+
+trace:obligationSeam
+    a vfr:ModelElement ;
+    vfr:elementName "obligationSeam" ;
+    vfr:kind "seam" ;
+    vfr:derivedFromRuling adj:ruling-gap08 ;
+    vfr:derivedFromRuling adj:ruling-gap09 .
+
+trace:riskSeam
+    a vfr:ModelElement ;
+    vfr:elementName "riskSeam" ;
+    vfr:kind "seam" ;
+    vfr:derivedFromRuling adj:ruling-gap08 .
+
+trace:scannerSeam
+    a vfr:ModelElement ;
+    vfr:elementName "scannerSeam" ;
+    vfr:kind "seam" ;
+    vfr:derivedFromRuling adj:ruling-gap08 .
+
+trace:CleanRunCase
+    a vfr:ModelElement ;
+    vfr:elementName "CleanRunCase" ;
+    vfr:kind "verification def" ;
+    vfr:scaffoldRationale "verification objective sweeping the clean run's bound requirement usages" .
+
+trace:EscalatedRunCase
+    a vfr:ModelElement ;
+    vfr:elementName "EscalatedRunCase" ;
+    vfr:kind "verification def" ;
+    vfr:scaffoldRationale "verification objective sweeping the escalated run's bound requirement usages" .

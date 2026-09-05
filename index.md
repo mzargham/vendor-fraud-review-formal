@@ -59,9 +59,9 @@ The substrate is a small stack of open standards, one layer per job:
 4. **A run record.** One execution as a PROV-O [@provo2013] + EARL
    [@earl2017] Track, with SHACL [@shacl2017] shapes that the record
    must conform to, and counterexamples proving the shapes can refuse.
-5. **Queries.** The purposes section 5.3 names for a Track
-   (auditability, governance, trust) answered by SPARQL [@sparql2013]
-   over the run graph [@rdf2014].
+5. **Queries.** The five purposes section 5.3 names for a Track
+   (auditability, governance, learning, debugging, trust) answered by
+   SPARQL [@sparql2013] over the run graph [@rdf2014].
 6. **A judgment record.** Code is not objective; its objectivity is
    downstream of judgment calls. Where the text under-specified what an
    executable specification requires, each gap, the ruling that

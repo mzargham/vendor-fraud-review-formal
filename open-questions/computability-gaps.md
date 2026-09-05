@@ -50,7 +50,7 @@ discharge the Track must evidence; (c) invocations of workflow actions.
 **Adjudicated reading in use:** decomposed, no hybrids. State, obligation (a
 required action, abstract, not yet materialized), and concrete action are
 distinct: state implies obligation (the GATE requirements); a concrete action
-discharges the obligation and must also mutate state (the DISCHARGE-01
+discharges the obligation and must also mutate state (the SYSTEM-01
 requirement in the model; vfr:Obligation / vfr:discharges / prov:generated in
 the Track, enforced by shapes/track.shapes.ttl).
 
@@ -66,8 +66,9 @@ the gate reads, nor whether it is per-output, per-Cog, or per-run.
 Cogs run in this Op and each could carry its own confidence
 **Substrate forces:** one referent for the gate's variable.
 **Possible readings:** (a) the minimum across Cog outputs; (b) the invoice-
-extraction Cog's confidence specifically (the §4.1 running example speaks of
-"low extraction confidence"); (c) a distinct confidence per Gate evaluation.
+extraction Cog's confidence specifically (the §5.2 running-example sentence
+speaks of "low extraction confidence"); (c) a distinct confidence per Gate
+evaluation.
 **Adjudicated reading in use:** a confidence level enumeration {high, low,
 unknown} alongside the raw scalar, bound at the manifest's 0.80 boundary
 (`ConfidenceLevel` and INTERFACE-01 in model/vendor-fraud-review.sysml). The
@@ -80,7 +81,7 @@ enrichment.
 **Status:** ADJUDICATED (2026-09-04, see adjudication-log.md)
 **Locus:** WP §5.6: `- if: consensus_disagreement > 0.25`; §5.5 Consensus row
 ("Three Cogs classify a document and two must agree; outlier extractions
-flagged").
+flagged; …").
 **Problem:** No definition of the disagreement metric is given: not its range,
 not what it is computed over, not how two-of-three-must-agree maps to a number
 comparable with 0.25.
@@ -147,7 +148,8 @@ real endpoints.
 **Status:** ADJUDICATED (2026-09-04, see adjudication-log.md)
 **Locus:** WP §5.6 gates block (`then: stop_and_escalate`) against §5.2: "If a
 Privacy Guard detects sensitive information, the Op stops before external
-transmission."; §4.5 defines an Op by the outcome it delivers.
+transmission."; §4.5 defines an Op as the orchestrated, supervised workflow a
+human usually invokes (the outcome framing is §3.3/§4.1).
 **Problem:** Navigating the rules successfully and executing are different
 facts; the flat reading could not distinguish a stopped run from a completed
 one.
@@ -216,20 +218,25 @@ name a human; `expert_review_required` and `stop_and_escalate` do not) and
 §5.2 ("routes the output to human review", "escalates to an expert", "stops
 before external transmission").
 **Problem:** One component holds the discharging actions; the manifest names a
-human for two of the four, and the other actors are unspecified.
+human for review and approval, the prose names human-or-known-expert judgment
+for expert review, and only the escalation target's actor is unspecified.
 **Surfaced:** 2026-09-04 — the adjudicator's review of the walkthrough
 narration: 'cross to the human actions' over-read the source
 **Substrate forces:** the discharging component must be typed and named; the
 Track's discharging-action shape must say what mode and agent evidence is
 required.
-**Possible readings:** (a) all discharges human (over-reads the source); (b)
-actor unspecified where the text is silent — modeled as another system outside
-the modeled boundary acting on the Op, with a counterparty assumed accountable
-for its behavior.
-**Adjudicated reading in use:** (b). The component is CounterpartyAction; the
-two manifest-named human attributes keep the manifest's words
-(humanReviewPerformed, humanApprovalGiven); the discharging-action shape
-requires a declared mode (manual or automatic) and a named accountable party
-rather than requiring every discharge to be manual. The accountable-
-counterparty assumption is explicitly the adjudicator's interpretation, not
-the paper's.
+**Possible readings:** (a) all discharges human (over-reads the manifest's
+token names); (b) actor unspecified only where the text is silent — modeled as
+another system outside the modeled boundary acting on the Op, with a
+counterparty assumed accountable for its behavior.
+**Adjudicated reading in use:** (b), extended 2026-09-04: review and approval
+are manifest-named human (§5.6 tokens), expert review is paper-named human by
+the §5.1/§5.5 prose ("routes sampled or high-risk outputs to human review";
+"Human or known-expert judgment"), and only the escalation target's actor is
+unspecified — there the discharging actor is another system outside the
+modeled boundary, with a counterparty assumed accountable (the adjudicator's
+interpretation). The component is CounterpartyAction; attribute names keep the
+manifest's tokens. The discharging-action shape requires a declared mode
+(manual or automatic) and a named accountable party rather than requiring
+every discharge to be manual; a per-obligation-type mode constraint is noted
+as future work.

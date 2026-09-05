@@ -1,0 +1,23 @@
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix vfr:  <https://example.org/vfr#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# Shapes over the model traceability map. Code is not objective: every
+# element of the executable model owes its existence to the source text,
+# to a recorded judgment, or to the toolchain's own needs — and must say
+# which.
+
+vfr:ModelElementShape
+    a sh:NodeShape ;
+    sh:targetClass vfr:ModelElement ;
+    sh:property [ sh:path vfr:elementName ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "A trace entry must name its model element." ] ;
+    sh:property [ sh:path vfr:kind ; sh:minCount 1 ; sh:maxCount 1 ;
+        sh:message "A trace entry must state the element's kind." ] ;
+    sh:or (
+        [ sh:property [ sh:path vfr:groundedIn ; sh:minCount 1 ] ]
+        [ sh:property [ sh:path vfr:derivedFromRuling ; sh:minCount 1 ] ]
+        [ sh:property [ sh:path vfr:derivedFromNote ; sh:minCount 1 ] ]
+        [ sh:property [ sh:path vfr:scaffoldRationale ; sh:minCount 1 ] ]
+    ) ;
+    sh:message "A model element must trace to the pinned source, to a recorded judgment, or declare itself scaffolding with a rationale — an element that traces to nothing has no place in the model." .

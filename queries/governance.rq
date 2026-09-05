@@ -1,10 +1,13 @@
 # Track purpose "Governance — compliance teams can verify that required
 # procedures were followed" (WP section 5.3), as a computation: every
-# obligation raised by a fired Gate must be discharged by a concrete
-# earl:manual action. Rows returned are violations; an empty result is
+# obligation raised by a fired Gate must be discharged by a recorded
+# action with a declared mode and a named accountable party
+# (adjudicated: GAP-09 — humanness is not required of every discharge;
+# accountability is). Rows returned are violations; an empty result is
 # compliance.
 PREFIX vfr: <https://example.org/vfr#>
 PREFIX earl: <http://www.w3.org/ns/earl#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
 SELECT ?obligation ?obliged ?gate
@@ -15,7 +18,8 @@ WHERE {
     ?gateDecision vfr:gate ?gate .
     FILTER NOT EXISTS {
         ?action a earl:Assertion ;
-                earl:mode earl:manual ;
+                earl:mode ?mode ;
+                prov:wasAssociatedWith ?accountable ;
                 vfr:discharges ?obligation .
     }
 }

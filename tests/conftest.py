@@ -47,16 +47,35 @@ def normalized(text: str) -> str:
     return re.sub(r"\s+", "", re.sub(r"\([^)]*\)", "", text)).lower()
 
 
-@pytest.fixture(scope="session")
-def pdf_text() -> str:
-    """Full text of the pinned whitepaper snapshot, normalized."""
+def _pdf_raw() -> str:
     pdfs = sorted((ROOT / "sources").glob("*.pdf"))
     assert len(pdfs) == 1, "exactly one pinned PDF snapshot expected in sources/"
     out = subprocess.run(
         ["pdftotext", "-layout", str(pdfs[0]), "-"],
         capture_output=True, text=True, check=True,
     )
-    return normalized(out.stdout)
+    return out.stdout
+
+
+@pytest.fixture(scope="session")
+def pdf_text() -> str:
+    """Full text of the pinned whitepaper snapshot, normalized."""
+    return normalized(_pdf_raw())
+
+
+@pytest.fixture(scope="session")
+def pdf_sections() -> dict:
+    """{'§n.m': normalized section span} from the pinned snapshot, split on
+    the numbered section headings; a citation is section-correct only if
+    its text appears inside the span its locator names."""
+    raw = _pdf_raw()
+    headings = list(re.finditer(r"^(\d+\.\d+)\s+\S", raw, re.M))
+    assert len(headings) >= 15, "section headings not found in the pinned snapshot"
+    sections = {}
+    for i, m in enumerate(headings):
+        end = headings[i + 1].start() if i + 1 < len(headings) else len(raw)
+        sections["§" + m.group(1)] = normalized(raw[m.start():end])
+    return sections
 
 
 @pytest.fixture(scope="session")

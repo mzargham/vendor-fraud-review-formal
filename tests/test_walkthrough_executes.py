@@ -108,11 +108,24 @@ def test_chapter_02_renders_model_excerpts_readably(chapter_outputs):
     assert "\n            attribute" not in text, "source excerpts must be dedented"
 
 
+def test_chapter_02_renders_the_element_trace(chapter_outputs):
+    from test_model_trace import model_elements
+
+    text = chapter_outputs["02-op-as-assembly"]
+    assert f"traced elements: {len(model_elements())}" in text, (
+        "the element trace must render, complete, in chapter 2"
+    )
+    assert "declared scaffolding" in text, "the scaffold category is not surfaced"
+
+
 def test_chapter_02_shows_the_wiring_and_lifecycle_levels(chapter_outputs):
     text = chapter_outputs["02-op-as-assembly"]
     assert "wiring rules: OK" in text, "model wiring rules not demonstrated"
     assert "wiring rules: REFUSED" in text, (
         "the miswired counterexample's refusal is not demonstrated"
+    )
+    assert "exit code: 0 (accepted)" in text, (
+        "the validator's acceptance of the miswire must be executed, not asserted"
     )
     assert "running -> stopped" in text, "the stopped lifecycle trace is not demonstrated"
     assert "running -> completed" in text, "the completed lifecycle trace is not demonstrated"
@@ -170,6 +183,9 @@ def test_chapter_04_shows_one_type_three_semantics(chapter_outputs):
     assert "same answer matrix" in text, (
         "the demonstration does not state that all three ran on one matrix"
     )
+    assert "the paper's own section 5.5 example" in text, (
+        "the section 5.5 two-of-three example is not evaluated live"
+    )
 
 
 def test_chapter_05_shows_the_shacl_inversion_and_the_outcomes(chapter_outputs):
@@ -201,9 +217,20 @@ def test_chapter_05_shows_the_shacl_inversion_and_the_outcomes(chapter_outputs):
 
 
 def test_chapter_06_lists_every_adjudicated_gap(chapter_outputs):
+    import rdflib
+
+    from conftest import VFR
+
+    record = rdflib.Graph()
+    record.parse(ROOT / "open-questions" / "adjudications.ttl", format="turtle")
+    gap_ids = {
+        str(g).rsplit("#", 1)[-1]
+        for g in record.subjects(rdflib.RDF.type, rdflib.URIRef(VFR + "ComputabilityGap"))
+    }
+    assert gap_ids, "the record holds no gaps"
     text = chapter_outputs["06-open-questions"]
-    for n in range(1, 10):
-        assert f"GAP-0{n}" in text, f"GAP-0{n} not surfaced in the open-questions chapter"
+    for gap_id in sorted(gap_ids):
+        assert gap_id in text, f"{gap_id} not surfaced in the open-questions chapter"
     # The judgment layer is a computational record: gaps, attributed
     # rulings, and derived implementations render from the RDF, the full
     # code-to-judgment trace is shown, and the record's own shapes run

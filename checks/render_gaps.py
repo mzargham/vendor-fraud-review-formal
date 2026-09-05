@@ -46,7 +46,9 @@ def render():
         gid = str(gap).rsplit("#", 1)[-1]
         rulings = sorted(set(g.subjects(VFR.resolves, gap)), key=str)
         dates = sorted({str(g.value(r, PROV.generatedAtTime)) for r in rulings})
-        status = f"ADJUDICATED ({', '.join(dates)}, see adjudication-log.md)"
+        status = str(g.value(gap, VFR.status)).upper()
+        if rulings:
+            status += f" ({', '.join(dates)}, see adjudication-log.md)"
         out.append(f"\n## {gid} — {g.value(gap, rdflib.RDFS.label)}\n")
         out.append(_wrap(f"**Status:** {status}"))
         out.append(_wrap(f"**Locus:** {g.value(gap, VFR.locusDetail)}"))

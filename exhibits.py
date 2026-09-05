@@ -211,11 +211,15 @@ def check_wiring():
     sys.path.insert(0, str(ROOT / "tests"))
     from test_wiring import _converted, check_seam_conformance
 
+    seams = re.findall(r"interface (\w+) : \w+Seam connect", MODEL.read_text())
     graph, _ = _converted(MODEL)
     mismatches = check_seam_conformance(graph)
-    print("committed assembly (6 seams): "
+    print(f"committed assembly ({len(seams)} seams): "
           + ("wiring rules: OK" if not mismatches else f"wiring rules: REFUSED {mismatches}"))
-    graph_bad, _ = _converted(ROOT / "counterexamples" / "miswired.sysml")
+    miswired = ROOT / "counterexamples" / "miswired.sysml"
+    r = _sysml(str(miswired), "-validate", "-strict")
+    print(f"miswired counterexample, validate -strict exit code: {r.returncode} (accepted)")
+    graph_bad, _ = _converted(miswired)
     bad = check_seam_conformance(graph_bad)
     print("miswired counterexample: "
           + ("wiring rules: OK (?!)" if not bad else "wiring rules: REFUSED"))
@@ -224,14 +228,54 @@ def check_wiring():
 
 
 def show_lifecycle():
-    for ctx in ("VendorFraudReview::ExerciseContexts::stoppedContext",
-                "VendorFraudReview::ExerciseContexts::completedContext"):
+    contexts = re.findall(r"part (\w+Context)\b", MODEL.read_text())
+    for name in contexts:
+        ctx = f"VendorFraudReview::ExerciseContexts::{name}"
         r = _sysml(str(MODEL), "-trace", "-instantiate", ctx)
         print(ctx.split("::")[-1])
         lines = [l for l in r.stdout.splitlines() if "transition:" in l or "enter:" in l]
         for line in lines[:8]:
             print("  " + line)
         print()
+
+
+def show_element_trace():
+    import rdflib
+
+    g = rdflib.Graph()
+    g.parse(ROOT / "model" / "trace.ttl", format="turtle")
+    V = rdflib.Namespace(VFR)
+    rows = []
+    counts = {"grounded": 0, "judgment": 0, "scaffold": 0}
+    elements = sorted(
+        g.subjects(rdflib.RDF.type, V.ModelElement),
+        key=lambda e: (str(g.value(e, V.kind)), str(g.value(e, V.elementName))),
+    )
+    for e in elements:
+        parts = []
+        grounded = g.value(e, V.groundedIn)
+        if grounded is not None:
+            parts.append(f"grounded in {grounded}")
+            counts["grounded"] += 1
+        derived = sorted(_local(r) for r in g.objects(e, V.derivedFromRuling))
+        derived += sorted(_local(n) for n in g.objects(e, V.derivedFromNote))
+        if derived:
+            parts.append("derived from " + ", ".join(derived))
+            if grounded is None:
+                counts["judgment"] += 1
+        scaffold = g.value(e, V.scaffoldRationale)
+        if scaffold is not None:
+            parts.append(f"scaffold: {scaffold}")
+            counts["scaffold"] += 1
+        rows.append((
+            ("code", str(g.value(e, V.elementName))),
+            str(g.value(e, V.kind)),
+            "; ".join(parts),
+        ))
+    _table(("Element", "Kind", "Provenance"), rows)
+    print(f"traced elements: {len(rows)} — {counts['grounded']} grounded in the "
+          f"pinned source, {counts['judgment']} from recorded judgments alone, "
+          f"{counts['scaffold']} declared scaffolding")
 
 
 def check_conversion():
@@ -243,19 +287,34 @@ def check_conversion():
     mg.parse(data=c1.stdout, format="turtle")
     print(f"converted triples : {len(mg)}")
     print(f"byte-stable       : {c1.stdout == c2.stdout}")
-    checks = ("GATE-01", "GATE-02", "GATE-03", "GATE-04",
-              "WIRE-01", "SYSTEM-01", "SYSTEM-02", "SYSTEM-03")
-    print(f"checks present    : {[rid for rid in checks if rid in c1.stdout]}")
+    checks = re.findall(r"requirement def <'([A-Z]+-\d+)'>", MODEL.read_text())
+    present = [rid for rid in checks if rid in c1.stdout]
+    print(f"checks present    : {len(present)} of {len(checks)} "
+          f"({', '.join(present)})")
 
 
 # ---------------------------------------------------------------- chapter 03
 
-SERVICES = {
-    "confidence": "extraction-confidence service",
-    "consensus_disagreement": "consensus-comparator service",
-    "sensitive_data_detected": "sensitive-data-scanner service",
-    "vendor_risk": "vendor-risk-cog scoring endpoint",
-}
+_SERVICE_LABELS: dict = {}
+
+
+def _services():
+    """Variable -> oracle service label, read from the run record's
+    interface graph rather than retyped here."""
+    if not _SERVICE_LABELS:
+        ds = _dataset("track/run-001.trig")
+        for row in ds.query("""
+            PREFIX vfr: <https://example.org/vfr#>
+            PREFIX prov: <http://www.w3.org/ns/prov#>
+            PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+            SELECT ?variable ?label WHERE {
+                ?reading a vfr:Reading ; vfr:variable ?variable ;
+                         prov:wasGeneratedBy ?call .
+                ?call vfr:service ?service .
+                ?service rdfs:label ?label .
+            }"""):
+            _SERVICE_LABELS[str(row[0])] = str(row[1]).split(" (")[0]
+    return _SERVICE_LABELS
 
 
 def _policy_text():
@@ -270,7 +329,7 @@ def show_policy_reuse():
 
 def mock_oracle(variable, value):
     payload = json.dumps({"op": "vendor-fraud-review", "variable": variable})
-    print(f"  mock oracle {SERVICES[variable]}: sent {payload} "
+    print(f"  mock oracle {_services()[variable]}: sent {payload} "
           f"-> 200 {json.dumps({variable: value})}")
     return value
 
@@ -430,12 +489,21 @@ def evaluate_metrics():
         r"consensusDisagreementThreshold : ScalarValues::Real = ([0-9.]+)",
         MODEL.read_text()).group(1))
     token = {True: "True ", False: "False", None: "null "}
-    print(f"same answer matrix for all three metrics ({len(ANSWER_MATRIX)} facts x 3 checkers):")
+    checkers = len(ANSWER_MATRIX[0])
+    print("same answer matrix for all three metrics "
+          f"({len(ANSWER_MATRIX)} facts x {checkers} checkers; "
+          "fabricated example data, constructed to separate the metrics):")
     for i, fact in enumerate(ANSWER_MATRIX, 1):
         print(f"  f{i}: " + " ".join(token[v] for v in fact))
     print(f"threshold (from the model, single point of definition): > {threshold}\n")
     for name, metric in METRICS.items():
         value = metric(ANSWER_MATRIX)
+        print(f"{name:26}: {value:.3f} -> gate fires: {value > threshold}")
+    print("\nthe paper's own section 5.5 example, as one fact "
+          "(three Cogs classify a document, two agree):")
+    example = [[True, True, False]]
+    for name, metric in METRICS.items():
+        value = metric(example)
         print(f"{name:26}: {value:.3f} -> gate fires: {value > threshold}")
 
 
@@ -513,8 +581,17 @@ def _check_shapes(path):
 
 def _describe_track(path):
     import rdflib
+    from collections import Counter
 
+    EARL = rdflib.Namespace("http://www.w3.org/ns/earl#")
     ds = _dataset(path)
+    modes = Counter()
+    outcomes = Counter()
+    for a in set(ds.subjects(rdflib.RDF.type, EARL.Assertion)):
+        modes[_local(ds.value(a, EARL.mode))] += 1
+        result = ds.value(a, EARL.result)
+        outcomes[_local(ds.value(result, EARL.outcome))] += 1
+    gates = len(set(ds.subjects(rdflib.RDF.type, rdflib.URIRef(VFR + "GateDecision"))))
     obligations = sorted(
         _local(o) for o in ds.subjects(rdflib.RDF.type, rdflib.URIRef(VFR + "Obligation"))
     )
@@ -523,6 +600,11 @@ def _describe_track(path):
         for a, o in ds.subject_objects(rdflib.URIRef(VFR + "discharges"))
     )
     print(f"data checked: {path}")
+    print("  assertions          : "
+          + ", ".join(f"{n} {m}" for m, n in sorted(modes.items()))
+          + " (outcomes: "
+          + ", ".join(f"{n} {o}" for o, n in sorted(outcomes.items())) + ")")
+    print(f"  gate decisions      : {gates}")
     print(f"  obligations raised  : {', '.join(obligations) or '(none)'}")
     if discharges:
         print("  discharging actions :")
@@ -550,7 +632,14 @@ def refuse_missing_approval_track():
         results.subjects(rdflib.RDF.type, SH.ValidationResult),
         key=lambda v: str(results.value(v, SH.focusNode)),
     )
-    print(f"conforms: {conforms} ({len(violations)} violations, one per undischarged obligation)")
+    ds = _dataset("counterexamples/track-missing-approval.trig")
+    undischarged = {
+        _local(o) for o in ds.subjects(rdflib.RDF.type, rdflib.URIRef(VFR + "Obligation"))
+        if ds.value(None, rdflib.URIRef(VFR + "discharges"), o, any=True) is None
+    }
+    focus = {_local(results.value(v, SH.focusNode)) for v in violations}
+    print(f"conforms: {conforms} ({len(violations)} violations; "
+          f"focus nodes equal the undischarged obligations: {focus == undischarged})")
     for i, v in enumerate(violations, 1):
         message = str(results.value(v, SH.resultMessage))
         print(f"\n  violation {i} — focus node: {_local(results.value(v, SH.focusNode))}")
