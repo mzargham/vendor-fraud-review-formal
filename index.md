@@ -96,6 +96,18 @@ The open-questions chapter renders the full record: every gap
 characterized, every ruling verbatim, and the trace from implemented
 code back to the judgment it rests on.
 
+## Scope and limitations
+
+The shapes and checks enforce record completeness everywhere: every
+required property must be present, cited, and discharged as the rules
+demand. Value-domain constraints (closed value sets, datatypes,
+cardinality) are enforced where declared — the aggregate outcome and
+assertion modes are closed domains — but the constraint set is not an
+exhaustive semantic domain model of every property. It grows as review
+surfaces findings; an external review of this repository drove the
+current set, and is recorded in the judgment record like everything
+else.
+
 ## Running it
 
 ```sh

@@ -890,7 +890,7 @@ def show_rulings_log():
         )
     display(HTML("\n".join(blocks)))
     print(f"log entries rendered: {len(entries)} — "
-          f"{rulings} rulings, {notes} design notes")
+          f"{rulings} rulings, {notes} notes")
 
 
 def show_judgment_trace():

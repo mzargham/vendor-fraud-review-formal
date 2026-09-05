@@ -16,6 +16,12 @@ from conftest import (
 CX_READING = ROOT / "counterexamples" / "track-unsourced-reading.trig"
 
 
+def _data(text):
+    ds = rdflib.Dataset(default_union=True)
+    ds.parse(data=text, format="trig")
+    return ds
+
+
 def _graph(*paths, fmt=None):
     g = rdflib.Dataset(default_union=True)
     for p in paths:
@@ -36,6 +42,33 @@ def test_uncited_vocabulary_counterexample_fails():
     )
     assert not conforms, "uncited-definition counterexample conforms: shapes are toothless"
     assert "cite" in report.lower(), f"violation message does not name the missing citation:\n{report}"
+
+
+def test_aggregate_outcome_domain_is_closed():
+    # External review (2026-09-05), finding 1: the outcome must be one of
+    # the two declared values — a typo'd outcome with the final output
+    # removed must NOT conform.
+    import re
+
+    src = TRACK.read_text()
+    tampered = src.replace(
+        'vfr:aggregateOutcome "executed"', 'vfr:aggregateOutcome "typo"'
+    )
+    assert tampered != src, "tamper did not apply"
+    tampered = re.sub(r"\n\s*vfr:finalOutput [^;]*;", "", tampered)
+    conforms, _, report = validate(_data(tampered), shacl_graph=str(TRACK_SHAPES))
+    assert not conforms, "an undeclared aggregate outcome conforms: the domain is open"
+    assert "executed" in report and "noOp" in report, (
+        f"the violation does not name the allowed values:\n{report}"
+    )
+
+
+def test_assertion_mode_domain_is_closed():
+    src = TRACK.read_text()
+    tampered = src.replace("earl:mode earl:manual", "earl:mode earl:semiautomatic", 1)
+    assert tampered != src
+    conforms, _, _ = validate(_data(tampered), shacl_graph=str(TRACK_SHAPES))
+    assert not conforms, "an undeclared assertion mode conforms: the domain is open"
 
 
 def test_track_conforms_to_track_shapes():

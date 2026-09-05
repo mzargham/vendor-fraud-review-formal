@@ -2,6 +2,7 @@
 @prefix earl: <http://www.w3.org/ns/earl#> .
 @prefix prov: <http://www.w3.org/ns/prov#> .
 @prefix sh: <http://www.w3.org/ns/shacl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
 
 # Shapes derived from the whitepaper's own declarations:
 # - the section 5.6 track.include list (frames_used, cogs_invoked,
@@ -106,7 +107,9 @@ vfr:AssertionShape
     sh:property [
         sh:path earl:mode ;
         sh:minCount 1 ;
-        sh:message "Every assertion must declare its mode (earl:automatic or earl:manual)." ;
+        sh:maxCount 1 ;
+        sh:in ( earl:automatic earl:manual ) ;
+        sh:message "Every assertion must declare exactly one mode, and its domain is closed: earl:automatic or earl:manual." ;
     ] ;
     sh:property [
         sh:path ( earl:result earl:outcome ) ;
@@ -145,7 +148,10 @@ vfr:OpExecutionShape
     sh:property [
         sh:path vfr:aggregateOutcome ;
         sh:minCount 1 ;
-        sh:message "Track must state the aggregate outcome — executed or noOp (GAP-06 adjudication)." ;
+        sh:maxCount 1 ;
+        sh:datatype xsd:string ;
+        sh:in ( "executed" "noOp" ) ;
+        sh:message "Track must state exactly one aggregate outcome, and its domain is closed: executed or noOp (GAP-06 adjudication; domain closed per external review, 2026-09-05)." ;
     ] ;
     # GAP-07 adjudication: final_output inclusion is CONDITIONAL on the
     # aggregate outcome. This is a judgment, and it departs from the pinned

@@ -605,3 +605,16 @@ adj:impl-redistribution-note
     vfr:inFile "sources/sources.ttl" ;
     vfr:anchor "redistributionNote" ;
     prov:wasDerivedFrom adj:note-pdf-redistribution .
+
+adj:review-dsg-1
+    a vfr:ReviewNote ;
+    vfr:order 20 ;
+    vfr:entryTitle "review: three findings from an external reviewer (paraphrased)" ;
+    prov:wasAttributedTo adj:reviewer-dsg ;
+    prov:generatedAtTime "2026-09-05"^^xsd:date ;
+    vfr:noteText """An external reviewer from Dynamical Systems Group reviewed the repository at commit 86498f1 and reported three findings (paraphrased here, not verbatim): (1) the aggregate outcome was required to exist but its value domain was open — a misspelled outcome with the final output removed still conformed; (2) the cached evaluator binary was trusted on its version text alone after the first download, so a substituted executable reporting the right version would pass; (3) regeneration overwrote outputs for existing queries but could not detect a stale CSV left behind by a removed or renamed query. More generally: several integrity rules established that required properties exist without constraining their allowed values, types, or cardinality.""" ;
+    vfr:changeNote """all three findings were reproduced by probe before fixing, then fixed red-to-green: the aggregate outcome and assertion mode domains are closed (sh:in, datatype, cardinality) with tamper tests; the expected per-platform binary digests and the release checksums are committed in toolchain/, and get-sysml.sh verifies the installed binary against them on every invocation (a substituted binary is detected and replaced by a verified fetch, exercised in test); regeneration removes existing CSVs before rendering so generated/ holds exactly one output per committed query, with a stale-file regression test. A scope-and-limitations statement was added to the walkthrough's front door: completeness is enforced everywhere, value-domain constraints are closed where findings surface them, and the constraint set is expected to grow under review.""" .
+
+adj:reviewer-dsg
+    a prov:Agent ;
+    rdfs:label "Dynamical Systems Group reviewer (external to the translation)" .
