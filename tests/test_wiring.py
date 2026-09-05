@@ -1,4 +1,4 @@
-"""Wiring-level checks over the RDF projection.
+"""Wiring-level checks over the RDF conversion.
 
 `-validate -strict` accepts a type-mismatched connect (probed 2026-09-04),
 so the wiring rules live here: the model holds the wiring, code over the
@@ -38,7 +38,7 @@ def _owned_by_name(graph, owner, name):
 
 def _seam_end_types(graph, seam_def):
     """Port-def types of a seam definition's ends, ordered by member index
-    (conjugation is erased in the projection; base types compare)."""
+    (conjugation is erased in the conversion; base types compare)."""
     ends = [
         n for n in graph.subjects(SYSML.owner, seam_def)
         if (n, rdflib.RDF.type, SYSML.PortUsage) in graph
