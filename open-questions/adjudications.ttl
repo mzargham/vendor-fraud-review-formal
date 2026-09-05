@@ -579,7 +579,8 @@ adj:note-oracle-term
 
 vfr:Oracle
     rdfs:label "Oracle" ;
-    rdfs:comment "A process that answers a question: an identified service the Op queries for a value it does not compute itself, with each exchange cited (service, request payload, response code, response payload). The adjudicator's term, introduced by the GAP-05 ruling; the paper does not use it." ;
+    rdfs:comment "A process that answers a question: an identified service the Op queries for a value it does not compute itself, with each exchange cited (service, request payload, response code, response payload). The adjudicator's term, introduced by the GAP-05 ruling; the paper does not use it. The usage follows the oracle machine of computability theory (Turing 1939, Systems of Logic Based on Ordinals, doi:10.1112/plms/s2-45.1.161): a machine that consults an external source for answers it does not compute." ;
+    rdfs:seeAlso <https://en.wikipedia.org/wiki/Oracle_machine> ;
     vfr:introducedBy adj:ruling-gap05 .
 
 adj:impl-oracle-definition
