@@ -1,0 +1,12 @@
+version: 1
+project:
+  title: The Vendor Fraud Review Op as an executable specification
+  description: >
+    The Intelligence Hub whitepaper's running example (Revision 9, section
+    5.6) implemented on an RDF + SysML substrate: SKOS vocabulary verbatim
+    from the pinned source, gates as satisfiable constraints, a PROV-O + EARL
+    Track, SHACL shapes with counterexamples, and SPARQL over the run.
+  toc:
+    - file: demonstration.ipynb
+site:
+  template: book-theme

@@ -1,0 +1,6 @@
+assertion,label,mode,outcome
+https://example.org/vfr/track/run-001#guard-confidence,confidence-guard (in_flight),http://www.w3.org/ns/earl#automatic,http://www.w3.org/ns/earl#failed
+https://example.org/vfr/track/run-001#guard-schema,schema-guard (post_run),http://www.w3.org/ns/earl#automatic,http://www.w3.org/ns/earl#passed
+https://example.org/vfr/track/run-001#guard-source-grounding,source-grounding-guard (post_run),http://www.w3.org/ns/earl#automatic,http://www.w3.org/ns/earl#cantTell
+https://example.org/vfr/track/run-001#guard-vendor-risk-reading,vendor risk reading (in_flight),http://www.w3.org/ns/earl#automatic,http://www.w3.org/ns/earl#failed
+https://example.org/vfr/track/run-001#approval-01,human review and approval of the vendor flag,http://www.w3.org/ns/earl#manual,http://www.w3.org/ns/earl#passed
