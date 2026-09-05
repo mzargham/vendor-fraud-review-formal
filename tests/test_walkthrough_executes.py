@@ -157,6 +157,14 @@ def test_chapter_04_shows_one_type_three_semantics(chapter_outputs):
         "the deliberately unbound metric slot is not shown"
     )
     assert "\n            doc" not in text, "doc walls must not be dumped at source indent"
+    # The binding between model definitions and implementing functions is
+    # demonstrated, not left to a naming coincidence.
+    assert "model <-> implementation binding: OK" in text, (
+        "the definition-to-implementation binding is not demonstrated"
+    )
+    assert "run-001 recorded metric" in text, (
+        "the Track's cited metric is not shown to be bindable"
+    )
     assert "gate fires: True" in text, "no metric fires the gate"
     assert "gate fires: False" in text, "no metric leaves the gate quiet"
     assert "same answer matrix" in text, (

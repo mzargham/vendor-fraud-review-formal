@@ -449,6 +449,41 @@ def show_metric_definitions():
     _table(("Definition", "Doc, verbatim from the model"), rows)
 
 
+def metric_id(def_name):
+    """The binding convention: a model definition's metric id is derived
+    mechanically from its name (DissentFractionMetric -> dissent-fraction).
+    The same id keys the implementation mapping below and is the value a
+    Track records in vfr:metric."""
+    return re.sub(r"(?<!^)(?=[A-Z])", "-", def_name[: -len("Metric")]).lower()
+
+
+def show_metric_binding():
+    defs = re.findall(r"part def (\w+Metric) :> DisagreementMetric", MODEL.read_text())
+    ok = True
+    rows = []
+    for d in defs:
+        mid = metric_id(d)
+        impl = METRICS.get(mid)
+        rows.append((
+            ("code", d),
+            ("code", mid),
+            ("code", f"exhibits.{impl.__name__}" if impl else "NO IMPLEMENTATION"),
+            "✓" if impl else "✗",
+        ))
+        ok = ok and impl is not None
+    _table(("Model definition", "Metric id (Track vocabulary)", "Implementation", "Bound"), rows)
+    for mid in sorted(set(METRICS) - {metric_id(d) for d in defs}):
+        ok = False
+        print(f"implementation with no model definition: {mid}")
+    print(f"model <-> implementation binding: {'OK' if ok else 'BROKEN'} "
+          f"({len(defs)} definitions, {len(METRICS)} implementations)")
+    ds = _dataset("track/run-001.trig")
+    for row in ds.query(f"SELECT ?m WHERE {{ ?call <{VFR}metric> ?m }}"):
+        m = str(row[0])
+        print(f"run-001 recorded metric: {m} -> bound implementation: "
+              f"{'exhibits.' + METRICS[m].__name__ if m in METRICS else 'NONE'}")
+
+
 def show_unbound_metric_slot():
     block = re.search(
         r"part def ConsensusComparatorOracle.*?\n        \}", MODEL.read_text(), re.S
