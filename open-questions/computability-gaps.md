@@ -77,8 +77,7 @@ enrichment.
 
 ## GAP-04 — the semantics of consensus_disagreement
 
-**Status:** ADJUDICATED (2026-09-04, see adjudication-log.md) — adjudicated
-OPEN
+**Status:** ADJUDICATED (2026-09-04, see adjudication-log.md)
 **Locus:** WP §5.6: `- if: consensus_disagreement > 0.25`; §5.5 Consensus row
 ("Three Cogs classify a document and two must agree; outlier extractions
 flagged").

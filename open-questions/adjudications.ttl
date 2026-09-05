@@ -65,7 +65,7 @@ adj:GAP-04
     vfr:cites vfr:source-whitepaper-rev9 ;
     vfr:surfacedOn "2026-09-04"^^xsd:date ;
     vfr:surfacedHow "typing the consensus_disagreement > 0.25 comparison; the section 5.5 two-of-three example gave no number" ;
-    vfr:status "adjudicated-open" ;
+    vfr:status "adjudicated" ;
     prov:wasGeneratedBy adj:translation .
 
 adj:GAP-05
