@@ -890,6 +890,13 @@ def _describe_track(path):
         f"{_local(a)} discharges {_local(o)}"
         for a, o in ds.subject_objects(rdflib.URIRef(VFR + "discharges"))
     )
+    execution = ds.value(None, rdflib.RDF.type, rdflib.URIRef(VFR + "OpExecution"), any=True)
+    aggregate = ds.value(execution, rdflib.URIRef(VFR + "aggregateOutcome")) if execution else None
+    final = ds.value(execution, rdflib.URIRef(VFR + "finalOutput")) if execution else None
+    withheld = sorted(
+        str(ds.value(w, rdflib.RDFS.label) or _local(w))
+        for w in ds.subjects(rdflib.RDF.type, rdflib.URIRef(VFR + "WithheldOutput"))
+    )
     print(f"data checked: {path}")
     print("  assertions          : "
           + ", ".join(f"{n} {m}" for m, n in sorted(modes.items()))
@@ -903,11 +910,28 @@ def _describe_track(path):
             print(f"    {d}")
     else:
         print("  discharging actions : (none)")
+    if aggregate is not None:
+        print(f"  aggregate outcome    : {aggregate}")
+        print("  final_output cited   : "
+              + (f"{_local(final)} ({ds.value(final, rdflib.RDFS.label)})" if final is not None
+                 else "(none — nothing crossed the boundary)"))
+        print("  withheld at boundary : "
+              + ("; ".join(withheld) + " (retained as evidence — GAP-07)" if withheld else "(none)"))
 
 
 def check_run_001_shapes():
     _describe_track("track/run-001.trig")
     conforms, _, _ = _check_shapes("track/run-001.trig")
+    print(f"conforms: {conforms}")
+
+
+def check_run_002_shapes():
+    """The stopped run's Track (GAP-07, refined): noOp is a statement about
+    the boundary. The record retains the readings, the gate decision, the
+    stop and its escalation, and the artifact withheld at the boundary; the
+    one thing it does not carry is a final_output."""
+    _describe_track("track/run-002.trig")
+    conforms, _, _ = _check_shapes("track/run-002.trig")
     print(f"conforms: {conforms}")
 
 

@@ -166,7 +166,7 @@ vfr:OpExecutionShape
             }""" ;
     ] ;
     sh:sparql [
-        sh:message "A stopped run transmits nothing: a noOp Track carries no final_output. This conditional reading departs from the pinned draft's unconditional include list (GAP-07 adjudication)." ;
+        sh:message "A noOp run's Track cites no final_output, because nothing crossed the boundary; everything else about the stopped run — readings, guard results, the gate decision, the stop and its escalation, and any artifact withheld at the boundary — is retained and checked as for an executed run. This conditional reading departs from the pinned draft's unconditional include list (GAP-07 adjudication, refined 2026-09-05)." ;
         sh:select """
             SELECT $this WHERE {
                 $this <https://example.org/vfr#aggregateOutcome> "noOp" .
@@ -243,5 +243,32 @@ vfr:UngatedReadingShape
                     ?decision a <https://example.org/vfr#GateDecision> ;
                               <http://www.w3.org/ns/prov#used> $this .
                 }
+            }""" ;
+    ] .
+
+# GAP-07, refined (2026-09-05): noOp is a statement about the boundary, not
+# about the record. An output the summary cog produced and the Op did not
+# emit is retained as a withheld artifact — evidence the stop refers to, so
+# an auditor can see what would have gone out — and is never cited as
+# final_output, which names only what crossed the boundary.
+
+vfr:WithheldOutputShape
+    a sh:NodeShape ;
+    sh:targetClass vfr:WithheldOutput ;
+    sh:property [
+        sh:path prov:wasGeneratedBy ;
+        sh:minCount 1 ;
+        sh:message "A withheld artifact must say which execution produced it (adjudicated: GAP-07, refined 2026-09-05)." ;
+    ] ;
+    sh:property [
+        sh:path [ sh:inversePath prov:used ] ;
+        sh:minCount 1 ;
+        sh:message "A withheld artifact must be referred to by the action that withheld it: retained as evidence means the stop can point at what would have gone out (adjudicated: GAP-07, refined 2026-09-05)." ;
+    ] ;
+    sh:sparql [
+        sh:message "A withheld artifact is retained as evidence and never cited as final_output: final_output names only what crossed the boundary (adjudicated: GAP-07, refined 2026-09-05)." ;
+        sh:select """
+            SELECT $this WHERE {
+                ?execution <https://example.org/vfr#finalOutput> $this .
             }""" ;
     ] .

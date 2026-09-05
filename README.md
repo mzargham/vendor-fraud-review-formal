@@ -28,10 +28,11 @@ Each layer is machine-checked; nothing below is a prose-only claim.
    lifecycle run under trace (`model/vendor-fraud-review.sysml`). Every
    named element traces to the source, to a recorded adjudication, or
    declares itself scaffolding (`model/trace.ttl`).
-4. **A run record.** One fabricated execution as a PROV-O + EARL Track
-   with an oracle citation for every value a gate read
-   (`track/run-001.trig`), SHACL shapes it must conform to, and
-   counterexamples the shapes refuse.
+4. **A run record.** Two fabricated executions as PROV-O + EARL Tracks
+   with an oracle citation for every value a gate read: an executed run
+   (`track/run-001.trig`) and a stopped run that retains everything but
+   a final output (`track/run-002.trig`), SHACL shapes both must conform
+   to, and counterexamples the shapes refuse.
 5. **Queries.** The five Track purposes section 5.3 names (auditability,
    governance, learning, debugging, trust), plus the GAP-05 interface
    contract, computed by SPARQL over the run graph (`queries/`).
@@ -71,7 +72,7 @@ a single `CHECKS: PASS|FAIL` line.
 | `sources/` | the sha256-pinned snapshot and its retrieval provenance |
 | `vocabulary/` | SKOS concepts, definitions verbatim from the snapshot |
 | `model/` | the executable assembly and its traceability map |
-| `track/` | the recorded run |
+| `track/` | the recorded runs: one executed, one stopped |
 | `shapes/` | SHACL over the Track, the judgment record, and the trace |
 | `queries/` | the five section 5.3 purposes + the interface contract, as SPARQL |
 | `counterexamples/` | negatives every checking layer must refuse |

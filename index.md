@@ -58,9 +58,10 @@ The substrate is a small stack of open standards, one layer per job:
    wiring, system). Every named element of the model traces to the
    source, to a recorded judgment, or declares itself scaffolding
    (model/trace.ttl).
-4. **A run record.** One execution as a PROV-O [@provo2013] + EARL
-   [@earl2017] Track, with SHACL [@shacl2017] shapes that the record
-   must conform to, and counterexamples proving the shapes can refuse.
+4. **A run record.** Two executions as PROV-O [@provo2013] + EARL
+   [@earl2017] Tracks, one executed and one stopped, with SHACL
+   [@shacl2017] shapes that both records must conform to, and
+   counterexamples proving the shapes can refuse.
 5. **Queries.** The five purposes section 5.3 names for a Track
    (auditability, governance, learning, debugging, trust), plus the
    GAP-05 interface contract, answered by SPARQL [@sparql2013] over the

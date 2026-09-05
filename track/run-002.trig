@@ -1,0 +1,214 @@
+@prefix vfr: <https://example.org/vfr#> .
+@prefix run: <https://example.org/vfr/track/run-002#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Track of one synthetic execution of the Vendor Fraud Review Op — the
+# STOPPED run (the pii-stop-and-escalate scenario of the worked examples):
+# the scanner finds sensitive data, GATE-03 fires, the stop obligation is
+# discharged by an escalation service acting for an accountable office, and
+# the Op stops before external transmission (WP section 5.2). The aggregate
+# is noOp: a statement about the boundary, not about the record. Everything
+# the run did is retained here — readings, guard results, the gate decision,
+# the escalation — and the anomaly summary the cog produced is retained too,
+# as a withheld artifact, never as final_output (adjudicated: GAP-07,
+# refined 2026-09-05). All names and values are fabricated demonstration
+# data.
+
+run:provenance {
+    run:execution
+        a prov:Activity, vfr:OpExecution ;
+        rdfs:label "Vendor Fraud Review Op — run 002 (stopped)" ;
+        vfr:op "vendor-fraud-review" ;
+        vfr:framesApplied "company-policy", "procurement-rules", "fraud-detection-methodology" ;
+        vfr:cogsInvoked "invoice-extraction-cog", "vendor-risk-cog", "anomaly-summary-cog" ;
+        prov:used run:evidence-invoice-batch ;
+        vfr:parameters run:policy-parameters ;
+        vfr:aggregateOutcome "noOp" ;
+        prov:startedAtTime "2026-09-04T16:00:00Z"^^xsd:dateTime ;
+        prov:endedAtTime "2026-09-04T16:06:12Z"^^xsd:dateTime .
+        # No vfr:finalOutput: nothing crossed the boundary. The summary that
+        # would have is retained below as run:withheld-anomaly-summary.
+
+    run:policy-parameters
+        a vfr:ConfigurationParameters ;
+        rdfs:label "Validation Strategy parameters in force (model defaults)" ;
+        vfr:confidenceThreshold 0.80 ;
+        vfr:consensusDisagreementThreshold 0.25 ;
+        vfr:vendorRiskTrigger "high" .
+}
+
+run:interface {
+    <urn:example:service:extraction-confidence>
+        a vfr:Oracle, prov:SoftwareAgent ;
+        rdfs:label "extraction-confidence service (invoice-extraction-cog telemetry, v2.3.1)" .
+
+    <urn:example:service:consensus-comparator>
+        a vfr:Oracle, prov:SoftwareAgent ;
+        rdfs:label "consensus-comparator service (v1.4.0)" .
+
+    <urn:example:service:sensitive-data-scanner>
+        a vfr:Oracle, prov:SoftwareAgent ;
+        rdfs:label "sensitive-data-scanner service (v5.0.2)" .
+
+    <urn:example:service:vendor-risk-cog>
+        a vfr:Oracle, prov:SoftwareAgent ;
+        rdfs:label "vendor-risk-cog scoring endpoint (v0.9.7)" .
+
+    run:oracle-call-confidence
+        a vfr:OracleCall, prov:Activity ;
+        vfr:service <urn:example:service:extraction-confidence> ;
+        vfr:requestPayload "{\"op\":\"vendor-fraud-review\",\"run\":\"run-002\",\"variable\":\"confidence\",\"batch\":\"invoice-batch-2026-09\"}" ;
+        vfr:responseCode "200" ;
+        vfr:responsePayload "{\"confidence\":0.92}" ;
+        prov:generated run:reading-confidence ;
+        prov:endedAtTime "2026-09-04T16:02:40Z"^^xsd:dateTime .
+
+    run:reading-confidence
+        a vfr:Reading ;
+        vfr:variable "confidence" ;
+        vfr:value 0.92 ;
+        prov:wasGeneratedBy run:oracle-call-confidence .
+
+    run:oracle-call-consensus
+        a vfr:OracleCall, prov:Activity ;
+        vfr:service <urn:example:service:consensus-comparator> ;
+        vfr:metric "strict-quorum-undecodable" ;
+        vfr:answerMatrix "[[true,true,true],[true,true,true],[true,true,true],[true,true,true],[true,true,true],[true,true,true],[true,true,true],[true,true,true],[true,true,true],[true,null,null]]" ;
+        vfr:factCount 10 ;
+        vfr:requestPayload "{\"op\":\"vendor-fraud-review\",\"run\":\"run-002\",\"variable\":\"consensus_disagreement\",\"cogs\":[\"invoice-extraction-cog\",\"vendor-risk-cog\",\"anomaly-summary-cog\"]}" ;
+        vfr:responseCode "200" ;
+        vfr:responsePayload "{\"consensus_disagreement\":0.10}" ;
+        prov:generated run:reading-consensus ;
+        prov:endedAtTime "2026-09-04T16:03:15Z"^^xsd:dateTime .
+
+    run:reading-consensus
+        a vfr:Reading ;
+        vfr:variable "consensus_disagreement" ;
+        vfr:value 0.10 ;
+        prov:wasGeneratedBy run:oracle-call-consensus .
+
+    run:oracle-call-sensitive
+        a vfr:OracleCall, prov:Activity ;
+        vfr:service <urn:example:service:sensitive-data-scanner> ;
+        vfr:requestPayload "{\"op\":\"vendor-fraud-review\",\"run\":\"run-002\",\"variable\":\"sensitive_data_detected\",\"batch\":\"invoice-batch-2026-09\"}" ;
+        vfr:responseCode "200" ;
+        vfr:responsePayload "{\"sensitive_data_detected\":true}" ;
+        prov:generated run:reading-sensitive ;
+        prov:endedAtTime "2026-09-04T16:03:52Z"^^xsd:dateTime .
+
+    run:reading-sensitive
+        a vfr:Reading ;
+        vfr:variable "sensitive_data_detected" ;
+        vfr:value true ;
+        prov:wasGeneratedBy run:oracle-call-sensitive .
+
+    run:oracle-call-vendor-risk
+        a vfr:OracleCall, prov:Activity ;
+        vfr:service <urn:example:service:vendor-risk-cog> ;
+        vfr:requestPayload "{\"op\":\"vendor-fraud-review\",\"run\":\"run-002\",\"variable\":\"vendor_risk\",\"vendor\":\"V-1187\"}" ;
+        vfr:responseCode "200" ;
+        vfr:responsePayload "{\"vendor_risk\":\"low\"}" ;
+        prov:generated run:reading-vendor-risk ;
+        prov:endedAtTime "2026-09-04T16:04:30Z"^^xsd:dateTime .
+
+    run:reading-vendor-risk
+        a vfr:Reading ;
+        vfr:variable "vendor_risk" ;
+        vfr:value "low" ;
+        prov:wasGeneratedBy run:oracle-call-vendor-risk .
+}
+
+run:evidence {
+    run:evidence-invoice-batch
+        a prov:Entity ;
+        rdfs:label "Invoice batch 2026-09 (vendor V-1187), 22 invoices" ;
+        vfr:payloadHash "sha256:4b7e1c0d2f9a86e35c1d0b7a9e8f6d5c4b3a2918f7e6d5c4b3a29180f1e2d3c4" ;
+        prov:wasDerivedFrom <urn:example:erp:invoice-batch-2026-09> .
+
+    # The output the summary cog produced and the Op did NOT emit. Retained
+    # as evidence so an auditor can see what would have gone out; never
+    # cited as final_output, which names only what crossed the boundary
+    # (adjudicated: GAP-07, refined 2026-09-05).
+    run:withheld-anomaly-summary
+        a prov:Entity, vfr:WithheldOutput ;
+        rdfs:label "Anomaly summary for vendor V-1187, produced and withheld at the boundary" ;
+        vfr:payloadHash "sha256:8c1f2e3d4a5b69788796a5b4c3d2e1f0a9b8c7d6e5f4a3b2c1d0e9f8a7b6c5d4" ;
+        prov:wasGeneratedBy run:execution ;
+        prov:wasAttributedTo <urn:example:cog:anomaly-summary-cog> .
+}
+
+run:decisions {
+    run:guard-schema
+        a earl:Assertion ;
+        rdfs:label "schema-guard (post_run)" ;
+        earl:test <urn:example:guard:schema-guard> ;
+        earl:subject run:execution ;
+        earl:mode earl:automatic ;
+        earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+                      earl:info "extracted invoice records conform to the declared schema" ] .
+
+    run:guard-privacy
+        a earl:Assertion ;
+        rdfs:label "privacy-guard (in_flight)" ;
+        earl:test <urn:example:guard:privacy-guard> ;
+        earl:subject run:execution ;
+        earl:mode earl:automatic ;
+        earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+                      earl:info "an employee's bank account details appear in the memo field of invoice 2026-09-0143" ] .
+
+    run:gate-decision-03
+        a vfr:GateDecision ;
+        rdfs:label "GATE-03 fired" ;
+        vfr:gate "GATE-03" ;
+        vfr:condition "sensitive_data_detected" ;
+        vfr:consequent "stop_and_escalate" ;
+        prov:wasInformedBy run:guard-privacy ;
+        prov:used run:reading-sensitive .
+
+    run:obligation-stop-and-escalate
+        a vfr:Obligation ;
+        rdfs:label "stop and escalate" ;
+        vfr:raisedBy run:gate-decision-03 .
+}
+
+run:escalations {
+    # The concrete action that discharges the stop obligation. The escalation
+    # target is the one actor the paper leaves unspecified (adjudicated:
+    # GAP-09): here it is another system outside the modeled Op, acting for
+    # an accountable office — earl:automatic, with the accountable party
+    # named. It mutates state (the post-stop case state) and refers to the
+    # artifact it withheld.
+    run:escalation-01
+        a earl:Assertion, prov:Activity ;
+        rdfs:label "stop honored and case escalated to the privacy office" ;
+        earl:test <urn:example:step:stop-and-escalate> ;
+        earl:subject run:execution ;
+        earl:mode earl:automatic ;
+        earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+                      earl:info "transmission halted; case opened with the privacy office" ] ;
+        vfr:discharges run:obligation-stop-and-escalate ;
+        vfr:rationale "Sensitive personal data in a source document: the Op stops before external transmission per policy; the produced summary is held pending privacy-office review of the redaction." ;
+        prov:used run:evidence-invoice-batch, run:withheld-anomaly-summary ;
+        prov:generated run:state-after-stop ;
+        prov:wasAssociatedWith run:privacy-escalation-service ;
+        prov:qualifiedAssociation [ a prov:Association ;
+                                    prov:agent run:privacy-escalation-service ;
+                                    prov:hadRole vfr:role-escalation-target ] .
+
+    run:state-after-stop
+        a prov:Entity ;
+        rdfs:label "Case state after stop: transmission halted, privacy case PR-2026-0917 open, summary withheld" ;
+        prov:wasGeneratedBy run:escalation-01 .
+
+    run:privacy-escalation-service
+        a prov:Agent, prov:SoftwareAgent ;
+        rdfs:label "privacy-escalation-service (v2.1.0), acting for the privacy office" ;
+        prov:actedOnBehalfOf run:privacy-office .
+
+    run:privacy-office
+        a prov:Agent, prov:Organization ;
+        rdfs:label "Privacy office (accountable counterparty for escalations)" .
+}

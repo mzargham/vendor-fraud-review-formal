@@ -224,6 +224,13 @@ def test_chapter_05_shows_the_shacl_inversion_and_the_outcomes(chapter_outputs):
     assert "discharging actions : (none)" in text, (
         "the counterexample's missing discharge is not shown in the data summary"
     )
+    # GAP-07 refined (2026-09-05): a committed stopped run's Track conforms,
+    # records noOp, cites no final_output, and retains the withheld artifact.
+    assert "data checked: track/run-002.trig" in text, "the stopped run's Track is not checked"
+    assert "aggregate outcome    : noOp" in text, "run-002's aggregate is not shown"
+    assert "final_output cited   : (none — nothing crossed the boundary)" in text
+    assert "withheld at boundary :" in text, "the withheld artifact is not shown as retained"
+    assert text.count("conforms: True") >= 2, "both committed records must be shown conforming"
     # Query results render as tables with prefixed names, not pipe-joined
     # text rows with full URIs.
     assert text.count("<table") >= 2, "query results must render as tables"

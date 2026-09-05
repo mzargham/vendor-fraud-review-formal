@@ -412,9 +412,10 @@ adj:GAP-06
 
 adj:GAP-07
     vfr:locusDetail """WP §5.6 manifest, `track: include: - final_output`; §5.2 "the Op stops before external transmission".""" ;
-    vfr:substrateForces "nothing yet — the committed Track (run-001) is an executed run with an output, so the tension is latent. It binds the moment a stopped run's Track is written." ;
+    vfr:substrateForces "a rule for what a stopped run's Track carries. Latent while the only committed Track (run-001) was an executed run; it bound when the stopped run's Track (run-002) was written on 2026-09-05." ;
     vfr:possibleReadings """(a) conditional inclusion (include when produced); (b) the stop-and-escalation record is the final output of a stopped run; (c) unconditional, so a stopped run's Track is non-conformant by design.""" ;
-    vfr:readingInUse """(a) — conditional inclusion: an executed run's Track must retain final_output; a noOp run's Track carries none. **This is a judgment, and it departs from the pinned draft**, which lists final_output unconditionally; the departure is acknowledged in the shape messages themselves (shapes/track.shapes.ttl) and flagged for the author.""" .
+    vfr:readingInUse """(a) — conditional inclusion: an executed run's Track must cite the output it emitted; a noOp run's Track cites none, because nothing crossed the boundary. **This is a judgment, and it departs from the pinned draft**, which lists final_output unconditionally; the departure is acknowledged in the shape messages themselves (shapes/track.shapes.ttl) and flagged for the author. **Refined (2026-09-05):** noOp is a statement about the boundary, not about the record — a stopped run's Track retains its readings, guard results, gate decision, and the stop and its escalation, exactly as an executed run's does (run-002 is the committed exhibit). An output the summary cog produced and the Op did not emit is retained as a withheld artifact (vfr:WithheldOutput), evidence the escalation refers to, and is never cited as final_output.""" ;
+    vfr:note """**Withheld artifact (2026-09-05, ruling logged in this record):** the adjudicator, re-reading the Track chapter, asked whether "a noOp run must not retain final_output" meant the record was discarded. It does not; the sentence was reworded, the first stopped run's Track was committed, and the previously unaddressed case — an artifact produced internally and withheld at the boundary — was ruled: retain it as evidence, never as final_output. Reading (b) of this gap (the stop-and-escalation record IS the stopped run's output) remains not taken.""" .
 
 adj:GAP-08
     vfr:locusDetail "WP §4.5 (an Op composes Cogs, Frames, a supervising model, integration logic) and the §5.6 manifest (lists of frames, cogs, guards, gates) — no dataflow between them is ever drawn." ;
@@ -849,3 +850,37 @@ adj:impl-property-matrix
     vfr:inFile "exhibits.py" ;
     vfr:anchor "show_metric_properties" ;
     prov:wasDerivedFrom adj:review-dsg-2 .
+
+# ---------------------------------------------------------------- GAP-07 refined (2026-09-05)
+
+adj:ruling-gap07-withheld
+    a vfr:Ruling ;
+    vfr:refines adj:ruling-gap07 ;
+    vfr:resolves adj:GAP-07 ;
+    vfr:order 27 ;
+    vfr:entryTitle "GAP-07 (the stopped run's Track; the withheld artifact)" ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-05"^^xsd:date ;
+    vfr:rulingText """Retain as evidence, not as final_output (selected review option, 2026-09-05, on the adjudicator's re-reading of the Track chapter — "it seems like a noOp does get a record internally it just doesn't emit an event externally. so the noOp is a statement about action over a boundary but we still retain the trace for the sequence that resolved to noOp"): a withheld artifact is retained in the Track as an evidence entity the stop decision refers to, so an auditor can see what would have gone out. It is never cited as final_output, which names only what crossed the boundary.""" ;
+    vfr:changeNote """the Track chapter's sentence on GAP-07 was reworded from "a noOp run must not retain final_output" to a statement about the boundary: a noOp Track cites no final_output because nothing crossed, and retains everything else; the noOp shape message says the same. track/run-002.trig was committed as the first stopped run's Track (the pii-stop scenario: privacy guard fails, GATE-03 fires, the stop is discharged by an escalation service acting for an accountable privacy office, aggregate noOp, no final_output), conforming to every shape including the gate-to-reading consistency shapes. The anomaly summary the cog produced is retained in it as a vfr:WithheldOutput evidence entity the escalation refers to; WithheldOutputShape requires that a withheld artifact names its execution, is referred to by the action that withheld it, and is never cited as final_output — a tampered run-002 citing it as final_output is refused in test. Chapter 5 gained the stopped run as an exhibit; the Track description now prints the aggregate, the cited final_output, and any withheld artifact for every record it checks. README and the front door say two run records.""" .
+
+adj:impl-run-002
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "run-002: the stopped run's Track, retaining everything but a final_output" ;
+    vfr:inFile "track/run-002.trig" ;
+    vfr:anchor "WithheldOutput" ;
+    prov:wasDerivedFrom adj:ruling-gap07-withheld .
+
+adj:impl-withheld-shape
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "WithheldOutputShape: retained as evidence, referred to by the stop, never cited as final_output" ;
+    vfr:inFile "shapes/track.shapes.ttl" ;
+    vfr:anchor "WithheldOutputShape" ;
+    prov:wasDerivedFrom adj:ruling-gap07-withheld .
+
+adj:impl-stopped-run-exhibit
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the stopped run checked and described in the Track chapter" ;
+    vfr:inFile "exhibits.py" ;
+    vfr:anchor "check_run_002_shapes" ;
+    prov:wasDerivedFrom adj:ruling-gap07-withheld .

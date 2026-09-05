@@ -17,6 +17,7 @@ from conftest import (
 
 CX_READING = ROOT / "counterexamples" / "track-unsourced-reading.trig"
 CX_UNGATED = ROOT / "counterexamples" / "track-ungated-reading.trig"
+TRACK_STOPPED = ROOT / "track" / "run-002.trig"
 
 
 def _data(text):
@@ -208,3 +209,47 @@ def test_gate_decision_on_a_clean_reading_fails():
     conforms, _, report = validate(_data(tampered), shacl_graph=str(TRACK_SHAPES))
     assert not conforms, "GATE-01 recorded as fired on a reading of 0.92 conforms"
     assert "does not satisfy" in report.lower(), f"\n{report}"
+
+
+def test_stopped_run_track_conforms_and_retains_everything_but_final_output():
+    # GAP-07, refined 2026-09-05: noOp is a statement about the boundary.
+    # A stopped run's Track retains the readings, the gates, the stop and
+    # its escalation, and records the aggregate as noOp; the one thing it
+    # does not carry is a final_output, because nothing crossed.
+    conforms, _, report = validate(_graph(TRACK_STOPPED), shacl_graph=str(TRACK_SHAPES))
+    assert conforms, f"run-002 (stopped) fails track shapes:\n{report}"
+    ds = _graph(TRACK_STOPPED)
+    V = rdflib.Namespace("https://example.org/vfr#")
+    execution = next(ds.subjects(rdflib.RDF.type, V.OpExecution))
+    assert str(ds.value(execution, V.aggregateOutcome)) == "noOp"
+    assert ds.value(execution, V.finalOutput) is None, "a noOp Track must cite no final_output"
+    assert list(ds.subjects(rdflib.RDF.type, V.GateDecision)), "the stop gate decision is retained"
+    assert list(ds.subjects(V.discharges, None)), "the escalation that discharged the stop is retained"
+    assert ds.value(execution, V.parameters) is not None
+
+
+def test_stopped_run_retains_the_withheld_artifact_as_evidence():
+    # The ruling: a withheld artifact is retained as an evidence entity the
+    # stop refers to, so an auditor can see what would have gone out; it is
+    # never cited as final_output.
+    ds = _graph(TRACK_STOPPED)
+    V = rdflib.Namespace("https://example.org/vfr#")
+    PROV = rdflib.Namespace("http://www.w3.org/ns/prov#")
+    withheld = list(ds.subjects(rdflib.RDF.type, V.WithheldOutput))
+    assert len(withheld) == 1, "run-002 retains exactly one withheld artifact"
+    execution = next(ds.subjects(rdflib.RDF.type, V.OpExecution))
+    assert ds.value(withheld[0], PROV.wasGeneratedBy) == execution
+    assert list(ds.subjects(PROV.used, withheld[0])), "the escalation must refer to what it withheld"
+
+
+def test_withheld_artifact_cited_as_final_output_fails():
+    src = TRACK_STOPPED.read_text()
+    tampered = src.replace('vfr:aggregateOutcome "noOp" ;',
+                           'vfr:aggregateOutcome "noOp" ;\n        vfr:finalOutput run:withheld-anomaly-summary ;')
+    assert tampered != src, "tamper did not apply"
+    conforms, _, report = validate(_data(tampered), shacl_graph=str(TRACK_SHAPES))
+    assert not conforms
+    assert "withheld" in report.lower(), f"the violation does not name the withheld artifact:\n{report}"
+    assert "nothing crossed the boundary" in report, (
+        f"the noOp message must say what a noOp Track retains and why it cites no output:\n{report}"
+    )
