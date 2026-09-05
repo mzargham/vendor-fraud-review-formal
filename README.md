@@ -23,8 +23,9 @@ Each layer is machine-checked; nothing below is a prose-only claim.
    oracle components wired along ports to a policy engine, counterparty
    actions, and a summary cog; the four gates as satisfiable
    constraints; the consensus metric as a typed class whose declared
-   properties are proved by enumeration; checks at type, component,
-   wiring, and system level; a
+   properties are proved by enumeration and whose codomain is checked
+   at the component level; checks at component, wiring, and system
+   level; a
    lifecycle run under trace (`model/vendor-fraud-review.sysml`). Every
    named element traces to the source, to a recorded adjudication, or
    declares itself scaffolding (`model/trace.ttl`).
@@ -94,8 +95,8 @@ Actions.
 
 ## Disclosure
 
-The whitepaper provides the manifest, not data. The recorded run, its
-named approver, the vendors, invoices, readings, and every human actor
+The whitepaper provides the manifest, not data. The recorded runs, their
+named approver and escalation service, the vendors, invoices, readings, and every human actor
 in the narration are fabricated example data; the named people are
 inventions. Nothing here comes from any real organization.
 

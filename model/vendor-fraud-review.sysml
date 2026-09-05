@@ -5,7 +5,10 @@ package VendorFraudReview {
        checks (the gates), wiring-level checks (seam integrity), and
        system-level checks (obligations discharged across components;
        aggregate outcome). Every gate is the direct implication form of
-       a manifest line quoted verbatim in its doc comment. Interpretive
+       a manifest line quoted verbatim in its doc comment — one-way, as
+       the manifest's if/then is written; no converse is stated, so the
+       specification admits over-escalation and says so rather than
+       repairing it (adjudicated: GAP-10). Interpretive
        choices are recorded, with the adjudicator's rulings verbatim, in
        open-questions/adjudications.ttl; model/trace.ttl maps every
        named element here to its provenance. */
@@ -426,9 +429,11 @@ package VendorFraudReview {
         requirement def <'TYPE-01'> DisagreementReadingInRange {
             doc /* The metric class's doc states a codomain of [0, 1]; stated
                here as a constraint so it is checked, not promised: a
-               binding returning 1.4 fails the run. The reading is
-               oracle-provided (GAP-05), so the check sits on the value the
-               engine rules on (second external review, 2026-09-05). */
+               binding returning 1.4 fails the run. A component-level check
+               on the policy engine's attribute (adjudicated: GAP-04, class
+               split): the reading is oracle-provided (GAP-05), so the check
+               sits on the value the engine rules on (second external
+               review, 2026-09-05). */
             subject pe : PolicyEngine;
             require constraint { pe.consensusDisagreement >= 0.0 }
             require constraint { pe.consensusDisagreement <= 1.0 }

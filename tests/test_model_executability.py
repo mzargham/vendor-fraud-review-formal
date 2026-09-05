@@ -59,8 +59,8 @@ def test_counterexample_catches_four_failure_kinds():
     # never discharged (system level, GAP-02); and the Op stopped but
     # emitted output anyway (aggregate level, GAP-06 — section 5.2: "the Op
     # stops before external transmission"); and a disagreement reading
-    # outside the metric class's declared codomain [0, 1] (type level,
-    # TYPE-01 — second external review, 2026-09-05).
+    # outside the metric class's declared codomain [0, 1] (component
+    # level, TYPE-01 — second external review, 2026-09-05).
     r = run_sysml(str(CX_MODEL), "-satisfy=RunConfigurations")
     assert r.stdout.count("fails") >= 4, (
         f"expected gate, discharge, stopped-but-emitted, and out-of-range violations:\n{r.stdout}"

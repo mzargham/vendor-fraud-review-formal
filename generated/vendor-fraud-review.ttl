@@ -31,7 +31,10 @@ elmt:VendorFraudReview___400
        checks (the gates), wiring-level checks (seam integrity), and
        system-level checks (obligations discharged across components;
        aggregate outcome). Every gate is the direct implication form of
-       a manifest line quoted verbatim in its doc comment. Interpretive
+       a manifest line quoted verbatim in its doc comment — one-way, as
+       the manifest's if/then is written; no converse is stated, so the
+       specification admits over-escalation and says so rather than
+       repairing it (adjudicated: GAP-10). Interpretive
        choices are recorded, with the adjudicator's rulings verbatim, in
        open-questions/adjudications.ttl; model/trace.ttl maps every
        named element here to its provenance. """ .
@@ -5064,9 +5067,11 @@ elmt:VendorFraudReview__Manifest__DisagreementReadingInRange___400
     sysml:owningMembership elmt:VendorFraudReview__Manifest__DisagreementReadingInRange___400_om ;
     sysml:body """ The metric class's doc states a codomain of [0, 1]; stated
                here as a constraint so it is checked, not promised: a
-               binding returning 1.4 fails the run. The reading is
-               oracle-provided (GAP-05), so the check sits on the value the
-               engine rules on (second external review, 2026-09-05). """ .
+               binding returning 1.4 fails the run. A component-level check
+               on the policy engine's attribute (adjudicated: GAP-04, class
+               split): the reading is oracle-provided (GAP-05), so the check
+               sits on the value the engine rules on (second external
+               review, 2026-09-05). """ .
 
 elmt:VendorFraudReview__Manifest__DisagreementReadingInRange___400_om
     a sysml:OwningMembership ;

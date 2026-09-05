@@ -111,8 +111,9 @@ exhaustive semantic domain model of every property. It grows as review
 surfaces findings; two external reviews of this repository drove the
 current set (the second closed the metric class's type, the Track's
 gate-to-reading consistency, and the record of the metric's input), and
-both are recorded in the judgment record like everything else. The
-gates themselves are one-way implications, as the manifest writes them:
+both are recorded in the judgment record like everything else, as is
+the author's own re-reading of the Track chapter (the GAP-07
+refinements). The gates themselves are one-way implications, as the manifest writes them:
 the specification refuses under-escalation and admits over-escalation,
 and the worked examples show both.
 
