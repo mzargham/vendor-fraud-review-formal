@@ -258,7 +258,7 @@ adj:impl-metricslot
     a vfr:Implementation, prov:Entity ;
     rdfs:label "the comparator oracle's deliberately unbound metric slot" ;
     vfr:inFile "model/vendor-fraud-review.sysml" ;
-    vfr:anchor "part metric : DisagreementMetric;" ;
+    vfr:anchor "part metric : ConsensusInadequacyMetric;" ;
     prov:wasDerivedFrom adj:ruling-gap04 .
 
 adj:impl-metrics-map
@@ -392,9 +392,11 @@ adj:GAP-04
     vfr:locusDetail """WP §5.6: `- if: consensus_disagreement > 0.25`; §5.5 Consensus row ("Three Cogs classify a document and two must agree; outlier extractions flagged; …").""" ;
     vfr:substrateForces "a typed quantity for the comparison to execute." ;
     vfr:possibleReadings "(a) fraction of dissenting Cogs; (b) 1 − pairwise agreement rate; (c) a task-specific divergence score normalized to [0, 1]." ;
-    vfr:readingInUse """deliberately open, with the openness made structural. The metric's TYPE is fixed (a fact-by-checker answer matrix of nullable Booleans mapped to a scalar in [0, 1] against the 0.25 threshold — the abstract DisagreementMetric in the model), and three type-satisfying alternatives with different semantics are exhibited (dissent-fraction, strict-quorum-undecodable, erasure-aware-undecodable), evaluated on the same answer matrix in chapter 4 of the walkthrough, where they disagree about whether the gate fires. No metric is chosen: a correctly constructed policy is not the same as a fit-for-purpose policy, and what is right for the job here is an open algorithmic policy design question — unlikely to have a unique correct answer, with many viable answers carrying different implications on incentives, and not limited to these three. The comparator oracle's metric slot is typed and unbound; a deployment binds it, and the Track records which metric a run used (recording is not endorsing).""" ;
+    vfr:readingInUse """deliberately open, with the openness made structural. The metric's TYPE is fixed (a fact-by-checker answer matrix of nullable Booleans mapped to a scalar in [0, 1] against the 0.25 threshold — the abstract ConsensusInadequacyMetric in the model, with the codomain a checked constraint, TYPE-01; the class is split along one axiom into a DisagreementMetric branch, monotone in dissent and saturating at unanimous dissent, and an UndecodabilityMetric branch, which is neither — class split, 2026-09-05), and three type-satisfying alternatives with different semantics are exhibited (dissent-fraction, strict-quorum-undecodable, erasure-aware-undecodable), evaluated on the same answer matrix in chapter 4 of the walkthrough, where they disagree about whether the gate fires. No metric is chosen: a correctly constructed policy is not the same as a fit-for-purpose policy, and what is right for the job here is an open algorithmic policy design question — unlikely to have a unique correct answer, with many viable answers carrying different implications on incentives, and not limited to these three. The comparator oracle's metric slot is typed and unbound; a deployment binds it, and the Track records which metric a run used (recording is not endorsing).""" ;
     vfr:note """**Earlier deferral note (2026-09-04):** revisit when the compared spaces are known; if the comparison reduces to yes/no/cantTell facts, an error-correcting-code style interpretation becomes available — that reduction is now the type signature.
-**Type clarified (2026-09-04, ruling logged in this record):** the answer base type is a nullable Boolean, for type-checking support. Given a datum as context, and irrespective of which Cog produced it, a checker answers "do you agree with the datum?": True = agree, False = disagree, null = cannot tell (the Track's earl:cantTell). Checkers are factored apart from generators: a Cog that produced a datum may itself answer False when asked whether it stands; the optional convention that a producer files True about its own output is NOT assumed.""" .
+**Type clarified (2026-09-04, ruling logged in this record):** the answer base type is a nullable Boolean, for type-checking support. Given a datum as context, and irrespective of which Cog produced it, a checker answers "do you agree with the datum?": True = agree, False = disagree, null = cannot tell (the Track's earl:cantTell). Checkers are factored apart from generators: a Cog that produced a datum may itself answer False when asked whether it stands; the optional convention that a producer files True about its own output is NOT assumed.
+**Class split (2026-09-05, ruling logged in this record, selected review option after the second external review):** two of the three exhibited metrics are not monotone in dissent and score 0 at unanimous disagreement — they measure whether a fact resolves, not how much dissent it carries. The slot's type is now ConsensusInadequacyMetric; DisagreementMetric and UndecodabilityMetric are its branches; each concrete metric declares its denominator, null policy, monotonicity, saturation, and ensemble-size invariance as attributes, proved by exhaustive enumeration in the test suite. The strict quorum's absolute two is deliberate (the paper's two-of-three) and the metric is admissible for a three-checker ensemble only.
+**Matrix (2026-09-05, ruling logged in this record):** a Cog's answer about its own datum is included, one column like any other; the matrix is rectangular (an absent checker is not a null answer); a run with zero facts scores 0.""" .
 
 adj:GAP-05
     vfr:locusDetail """WP §5.6 gates block and §4.5 Op composition — the manifest names the variables its gates read (`confidence`, `consensus_disagreement`, `sensitive_data_detected`, `vendor_risk`) but never declares what service provides each value, what was asked of it, or what came back. §5.3 lists "input data and source references" among Track contents without binding them to the gate variables.""" ;
@@ -605,3 +607,245 @@ adj:impl-redistribution-note
     vfr:inFile "sources/sources.ttl" ;
     vfr:anchor "redistributionNote" ;
     prov:wasDerivedFrom adj:note-pdf-redistribution .
+
+adj:review-dsg-1
+    a vfr:ReviewNote ;
+    vfr:order 20 ;
+    vfr:entryTitle "review: three findings from an external reviewer (paraphrased)" ;
+    prov:wasAttributedTo adj:reviewer-dsg ;
+    prov:generatedAtTime "2026-09-05"^^xsd:date ;
+    vfr:noteText """An external reviewer from Dynamical Systems Group reviewed the repository at commit 86498f1 and reported three findings (paraphrased here, not verbatim): (1) the aggregate outcome was required to exist but its value domain was open — a misspelled outcome with the final output removed still conformed; (2) the cached evaluator binary was trusted on its version text alone after the first download, so a substituted executable reporting the right version would pass; (3) regeneration overwrote outputs for existing queries but could not detect a stale CSV left behind by a removed or renamed query. More generally: several integrity rules established that required properties exist without constraining their allowed values, types, or cardinality.""" ;
+    vfr:changeNote """all three findings were reproduced by probe before fixing, then fixed red-to-green: the aggregate outcome and assertion mode domains are closed (sh:in, datatype, cardinality) with tamper tests; the expected per-platform binary digests and the release checksums are committed in toolchain/, and get-sysml.sh verifies the installed binary against them on every invocation (a substituted binary is detected and replaced by a verified fetch, exercised in test); regeneration removes existing CSVs before rendering so generated/ holds exactly one output per committed query, with a stale-file regression test. A scope-and-limitations statement was added to the walkthrough's front door: completeness is enforced everywhere, value-domain constraints are closed where findings surface them, and the constraint set is expected to grow under review.""" .
+
+adj:reviewer-dsg
+    a prov:Agent ;
+    rdfs:label "Dynamical Systems Group reviewer (external to the translation)" .
+
+# ---------------------------------------------------------------- second external review (2026-09-05)
+
+adj:reviewer-dsg-2
+    a prov:Agent ;
+    rdfs:label "Dynamical Systems Group reviewer 2 (external to the translation)" .
+
+adj:review-dsg-2
+    a vfr:ReviewNote ;
+    vfr:order 21 ;
+    vfr:entryTitle "review: thirteen findings from a second external reviewer (DSG, paraphrased)" ;
+    prov:wasAttributedTo adj:reviewer-dsg-2 ;
+    prov:generatedAtTime "2026-09-05"^^xsd:date ;
+    vfr:noteText """A second reviewer from Dynamical Systems Group reviewed the repository at commit fc80759, reading the source rather than the rendered site, with three harnesses alongside the review (a property suite over the metric implementations, exhaustive over a bounded domain; a Monte Carlo sensitivity sweep; an enumeration of the requirement set's Boolean state space). Thirteen findings, paraphrased: (F-01) the metric class's type signature lived only in a doc comment — the three subclasses added no members and nothing bounded the disagreement reading to [0, 1]; (F-02) the three metrics divide by different things (answers versus facts) yet share one threshold; (F-03) two of the three are not monotone in dissent and score 0 at unanimous disagreement — undecodability measures under a supertype named for disagreement; (F-04) the strict quorum is the literal 2, so its meaning varies with ensemble size (one checker's unanimous agreement scores 1); (F-05) with three checkers and no abstention both quorum metrics are identically zero, so GATE-02 cannot fire under them on the ensemble run-001 records — their consistency with the section 5.5 example is not evidence in their favour; (F-06) every gate is a one-way implication, and exactly one state satisfies the requirement set for every possible reading: escalate everything, discharge everything, emit nothing; (F-07) the Track records the metric's name and output but never its input, so the recorded value cannot be recomputed; (F-08) the headline matrix lands exactly on 0.25 under one binding, so the chapter's punchline turns on comparator strictness; (F-09) all three metrics raise on an empty run; (F-10) that the bindings can disagree was shown, how often was not; (F-11) rectangularity is neither stated nor enforced; (F-12) no neutral null-ignoring baseline is exhibited; (F-13) whether a Cog's answer about its own datum is included is unspecified. Four questions came back to the adjudicator: the remedy for F-06, whether the quorum of two is deliberate, whether a correlated-checker sweep should be written, and whether the shapes and queries carry the same one-directionality.""" ;
+    vfr:changeNote """every numeric claim was reproduced against exhibits.py before anything moved. Two corrections are recorded rather than acted on: the comparator's strictness (F-08) is not a silent decision — `>` is the manifest's verbatim operator in the section 5.6 rule — though the exhibit's fragility was real and the headline matrix was changed; and the non-triviality witness proposed for F-06 already existed (CleanRun raises no obligation and passes), which shows the specification admits non-escalation without requiring it. The adjudicator ruled on the remaining questions by selecting review options (entries 22 to 26): the gates stay one-way and the degenerate run is exhibited (GAP-10); the threshold stays the policy's and each metric declares its denominator (GAP-11); the class is split along the monotonicity axiom and the quorum of two is deliberate (GAP-04, class split); self-answers are included, the matrix is rectangular, an empty run scores 0 (GAP-04, matrix); the Track carries the metric's input (GAP-12). In the substrate: TYPE-01 makes the codomain a checked constraint, with an out-of-range counterexample run that must fail; the metric class carries its properties as attributes and tests/test_metric_properties.py proves each declared value by exhaustive enumeration; chapter 4 gained the property matrix, the reachability proposition, a separated headline and boundary exhibit, a sensitivity sweep with per-binding firing rates, and a re-evaluation of run-001 under all three bindings; chapter 3 gained the degenerate escalate-everything run, which passes; the Track shapes tie gate decisions to the readings they cite in both directions, with a counterexample (the reviewer's fourth question, answered: the one-directionality was there too). Deferred, on record: a correlated-checker sensitivity sweep (the independent-cell model is a lower bound on how much the binding matters), and a fourth, null-ignoring pairwise metric (the GAP-04 ruling names three, and the three exhibited already span the null-policy axis).""" .
+
+adj:GAP-10
+    a vfr:ComputabilityGap ;
+    rdfs:label "the direction of the gates" ;
+    vfr:problem "Each manifest gate is written if/then. Whether the converse is intended — whether an obligation may be raised when its condition does NOT hold — is not stated. Under the one-way reading, exactly one state satisfies every gate and system requirement for every possible reading: escalate everything, discharge everything, emit nothing." ;
+    vfr:locator "§5.6" ;
+    vfr:locusDetail """WP §5.6 gates block: four `- if: … then: …` rules. No rule in the manifest states what follows when a condition does not hold.""" ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:surfacedOn "2026-09-05"^^xsd:date ;
+    vfr:surfacedHow "second external review: exhaustive enumeration of the requirement set's Boolean state space (16 readings x 1024 states) found one reading-independent satisfying state, and every committed counterexample was an under-escalation" ;
+    vfr:surfacedBy adj:reviewer-dsg-2 ;
+    vfr:substrateForces "a decision about whether the gate constraints are implications or biconditionals: an executable requirement set either admits discretionary escalation or forbids it." ;
+    vfr:possibleReadings "(a) one-way implications, the manifest's if/then literally, with the degenerate run exhibited and named; (b) necessity requirements (NECESSITY-01..04: a condition that does not hold forbids the obligation), ruling out discretionary escalation; (c) one-way plus an enforced witness that some committed run raises nothing." ;
+    vfr:readingInUse """(a). The gates stay one-way, faithful to the source's if/then; the specification admits over-escalation and cannot see it, and now says so: the ninth worked example (escalate-everything, all readings clean, everything raised and discharged, nothing emitted) passes and is narrated as such; CleanRun is the witness that non-escalation is admitted; tests/test_requirement_directionality.py pins the count of reading-independent satisfying states at exactly one, so a future converse changes the narration with the model.""" ;
+    vfr:status "adjudicated" ;
+    prov:wasGeneratedBy adj:translation .
+
+adj:ruling-gap10
+    a vfr:Ruling ;
+    vfr:resolves adj:GAP-10 ;
+    vfr:order 22 ;
+    vfr:entryTitle "GAP-10 (selected review option)" ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-05"^^xsd:date ;
+    vfr:rulingText """Exhibit only, record the reading (selected review option, second external review 2026-09-05): add the ninth worked example showing the degenerate run passes, and log the one-way reading as an explicit GAP ruling. No new constraints; discretionary escalation stays permitted.""" ;
+    vfr:changeNote """chapter 3 gained the escalate-everything run: all four readings clean, all four obligations raised and discharged, no output, aggregate noOp — POLICY SATISFIED. The narration states that the gates are one-way, that the specification cannot see over-escalation, and that CleanRun is the witness that non-escalation is admitted. tests/test_requirement_directionality.py enumerates the requirement set and asserts exactly one reading-independent satisfying state, the degenerate one, and that every GATE and SYSTEM constraint is an implication. The model is unchanged.""" .
+
+adj:GAP-11
+    a vfr:ComputabilityGap ;
+    rdfs:label "the scale the consensus threshold sits on" ;
+    vfr:problem "The manifest states one threshold, 0.25, for consensus_disagreement. The three exhibited metrics normalize over different things — dissent-fraction over facts x checkers, both undecodability metrics over facts — so the one number means 'more than a quarter of answers dissented' under one binding and 'more than a quarter of facts failed to decode' under the others. A single point of definition concealed three scales." ;
+    vfr:locator "§5.6, §5.5" ;
+    vfr:locusDetail """WP §5.6: `- if: consensus_disagreement > 0.25`; §5.5 Consensus row ("Three Cogs classify a document and two must agree").""" ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:surfacedOn "2026-09-05"^^xsd:date ;
+    vfr:surfacedHow "second external review: reading the denominators off the three implementations against the single ValidationStrategyParameters threshold" ;
+    vfr:surfacedBy adj:reviewer-dsg-2 ;
+    vfr:substrateForces "a decision about where the threshold is calibrated: to the policy (the manifest's placement) or to the bound metric." ;
+    vfr:possibleReadings "(a) the threshold stays the policy's verbatim parameter and each metric declares the denominator its value is a fraction of, so a binding is calibrated to the policy's number and the scale difference is a model fact; (b) the threshold moves onto the metric (each concrete metric declares its own calibrated threshold, GATE-02 reads pe.metric.threshold, the policy holds a default), departing from the manifest's placement." ;
+    vfr:readingInUse """(a). ValidationStrategyParameters.consensusDisagreementThreshold stays the single point of definition, exactly as the manifest places it. The metric class gained `denominator : DenominatorBasis` ({facts, factsTimesCheckers}), redefined by each concrete metric and checked against the implementation's behaviour by the property suite. What the single number means under each binding is now readable off the model rather than off the code.""" ;
+    vfr:status "adjudicated" ;
+    prov:wasGeneratedBy adj:translation .
+
+adj:ruling-gap11
+    a vfr:Ruling ;
+    vfr:resolves adj:GAP-11 ;
+    vfr:order 23 ;
+    vfr:entryTitle "GAP-11 (selected review option)" ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-05"^^xsd:date ;
+    vfr:rulingText """Keep it on the policy, record the gap (selected review option, second external review 2026-09-05): 0.25 stays the manifest's verbatim policy parameter. A new GAP records that the three metrics put it on different scales; the denominator becomes a declared model attribute per metric; a binding must be calibrated to the policy's number.""" ;
+    vfr:changeNote """`enum def DenominatorBasis {facts, factsTimesCheckers}` added to the model; the abstract metric class declares `denominator`, each concrete metric redefines it (dissent-fraction: factsTimesCheckers; both undecodability metrics: facts); tests/test_metric_properties.py checks the declared basis against the implementation (a facts denominator yields only multiples of 1/facts). The threshold's placement and the parameter-factoring test are unchanged.""" .
+
+adj:ruling-gap04-class-split
+    a vfr:Ruling ;
+    vfr:refines adj:ruling-gap04-clarification ;
+    vfr:resolves adj:GAP-04 ;
+    vfr:order 24 ;
+    vfr:entryTitle "GAP-04 (class split; the quorum is deliberate)" ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-05"^^xsd:date ;
+    vfr:rulingText """Split under a new supertype (selected review option, second external review 2026-09-05): ConsensusInadequacyMetric as the abstract type of the slot; DisagreementMetric (monotone, saturates) and UndecodabilityMetric (neither) as branches; dissent-fraction in the first, the two quorum metrics in the second. Recorded as a refinement of the GAP-04 ruling. — Deliberate: keyed to three Cogs (selected review option): keep the function. State in the def's doc that the quorum is the paper's two-of-three, and declare the metric admissible only for a three-checker ensemble (ensembleSizeInvariant = false recorded as an attribute).""" ;
+    vfr:changeNote """the model's metric class was restructured: `abstract part def ConsensusInadequacyMetric` types the comparator oracle's unbound slot and carries the type signature plus five property attributes (denominator, nullPolicy, monotoneInDissent, saturatesAtUnanimousDissent, ensembleSizeInvariant); `abstract part def DisagreementMetric` and `abstract part def UndecodabilityMetric` specialize it and fix the two axioms; DissentFractionMetric sits under the first, StrictQuorumUndecodableMetric and ErasureAwareUndecodableMetric under the second, each redefining its remaining attributes. `enum def NullPolicy {punitive, quorumBlocking, erasure}` names how each treats a null. The strict quorum's doc states the absolute two is the paper's two-of-three and the metric is admissible for a three-checker ensemble only. TYPE-01 (DisagreementReadingInRange) makes the class's [0, 1] codomain a checked constraint, bound in every run configuration and the scenario template, with an out-of-range run in the counterexample battery. tests/test_metric_properties.py parses the declared attributes and proves each by exhaustive enumeration over {True, False, null}^(facts x 3), facts <= 3; the model asserts, the suite checks. The binding regex, the trace map, and chapter 4 follow.""" .
+
+adj:ruling-gap04-matrix
+    a vfr:Ruling ;
+    vfr:refines adj:ruling-gap04-clarification ;
+    vfr:resolves adj:GAP-04 ;
+    vfr:order 25 ;
+    vfr:entryTitle "GAP-04 (the matrix: self-answers, shape, empty run)" ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-05"^^xsd:date ;
+    vfr:rulingText """Included (selected review option, second external review 2026-09-05): a Cog's answer about its own datum is one column like any other, consistent with 'irrespective of which Cog produced it'. Stated as an assumption in the DisagreementMetric doc and the GAP-04 record. — Approved with the remediation plan: the matrix is rectangular (an absent checker is not a null answer) and a run with zero facts scores 0.0.""" ;
+    vfr:changeNote """the ConsensusInadequacyMetric doc states all three: self-answers included, matrix rectangular, empty run scores 0. The three implementations share `_rectangular`, which returns 0.0 on an empty matrix and raises ValueError on a ragged one; both behaviours are tested (previously all three raised ZeroDivisionError on an empty run and accepted ragged input with different consequences per binding).""" .
+
+adj:GAP-12
+    a vfr:ComputabilityGap ;
+    rdfs:label "the Track carries the metric's input" ;
+    vfr:problem "The GAP-05 interface ruling delivers provenance for the consensus reading — which service, what was sent, what came back — but not re-derivability: the Track recorded the metric's name and its output and never its input, the fact-by-checker answer matrix. No auditor could check that 0.10 is what the named metric returns on this run's answers, and the question chapter 4 raises — what would the other bindings have said about this run — could not be asked of the record." ;
+    vfr:locator "§5.3, §5.6" ;
+    vfr:locusDetail """WP §5.3 Track purposes: auditability ("an organization can reconstruct why a decision was made"), debugging; §5.6 track.include (gate_decisions, guard_results).""" ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:surfacedOn "2026-09-05"^^xsd:date ;
+    vfr:surfacedHow "second external review: reading the consensus oracle call in track/run-001.trig against the auditability purpose" ;
+    vfr:surfacedBy adj:reviewer-dsg-2 ;
+    vfr:substrateForces "a decision about what the record of a metric reading must contain for the reading to be recomputable, and a shape to refuse a record that lacks it." ;
+    vfr:possibleReadings "(a) the oracle call carries the answer matrix itself, and a shape requires it whenever a metric is named; (b) a content hash of the matrix plus a resolvable reference; (c) provenance only, with the limitation noted." ;
+    vfr:readingInUse """(a). run:oracle-call-consensus carries `vfr:answerMatrix` (ten facts x three checkers, one column per Cog in request-payload order) and `vfr:factCount`; MetricInputShape refuses a call that names a metric without its matrix; a test recomputes the recorded 0.10 from the recorded matrix under the recorded metric; chapter 4 re-evaluates run-001 under all three bindings and shows what GATE-02 would have done under each. This extends GAP-05 (what was sent, what came back) with what the number was computed over.""" ;
+    vfr:status "adjudicated" ;
+    prov:wasGeneratedBy adj:translation .
+
+adj:ruling-gap12
+    a vfr:Ruling ;
+    vfr:resolves adj:GAP-12 ;
+    vfr:order 26 ;
+    vfr:entryTitle "GAP-12 (selected review option)" ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-05"^^xsd:date ;
+    vfr:rulingText """Yes, matrix in the Track (selected review option, second external review 2026-09-05): the consensus oracle call carries the fact x checker matrix; a SHACL shape requires it whenever vfr:metric is present; a test recomputes 0.10 from it; a new chapter-4 exhibit re-evaluates run-001 under all three bindings. Logged as a new GAP extending GAP-05.""" ;
+    vfr:changeNote """track/run-001.trig: the consensus call records `vfr:answerMatrix` and `vfr:factCount 10`; the matrix was chosen so the recorded strict-quorum value recomputes exactly (one undecodable fact, which on three checkers requires an abstention), the other two bindings read differently, and one of them would have fired the gate. shapes/track.shapes.ttl: MetricInputShape. tests/test_metric_binding.py recomputes the recorded value from the recorded matrix; tests/test_shacl.py refuses the call with its matrix removed. exhibits.show_run_001_under_all_bindings renders the re-evaluation in chapter 4.""" .
+
+# ---- implementations derived from the second review and its rulings
+
+adj:impl-type01
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "TYPE-01 DisagreementReadingInRange: the metric class's codomain as a checked constraint" ;
+    vfr:inFile "model/vendor-fraud-review.sysml" ;
+    vfr:anchor "TYPE-01" ;
+    prov:wasDerivedFrom adj:ruling-gap04-class-split .
+
+adj:impl-out-of-range-run
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the out-of-range counterexample run (returnedDisagreement = 1.4 must fail satisfy)" ;
+    vfr:inFile "counterexamples/run-unattended.tail" ;
+    vfr:anchor "OutOfRangeRun" ;
+    prov:wasDerivedFrom adj:ruling-gap04-class-split .
+
+adj:impl-metric-class-split
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "ConsensusInadequacyMetric with DisagreementMetric and UndecodabilityMetric branches, properties as attributes" ;
+    vfr:inFile "model/vendor-fraud-review.sysml" ;
+    vfr:anchor "abstract part def UndecodabilityMetric" ;
+    prov:wasDerivedFrom adj:ruling-gap04-class-split .
+
+adj:impl-metric-properties-suite
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the property suite: each declared attribute proved by exhaustive enumeration" ;
+    vfr:inFile "tests/test_metric_properties.py" ;
+    vfr:anchor "test_declared_property_equals_exhaustive_result" ;
+    prov:wasDerivedFrom adj:ruling-gap04-class-split .
+
+adj:impl-denominator-basis
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "enum def DenominatorBasis: each metric declares what its value is a fraction of" ;
+    vfr:inFile "model/vendor-fraud-review.sysml" ;
+    vfr:anchor "DenominatorBasis" ;
+    prov:wasDerivedFrom adj:ruling-gap11 .
+
+adj:impl-rectangular
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the shared matrix check: empty run scores 0, ragged matrix refused" ;
+    vfr:inFile "exhibits.py" ;
+    vfr:anchor "_rectangular" ;
+    prov:wasDerivedFrom adj:ruling-gap04-matrix .
+
+adj:impl-escalate-everything
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the degenerate worked example: everything escalated, nothing emitted, and it passes" ;
+    vfr:inFile "chapters/03-worked-examples.ipynb" ;
+    vfr:anchor "escalate-everything" ;
+    prov:wasDerivedFrom adj:ruling-gap10 .
+
+adj:impl-directionality-test
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the requirement set's one reading-independent satisfying state, pinned by enumeration" ;
+    vfr:inFile "tests/test_requirement_directionality.py" ;
+    vfr:anchor "GAP-10" ;
+    prov:wasDerivedFrom adj:ruling-gap10 .
+
+adj:impl-track-answer-matrix
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the consensus oracle call records the metric's input matrix" ;
+    vfr:inFile "track/run-001.trig" ;
+    vfr:anchor "answerMatrix" ;
+    prov:wasDerivedFrom adj:ruling-gap12 .
+
+adj:impl-metric-input-shape
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "MetricInputShape: a named metric without its matrix is refused" ;
+    vfr:inFile "shapes/track.shapes.ttl" ;
+    vfr:anchor "MetricInputShape" ;
+    prov:wasDerivedFrom adj:ruling-gap12 .
+
+adj:impl-run-001-rebinding
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "run-001 re-evaluated under all three bindings from the recorded matrix" ;
+    vfr:inFile "exhibits.py" ;
+    vfr:anchor "show_run_001_under_all_bindings" ;
+    prov:wasDerivedFrom adj:ruling-gap12 .
+
+adj:impl-gate-reading-consistency
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "gate decisions tied to the readings they cite, both directions, against the parameters in force" ;
+    vfr:inFile "shapes/track.shapes.ttl" ;
+    vfr:anchor "no recorded gate decision" ;
+    prov:wasDerivedFrom adj:review-dsg-2 .
+
+adj:impl-ungated-counterexample
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the ungated-reading counterexample Track" ;
+    vfr:inFile "counterexamples/track-ungated-reading.trig" ;
+    vfr:anchor "COUNTEREXAMPLE" ;
+    prov:wasDerivedFrom adj:review-dsg-2 .
+
+adj:impl-reachability
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the reachability exhibit: which bindings can fire GATE-02 on the recorded ensemble" ;
+    vfr:inFile "exhibits.py" ;
+    vfr:anchor "show_gate_reachability" ;
+    prov:wasDerivedFrom adj:review-dsg-2 .
+
+adj:impl-sensitivity
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the sensitivity sweep: how often the bindings disagree, and each binding's firing rate" ;
+    vfr:inFile "exhibits.py" ;
+    vfr:anchor "show_metric_sensitivity" ;
+    prov:wasDerivedFrom adj:review-dsg-2 .
+
+adj:impl-property-matrix
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the property matrix exhibit: declared against computed, with minimal counterexamples" ;
+    vfr:inFile "exhibits.py" ;
+    vfr:anchor "show_metric_properties" ;
+    prov:wasDerivedFrom adj:review-dsg-2 .

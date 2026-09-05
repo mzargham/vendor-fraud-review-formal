@@ -366,6 +366,7 @@ SCENARIO_TEMPLATE = """    package RunConfigurations {
         }
         part s : Scenario;
         requirement i1 : Manifest::ConfidenceInterface { subject pe = s.policyEngine; }
+        requirement t1 : Manifest::DisagreementReadingInRange { subject pe = s.policyEngine; }
         requirement g1 : Manifest::ConfidenceGate { subject pe = s.policyEngine; }
         requirement g2 : Manifest::ConsensusGate { subject pe = s.policyEngine; }
         requirement g3 : Manifest::SensitiveDataGate { subject pe = s.policyEngine; }
@@ -379,7 +380,7 @@ SCENARIO_TEMPLATE = """    package RunConfigurations {
         requirement s3 : Manifest::OutcomeCoherence { subject op = s; }
         verification def ScenarioCase {
             objective {
-                verify i1; verify g1; verify g2; verify g3; verify g4;
+                verify i1; verify t1; verify g1; verify g2; verify g3; verify g4;
                 verify w1; verify w2; verify w3; verify w4;
                 verify s1; verify s2; verify s3;
             }
@@ -434,10 +435,24 @@ def run_scenario(name, readings, recorded, policy_text=None):
 # datum?". True = agree, False = disagree, None = cannot tell. Checkers are
 # factored apart from generators: a producing Cog may answer False about
 # its own datum.
-DisagreementMetric = Callable[[Sequence[Sequence[bool | None]]], float]
+# The matrix is rectangular by declaration (an absent checker is not a null
+# answer) and a run with zero facts scores 0: no facts, no inadequacy
+# (GAP-04 matrix ruling, 2026-09-05).
+ConsensusInadequacyMetric = Callable[[Sequence[Sequence[bool | None]]], float]
+
+
+def _rectangular(matrix):
+    """True if there is anything to measure; raises on a ragged matrix."""
+    if not matrix:
+        return False
+    if any(len(fact) != len(matrix[0]) for fact in matrix):
+        raise ValueError("answer matrix must be rectangular: one answer per checker per fact")
+    return True
 
 
 def dissent_fraction(matrix):
+    if not _rectangular(matrix):
+        return 0.0
     dissents = total = 0
     for fact in matrix:
         dissents += sum(1 for v in fact if v is not True)
@@ -446,6 +461,8 @@ def dissent_fraction(matrix):
 
 
 def strict_quorum_undecodable(matrix):
+    if not _rectangular(matrix):
+        return 0.0
     undecodable = 0
     for fact in matrix:
         expressed = [v for v in fact if v is not None]
@@ -455,6 +472,8 @@ def strict_quorum_undecodable(matrix):
 
 
 def erasure_aware_undecodable(matrix):
+    if not _rectangular(matrix):
+        return 0.0
     undecodable = 0
     for fact in matrix:
         expressed = [v for v in fact if v is not None]
@@ -463,13 +482,30 @@ def erasure_aware_undecodable(matrix):
     return undecodable / len(matrix)
 
 
-METRICS: dict[str, DisagreementMetric] = {
+METRICS: dict[str, ConsensusInadequacyMetric] = {
     "dissent-fraction": dissent_fraction,
     "strict-quorum-undecodable": strict_quorum_undecodable,
     "erasure-aware-undecodable": erasure_aware_undecodable,
 }
 
+# The headline matrix: fabricated, constructed so that no metric lands on
+# the threshold and the three read clearly apart (second external review,
+# 2026-09-05: the previous headline landed exactly on 0.25 under one
+# binding, so the result turned on comparator strictness alone).
 ANSWER_MATRIX = [
+    [True, True, True],
+    [True, True, True],
+    [True, True, True],
+    [True, True, False],
+    [True, False, None],
+    [True, None, None],
+    [False, None, None],
+    [True, False, False],
+]
+
+# The boundary case, kept as its own exhibit: erasure-aware-undecodable
+# scores exactly 0.250 here, and the manifest's comparator is strict.
+BOUNDARY_MATRIX = [
     [True, True, True],
     [True, True, True],
     [True, True, True],
@@ -481,13 +517,19 @@ ANSWER_MATRIX = [
 ]
 
 
-def evaluate_metrics():
-    print("type signature: DisagreementMetric = "
-          "(fact x checker answer matrix of nullable Bool; "
-          "True = agree, False = disagree, null = cannot tell) -> [0, 1]\n")
-    threshold = float(re.search(
+def model_threshold():
+    """The consensus threshold, read from the model's single point of
+    definition (never retyped here)."""
+    return float(re.search(
         r"consensusDisagreementThreshold : ScalarValues::Real = ([0-9.]+)",
         MODEL.read_text()).group(1))
+
+
+def evaluate_metrics():
+    print("type signature: ConsensusInadequacyMetric = "
+          "(fact x checker answer matrix of nullable Bool; "
+          "True = agree, False = disagree, null = cannot tell) -> [0, 1]\n")
+    threshold = model_threshold()
     token = {True: "True ", False: "False", None: "null "}
     checkers = len(ANSWER_MATRIX[0])
     print("same answer matrix for all three metrics "
@@ -499,6 +541,15 @@ def evaluate_metrics():
     for name, metric in METRICS.items():
         value = metric(ANSWER_MATRIX)
         print(f"{name:26}: {value:.3f} -> gate fires: {value > threshold}")
+    print("\nthe boundary case (a second matrix, kept apart from the headline): "
+          "one binding lands exactly on the threshold, and the comparator is the "
+          "manifest's own strict >, verbatim from the section 5.6 rule —")
+    for i, fact in enumerate(BOUNDARY_MATRIX, 1):
+        print(f"  f{i}: " + " ".join(token[v] for v in fact))
+    for name, metric in METRICS.items():
+        value = metric(BOUNDARY_MATRIX)
+        at = "  (exactly on the boundary)" if value == threshold else ""
+        print(f"{name:26}: {value:.3f} -> gate fires: {value > threshold}{at}")
     print("\nthe paper's own section 5.5 example, as one fact "
           "(three Cogs classify a document, two agree):")
     example = [[True, True, False]]
@@ -526,7 +577,9 @@ def metric_id(def_name):
 
 
 def show_metric_binding():
-    defs = re.findall(r"part def (\w+Metric) :> DisagreementMetric", MODEL.read_text())
+    defs = re.findall(
+        r"part def (\w+Metric) :> (?:Disagreement|Undecodability)Metric", MODEL.read_text()
+    )
     ok = True
     rows = []
     for d in defs:
@@ -557,6 +610,244 @@ def show_unbound_metric_slot():
         r"part def ConsensusComparatorOracle.*?\n        \}", MODEL.read_text(), re.S
     ).group(0)
     print(_dedent(block))
+
+
+def declared_metric_properties():
+    """{metric id: {property: value}} read from the model: the two branches
+    fix the axioms, each concrete metric redefines the rest."""
+    source = MODEL.read_text()
+
+    def redefinitions(body):
+        out = {}
+        for attr, value in re.findall(r"attribute :>> (\w+) = ([\w:]+);", body):
+            value = value.rsplit("::", 1)[-1]
+            out[attr] = {"true": True, "false": False}.get(value, value)
+        return out
+
+    branches = {
+        name: redefinitions(body)
+        for name, body in re.findall(
+            r"abstract part def (\w+Metric) :> ConsensusInadequacyMetric \{(.*?)\n        \}",
+            source, re.S,
+        )
+    }
+    declared = {}
+    for name, parent, body in re.findall(
+        r"(?<!abstract )part def (\w+Metric) :> (\w+Metric) \{(.*?)\n        \}", source, re.S
+    ):
+        if parent in branches:
+            declared[metric_id(name)] = {**branches[parent], **redefinitions(body)}
+    return declared
+
+
+def _render_matrix(m):
+    tok = {True: "T", False: "F", None: "_"}
+    return " | ".join("[" + " ".join(tok[v] for v in row) + "]" for row in m)
+
+
+def _small_domain(max_facts=2, checkers=3):
+    import itertools
+
+    rows = list(itertools.product((True, False, None), repeat=checkers))
+    for f in range(1, max_facts + 1):
+        for chosen in itertools.product(rows, repeat=f):
+            yield [list(r) for r in chosen]
+
+
+def _probe_monotone(metric):
+    for m in _small_domain():
+        base = metric(m)
+        for i, row in enumerate(m):
+            for j, v in enumerate(row):
+                if v is not True:
+                    continue
+                flipped = [list(r) for r in m]
+                flipped[i][j] = False
+                if metric(flipped) < base:
+                    return False, (f"{_render_matrix(m)} = {base:.3g} but "
+                                   f"{_render_matrix(flipped)} = {metric(flipped):.3g}")
+    return True, "no decrease over the bounded domain"
+
+
+def _probe_saturates(metric):
+    v = metric([[False] * 3 for _ in range(2)])
+    return v == 1.0, f"all-False matrix scores {v:.3g}"
+
+
+def _probe_ensemble(metric):
+    for m in _small_domain():
+        base = metric(m)
+        for k in (2, 3):
+            rep = [[v for v in row for _ in range(k)] for row in m]
+            if metric(rep) != base:
+                return False, (f"{_render_matrix(m)} = {base:.3g} but with every checker "
+                               f"duplicated {_render_matrix(rep)} = {metric(rep):.3g}")
+    return True, "unchanged under checker replication"
+
+
+def _probe_denominator(metric):
+    facts_only = all(
+        abs(metric(m) * len(m) - round(metric(m) * len(m))) < 1e-9 for m in _small_domain()
+    )
+    return ("facts" if facts_only else "factsTimesCheckers",
+            "every value is a multiple of 1/facts" if facts_only
+            else "some value is not a multiple of 1/facts (e.g. one dissent among three answers)")
+
+
+def _probe_null_policy(metric):
+    lone_null, lone_voice = metric([[True, True, None]]), metric([[True, None, None]])
+    if lone_null > 0 and lone_voice > 0:
+        return "punitive", "a lone null counts as dissent"
+    if lone_null == 0 and lone_voice == 1.0:
+        return "quorumBlocking", "a lone voice among nulls cannot reach quorum"
+    if lone_null == 0 and lone_voice == 0:
+        return "erasure", "a lone voice among nulls decodes"
+    return "?", f"[T T _] = {lone_null:.3g}, [T _ _] = {lone_voice:.3g}"
+
+
+def show_metric_properties():
+    """The property matrix: what the model DECLARES for each metric against
+    what exhaustive enumeration over {True, False, null}^(facts x 3),
+    facts <= 2, FINDS — with the minimal counterexample where a property
+    fails. The same check runs as a test over facts <= 3."""
+    declared = declared_metric_properties()
+    probes = (
+        ("denominator", _probe_denominator),
+        ("nullPolicy", _probe_null_policy),
+        ("monotoneInDissent", _probe_monotone),
+        ("saturatesAtUnanimousDissent", _probe_saturates),
+        ("ensembleSizeInvariant", _probe_ensemble),
+    )
+    rows, agree, total = [], 0, 0
+    for prop, probe in probes:
+        cells = [("code", prop)]
+        for name in METRICS:
+            found, why = probe(METRICS[name])
+            want = declared[name][prop]
+            ok = found == want
+            agree += ok
+            total += 1
+            shown = str(found).lower() if isinstance(found, bool) else found
+            cells.append(f"{shown} {'✓' if ok else '✗ model says ' + str(want).lower()} — {why}")
+        rows.append(tuple(cells))
+    _table(("Property (declared in the model)", *METRICS), rows)
+    print(f"declared = computed: {agree} of {total} cells agree "
+          f"(the model asserts, the enumeration checks; the test suite repeats this over facts <= 3)")
+
+
+def show_gate_reachability():
+    """Which bindings can fire GATE-02 on the ensemble the recorded run
+    used: the ensemble size is read from run-001's cogs_invoked, the value
+    range of each metric is enumerated over every single-fact answer row,
+    with and without abstention."""
+    import itertools
+
+    ds = _dataset("track/run-001.trig")
+    cogs = len(set(ds.objects(None, __import__("rdflib").URIRef(VFR + "cogsInvoked"))))
+    threshold = model_threshold()
+    print(f"ensemble size from track/run-001.trig cogs_invoked: {cogs} checkers; "
+          f"gate fires when the metric > {threshold}\n")
+    unreachable = []
+    for name, metric in METRICS.items():
+        expressed = {metric([list(r)]) for r in itertools.product((True, False), repeat=cogs)}
+        with_null = {metric([list(r)]) for r in itertools.product((True, False, None), repeat=cogs)}
+        print(f"{name:26}: no abstention -> values {{{', '.join(f'{v:.3g}' for v in sorted(expressed))}}}"
+              f"; with abstention -> values {{{', '.join(f'{v:.3g}' for v in sorted(with_null))}}}")
+        if max(expressed) <= threshold:
+            unreachable.append(name)
+    print(f"\nwith {cogs} checkers and no abstention, GATE-02 cannot fire under: "
+          f"{', '.join(unreachable) or '(none)'}")
+    print("proposition (proved by enumeration, here and in the test suite for every odd "
+          "ensemble size up to 7): over a two-valued domain, three expressed answers always "
+          "contain a repeated value, so quorum-2 is met and the majority strictly exceeds "
+          "half. Both undecodability metrics are identically zero; only abstention can make "
+          "them nonzero. Their consistency with the section 5.5 example is a consequence of "
+          "this, not evidence in their favour.")
+
+
+def show_run_001_under_all_bindings():
+    """The recorded run, re-evaluated: the matrix the Track records (GAP-12)
+    recomputes the recorded value under the recorded metric, and the other
+    two bindings say what they would have said about the same answers."""
+    ds = _dataset("track/run-001.trig")
+    row = next(iter(ds.query(f"""
+        SELECT ?m ?matrix ?value WHERE {{
+            ?call <{VFR}metric> ?m ; <{VFR}answerMatrix> ?matrix ;
+                  <http://www.w3.org/ns/prov#generated> ?reading .
+            ?reading <{VFR}value> ?value .
+        }}""")))
+    recorded_metric, matrix, recorded_value = str(row[0]), json.loads(str(row[1])), float(row[2])
+    threshold = model_threshold()
+    token = {True: "True ", False: "False", None: "null "}
+    print(f"run-001 recorded: metric {recorded_metric}, value {recorded_value}, "
+          f"matrix {len(matrix)} facts x {len(matrix[0])} checkers:")
+    for i, fact in enumerate(matrix, 1):
+        print(f"  f{i}: " + " ".join(token[v] for v in fact))
+    recomputed = METRICS[recorded_metric](matrix)
+    print(f"\nrun-001 recomputed under {recorded_metric}: {recomputed:.3f} "
+          f"-> equals the recorded value: {recomputed == recorded_value}\n")
+    print("the same answers under every binding the model admits:")
+    for name, metric in METRICS.items():
+        value = metric(matrix)
+        tag = "  (the binding this run used)" if name == recorded_metric else ""
+        print(f"  {name:26}: {value:.3f} -> GATE-02 fires: {value > threshold}{tag}")
+
+
+def show_metric_sensitivity(facts=12, trials=500, seed=20260905):
+    """How often the three bindings disagree about whether GATE-02 fires,
+    and how often each fires, over a stated generative model. Cells are
+    drawn independently: P(null) = p_abstain, otherwise P(False) =
+    p_dissent. Checkers are exchangeable and conditionally independent,
+    which real checkers are not — correlated dissent is what a consensus
+    gate exists to catch — so read the numbers as a lower bound on how much
+    the choice of binding matters. Deterministic: fixed seed, stdlib
+    generator."""
+    import random
+
+    rng = random.Random(seed)
+    ds = _dataset("track/run-001.trig")
+    checkers = len(set(ds.objects(None, __import__("rdflib").URIRef(VFR + "cogsInvoked"))))
+    threshold = model_threshold()
+    grid = [0.0, 0.1, 0.2, 0.3, 0.4, 0.5]
+    names = list(METRICS)
+    fires = {n: 0 for n in names}
+    cells = {}
+    for p_abstain in grid:
+        for p_dissent in grid:
+            split = 0
+            for _ in range(trials):
+                m = []
+                for _f in range(facts):
+                    row = []
+                    for _c in range(checkers):
+                        if rng.random() < p_abstain:
+                            row.append(None)
+                        elif rng.random() < p_dissent:
+                            row.append(False)
+                        else:
+                            row.append(True)
+                    m.append(row)
+                decisions = {n: METRICS[n](m) > threshold for n in names}
+                for n in names:
+                    fires[n] += decisions[n]
+                split += len(set(decisions.values())) > 1
+            cells[(p_abstain, p_dissent)] = split / trials
+    total = trials * len(grid) ** 2
+    print(f"generative model: independent cells, {facts} facts x {checkers} checkers, "
+          f"{trials} trials per cell, gate fires when metric > {threshold}, seed {seed}\n")
+    print("P(bindings disagree about whether GATE-02 fires)")
+    print("  p_abstain \\ p_dissent " + "".join(f"{g:>7.2f}" for g in grid))
+    for pa in grid:
+        print(f"  {pa:>20.2f} " + "".join(f"{cells[(pa, pd)]:>7.3f}" for pd in grid))
+    print("\nmarginal firing rate per binding, averaged over the grid "
+          "(the expert-review load each binding would impose):")
+    for n in names:
+        print(f"  {n:26} {fires[n] / total:.3f}")
+    worst = max(cells, key=cells.get)
+    print(f"\nmaximum disagreement {cells[worst]:.3f} at p_abstain={worst[0]}, p_dissent={worst[1]}. "
+          f"In the no-abstention row the maximum is {max(cells[(0.0, pd)] for pd in grid):.3f}: "
+          "the reachability proposition showing up statistically, since there the two "
+          "undecodability bindings never fire and dissent-fraction fires whenever dissent is common")
 
 
 # ---------------------------------------------------------------- chapter 05
@@ -890,7 +1181,7 @@ def show_rulings_log():
         )
     display(HTML("\n".join(blocks)))
     print(f"log entries rendered: {len(entries)} — "
-          f"{rulings} rulings, {notes} design notes")
+          f"{rulings} rulings, {notes} notes")
 
 
 def show_judgment_trace():
@@ -905,6 +1196,8 @@ def show_judgment_trace():
         gap = g.value(ruling, V.resolves) or g.value(ruling, V.defers)
         if gap is not None:
             resolves = f"{_local(gap)} @ {g.value(gap, V.locator)}"
+        elif (ruling, rdflib.RDF.type, V.ReviewNote) in g:
+            resolves = "external review finding (no gap: a repair the review drove)"
         else:
             resolves = "design note (no gap: a recorded suggestion)"
         rows.append((

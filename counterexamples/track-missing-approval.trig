@@ -93,6 +93,14 @@ run:interface {
         # choice (GAP-04): the Track records which one THIS run used;
         # recording is not endorsing.
         vfr:metric "strict-quorum-undecodable" ;
+        # The metric's INPUT (adjudicated: GAP-12): ten facts x three
+        # checkers, one column per Cog in the order the request payload
+        # lists them; a Cog's answer about its own datum is one column like
+        # any other. With the matrix on record the value below can be
+        # recomputed, and the other two bindings can be asked what they
+        # would have said (chapter 4 does both).
+        vfr:answerMatrix "[[true,true,true],[true,true,true],[true,true,true],[true,true,false],[true,true,false],[true,true,false],[true,true,false],[true,true,false],[true,true,false],[true,null,null]]" ;
+        vfr:factCount 10 ;
         vfr:requestPayload "{\"op\":\"vendor-fraud-review\",\"run\":\"run-001\",\"variable\":\"consensus_disagreement\",\"cogs\":[\"invoice-extraction-cog\",\"vendor-risk-cog\",\"anomaly-summary-cog\"]}" ;
         vfr:responseCode "200" ;
         vfr:responsePayload "{\"consensus_disagreement\":0.10}" ;

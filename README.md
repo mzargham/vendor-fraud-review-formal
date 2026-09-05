@@ -22,7 +22,9 @@ Each layer is machine-checked; nothing below is a prose-only claim.
 3. **An executable model.** The manifest as an OpenSysML assembly:
    oracle components wired along ports to a policy engine, counterparty
    actions, and a summary cog; the four gates as satisfiable
-   constraints; checks at component, wiring, and system level; a
+   constraints; the consensus metric as a typed class whose declared
+   properties are proved by enumeration; checks at type, component,
+   wiring, and system level; a
    lifecycle run under trace (`model/vendor-fraud-review.sysml`). Every
    named element traces to the source, to a recorded adjudication, or
    declares itself scaffolding (`model/trace.ttl`).

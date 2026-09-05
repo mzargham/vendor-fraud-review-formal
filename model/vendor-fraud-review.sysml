@@ -48,6 +48,31 @@ package VendorFraudReview {
             noOp;
         }
 
+        enum def DenominatorBasis {
+            doc /* adjudicated: GAP-11 — what a metric's value is a fraction
+               OF. The three exhibited metrics do not share a denominator:
+               dissent-fraction is a fraction of answers (facts x
+               checkers); both undecodability metrics are fractions of
+               facts. The manifest's single threshold therefore sits on
+               different scales under different bindings. Each concrete
+               metric declares its basis so the difference is a model
+               fact, and a binding is calibrated to the policy's number,
+               which stays where the manifest puts it (second external
+               review, 2026-09-05). */
+            facts;
+            factsTimesCheckers;
+        }
+
+        enum def NullPolicy {
+            doc /* adjudicated: GAP-04 (class split, 2026-09-05) — how a
+               metric treats a null (cannot tell) answer: punitive counts
+               it as dissent; quorumBlocking lets it block a quorum;
+               erasure drops it before deciding. */
+            punitive;
+            quorumBlocking;
+            erasure;
+        }
+
         part def ValidationStrategyParameters {
             doc /* The numerical parameters of the policy, factored out as
                single-point definitions the gates reference — what an
@@ -105,26 +130,62 @@ package VendorFraudReview {
             port reading : ReadingWrite;
         }
 
-        abstract part def DisagreementMetric {
+        abstract part def ConsensusInadequacyMetric {
             doc /* adjudicated: GAP-04 — the rule does not say what the
                number is, and no metric is chosen HERE. This abstract def
                is the type signature: a metric maps a fact-by-checker
                answer matrix of nullable Booleans to a scalar in [0, 1]
-               comparable against the manifest's 0.25 threshold. Each
-               answer is one checker's reply, given the datum as context
-               and irrespective of which Cog produced it, to the question
-               "do you agree with the datum?": True = agree, False =
-               disagree, null = cannot tell (the outcome the Track
-               records as earl:cantTell). Checkers are factored apart
-               from generators: the Cog that produced a datum may itself
-               answer False when asked whether it stands; no producer is
-               assumed to file True (GAP-04 clarification, 2026-09-04).
-               Three type-satisfying alternatives with different
-               semantics follow; which is fit for purpose is an open
-               algorithmic policy design question, unlikely to have a
+               comparable against the manifest's 0.25 threshold; the
+               codomain is a checked constraint (TYPE-01), not only this
+               sentence. Each answer is one checker's reply, given the
+               datum as context and irrespective of which Cog produced it,
+               to the question "do you agree with the datum?": True =
+               agree, False = disagree, null = cannot tell (the outcome
+               the Track records as earl:cantTell). Checkers are factored
+               apart from generators: the Cog that produced a datum may
+               itself answer False when asked whether it stands; no
+               producer is assumed to file True, and a Cog's answer about
+               its own datum is one column like any other (GAP-04
+               clarifications, 2026-09-04 and 2026-09-05). The matrix is
+               rectangular: every fact has one answer per checker, and an
+               absent checker is not a null answer; a run with zero facts
+               scores 0. The class splits along one axiom (GAP-04 class
+               split, 2026-09-05): a DisagreementMetric is monotone in
+               dissent and saturates at unanimous dissent; an
+               UndecodabilityMetric measures whether a fact resolves and
+               is neither. Each concrete metric declares its properties
+               as attributes, and the test suite proves them by exhaustive
+               enumeration. Three type-satisfying alternatives with
+               different semantics follow; which is fit for purpose is an
+               open algorithmic policy design question, unlikely to have a
                unique correct answer, with different implications on
-               incentives. The right answer is not limited to these three. */
+               incentives. The right answer is not limited to these
+               three. */
             attribute metricName : ScalarValues::String;
+            attribute denominator : DenominatorBasis;
+            attribute nullPolicy : NullPolicy;
+            attribute monotoneInDissent : ScalarValues::Boolean;
+            attribute saturatesAtUnanimousDissent : ScalarValues::Boolean;
+            attribute ensembleSizeInvariant : ScalarValues::Boolean;
+        }
+
+        abstract part def DisagreementMetric :> ConsensusInadequacyMetric {
+            doc /* Measures HOW MUCH dissent a run carries. Axioms: flipping
+               one answer from agree to disagree cannot decrease the
+               value; unanimous disagreement scores 1. */
+            attribute :>> monotoneInDissent = true;
+            attribute :>> saturatesAtUnanimousDissent = true;
+        }
+
+        abstract part def UndecodabilityMetric :> ConsensusInadequacyMetric {
+            doc /* Measures WHETHER facts resolve, not how much dissent they
+               carry. Not monotone in dissent: unanimous disagreement
+               decodes and scores 0. Its name says undecodable; it feeds
+               the manifest's consensus_disagreement variable all the
+               same, which is the point of exhibiting it in the same
+               slot. */
+            attribute :>> monotoneInDissent = false;
+            attribute :>> saturatesAtUnanimousDissent = false;
         }
 
         part def DissentFractionMetric :> DisagreementMetric {
@@ -135,31 +196,52 @@ package VendorFraudReview {
                paper's own section 5.5 example (three Cogs, two must
                agree) this metric FIRES the gate at the 0.25 threshold,
                contradicting the example's intent. */
+            attribute :>> denominator = DenominatorBasis::factsTimesCheckers;
+            attribute :>> nullPolicy = NullPolicy::punitive;
+            attribute :>> ensembleSizeInvariant = true;
         }
 
-        part def StrictQuorumUndecodableMetric :> DisagreementMetric {
+        part def StrictQuorumUndecodableMetric :> UndecodabilityMetric {
             doc /* Fraction of facts where no answer value reaches a quorum
-               of two identical non-null answers; null blocks quorum.
-               Incentive implication: abstention is conservative: it
-               escalates more runs to expert review, spending review
-               capacity. Consistent with the section 5.5 example. */
+               of two identical non-null answers; null blocks quorum. The
+               quorum is the absolute two of the paper's section 5.5
+               example (three Cogs, two must agree), deliberately (ruling,
+               2026-09-05): the metric is admissible for a three-checker
+               ensemble only. It is not ensemble-size invariant: with one
+               checker, unanimous agreement scores 1; with nine, two
+               agreements outvote seven dissents. Incentive implication:
+               abstention is conservative: it escalates more runs to
+               expert review, spending review capacity. Consistent with
+               the section 5.5 example because, on three checkers with no
+               abstention, it is identically zero: the gate cannot fire
+               under it unless a checker abstains. */
+            attribute :>> denominator = DenominatorBasis::facts;
+            attribute :>> nullPolicy = NullPolicy::quorumBlocking;
+            attribute :>> ensembleSizeInvariant = false;
         }
 
-        part def ErasureAwareUndecodableMetric :> DisagreementMetric {
+        part def ErasureAwareUndecodableMetric :> UndecodabilityMetric {
             doc /* Fraction of facts undecodable among non-null answers
                only: null (cannot tell) is an erasure, not an error, so a
                lone expressed voice among abstentions decodes. Incentive
                implication: abstention shifts power to whoever still
-               answers. Consistent with the section 5.5 example. */
+               answers. Consistent with the section 5.5 example for the
+               same reason as the strict quorum: identically zero on three
+               checkers without abstention. */
+            attribute :>> denominator = DenominatorBasis::facts;
+            attribute :>> nullPolicy = NullPolicy::erasure;
+            attribute :>> ensembleSizeInvariant = true;
         }
 
         part def ConsensusComparatorOracle :> OracleService {
             doc /* adjudicated: GAP-04 — the metric slot below is typed by
-               the abstract DisagreementMetric and deliberately left
+               the abstract ConsensusInadequacyMetric and deliberately left
                unbound: the model states that a metric of this type is
-               required and refuses to choose one. A deployment binds it;
-               the Track records which one a run used. */
-            part metric : DisagreementMetric;
+               required and refuses to choose one. A deployment binds it,
+               choosing a branch (disagreement or undecodability) as a
+               visible policy decision; the Track records which one a run
+               used, and the matrix it ran on (GAP-12). */
+            part metric : ConsensusInadequacyMetric;
             attribute returnedDisagreement : ScalarValues::Real;
             port reading : ReadingWrite;
         }
@@ -323,6 +405,17 @@ package VendorFraudReview {
             subject pe : PolicyEngine;
             require constraint { pe.confidence < pe.policy.confidenceThreshold implies pe.confidenceLevel == ConfidenceLevel::low }
             require constraint { pe.confidence >= pe.policy.confidenceThreshold implies pe.confidenceLevel == ConfidenceLevel::high }
+        }
+
+        requirement def <'TYPE-01'> DisagreementReadingInRange {
+            doc /* The metric class's doc states a codomain of [0, 1]; stated
+               here as a constraint so it is checked, not promised: a
+               binding returning 1.4 fails the run. The reading is
+               oracle-provided (GAP-05), so the check sits on the value the
+               engine rules on (second external review, 2026-09-05). */
+            subject pe : PolicyEngine;
+            require constraint { pe.consensusDisagreement >= 0.0 }
+            require constraint { pe.consensusDisagreement <= 1.0 }
         }
 
         requirement def <'GATE-01'> ConfidenceGate {
@@ -489,6 +582,7 @@ package VendorFraudReview {
         part escalatedRun : EscalatedRun;
 
         requirement cleanInterface01 : Manifest::ConfidenceInterface { subject pe = cleanRun.policyEngine; }
+        requirement cleanType01 : Manifest::DisagreementReadingInRange { subject pe = cleanRun.policyEngine; }
         requirement cleanGate01 : Manifest::ConfidenceGate { subject pe = cleanRun.policyEngine; }
         requirement cleanGate02 : Manifest::ConsensusGate { subject pe = cleanRun.policyEngine; }
         requirement cleanGate03 : Manifest::SensitiveDataGate { subject pe = cleanRun.policyEngine; }
@@ -502,6 +596,7 @@ package VendorFraudReview {
         requirement cleanSystem03 : Manifest::OutcomeCoherence { subject op = cleanRun; }
 
         requirement escalatedInterface01 : Manifest::ConfidenceInterface { subject pe = escalatedRun.policyEngine; }
+        requirement escalatedType01 : Manifest::DisagreementReadingInRange { subject pe = escalatedRun.policyEngine; }
         requirement escalatedGate01 : Manifest::ConfidenceGate { subject pe = escalatedRun.policyEngine; }
         requirement escalatedGate02 : Manifest::ConsensusGate { subject pe = escalatedRun.policyEngine; }
         requirement escalatedGate03 : Manifest::SensitiveDataGate { subject pe = escalatedRun.policyEngine; }
@@ -517,6 +612,7 @@ package VendorFraudReview {
         verification def CleanRunCase {
             objective {
                 verify cleanInterface01;
+                verify cleanType01;
                 verify cleanGate01;
                 verify cleanGate02;
                 verify cleanGate03;
@@ -533,6 +629,7 @@ package VendorFraudReview {
         verification def EscalatedRunCase {
             objective {
                 verify escalatedInterface01;
+                verify escalatedType01;
                 verify escalatedGate01;
                 verify escalatedGate02;
                 verify escalatedGate03;
