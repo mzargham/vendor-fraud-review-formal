@@ -176,6 +176,10 @@ def test_chapter_05_shows_the_shacl_inversion_and_the_outcomes(chapter_outputs):
     text = chapter_outputs["05-the-track"]
     assert "conforms: True" in text, "run-001 conformance not shown"
     assert "conforms: False" in text, "counterexample non-conformance not shown"
+    # Each violation names its focus node — two undischarged obligations
+    # must be distinguishable, not two identical message lines.
+    assert "obligation-human-review" in text, "violation does not name its obligation"
+    assert "obligation-human-approval" in text, "violation does not name its obligation"
     assert "cantTell" in text, "the cantTell outcome is not demonstrated"
     assert "responseCode" in text, (
         "the oracle interface contract (service/payload/code/response) is not demonstrated"

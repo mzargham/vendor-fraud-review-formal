@@ -502,16 +502,30 @@ def _dataset(path):
 
 
 def check_track_shapes():
+    import textwrap
+
+    import rdflib
     from pyshacl import validate
+
+    SH = rdflib.Namespace("http://www.w3.org/ns/shacl#")
 
     def check(path):
         return validate(_dataset(path), shacl_graph=str(ROOT / "shapes" / "track.shapes.ttl"))
 
     conforms, _, _ = check("track/run-001.trig")
-    print(f"run-001               conforms: {conforms}")
-    conforms, _, report = check("counterexamples/track-missing-approval.trig")
-    print(f"missing-approval      conforms: {conforms}")
-    print("\n".join(line for line in report.splitlines() if "Message" in line))
+    print(f"run-001                          conforms: {conforms}")
+    conforms, results, _ = check("counterexamples/track-missing-approval.trig")
+    violations = sorted(
+        results.subjects(rdflib.RDF.type, SH.ValidationResult),
+        key=lambda v: str(results.value(v, SH.focusNode)),
+    )
+    print(f"missing-approval counterexample  conforms: {conforms} "
+          f"({len(violations)} violations, one per undischarged obligation)")
+    for i, v in enumerate(violations, 1):
+        focus = str(results.value(v, SH.focusNode)).rsplit("/", 1)[-1].rsplit("#", 1)[-1]
+        message = str(results.value(v, SH.resultMessage))
+        print(f"\n  violation {i} — focus node: {focus}")
+        print(textwrap.indent(textwrap.fill(message, width=66), "    "))
 
 
 def show_query(name):
