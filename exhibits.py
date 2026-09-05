@@ -440,12 +440,20 @@ def evaluate_metrics():
 
 
 def show_metric_definitions():
-    source = MODEL.read_text()
-    for block in re.findall(
-        r"(?:abstract )?part def \w+Metric[^\n]*\{.*?\n        \}", source, re.S
+    rows = []
+    for signature, doc in re.findall(
+        r"((?:abstract )?part def \w+Metric[^\n{]*)\{\s*doc /\* (.*?) \*/",
+        MODEL.read_text(), re.S,
     ):
-        print(_dedent(block))
-        print()
+        rows.append((("code", signature.strip()), re.sub(r"\s+", " ", doc).strip()))
+    _table(("Definition", "Doc, verbatim from the model"), rows)
+
+
+def show_unbound_metric_slot():
+    block = re.search(
+        r"part def ConsensusComparatorOracle.*?\n        \}", MODEL.read_text(), re.S
+    ).group(0)
+    print(_dedent(block))
 
 
 # ---------------------------------------------------------------- chapter 05

@@ -150,6 +150,13 @@ def test_chapter_04_shows_one_type_three_semantics(chapter_outputs):
     assert "nullable Bool" in text, "the nullable-Boolean answer type is not stated"
     assert "cannot tell" in text, "null's cannot-tell semantics are not stated"
     assert "null" in text.replace("nullable", ""), "no null answers shown in the matrix"
+    # The definitions render as a parsed table, not a monospace doc dump;
+    # the only source excerpt is the unbound metric slot.
+    assert "<table" in text, "metric definitions must render as a table"
+    assert "part metric : DisagreementMetric;" in text, (
+        "the deliberately unbound metric slot is not shown"
+    )
+    assert "\n            doc" not in text, "doc walls must not be dumped at source indent"
     assert "gate fires: True" in text, "no metric fires the gate"
     assert "gate fires: False" in text, "no metric leaves the gate quiet"
     assert "same answer matrix" in text, (
