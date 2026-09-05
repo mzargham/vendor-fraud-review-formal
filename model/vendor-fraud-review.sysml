@@ -43,7 +43,19 @@ package VendorFraudReview {
                rules and executing. An Op run either executed (its output
                was emitted) or was a deliberate no-op (stopped, nothing
                transmitted; WP section 5.2: "the Op stops before external
-               transmission"). */
+               transmission"). The distinction is a system boundary
+               (adjudicated: GAP-07, refined 2026-09-05): executed means an
+               action output crossed the Op's boundary — port result — to
+               an external system; noOp means no action output crossed
+               it. The trace evidence (readings, gate decisions, the stop,
+               its escalation, any artifact withheld at the boundary) is
+               internal to the system of interest and is kept either way:
+               an internal record that the Op tried, that policy prevented
+               it, and why. Where the boundary sits depends on the system
+               of interest — zooming in or out changes what counts as
+               inside — and defining and enforcing that boundary is part of
+               why the assembly is modeled at all. HERE the Track is
+               internal and the written output is external. */
             executed;
             noOp;
         }
@@ -306,8 +318,12 @@ package VendorFraudReview {
 
         part def AnomalySummaryCog :> OpComponent {
             doc /* The Op's output producer (the anomaly-summary-cog of the
-               section 5.6 manifest). Whether its output was emitted is the
-               aggregate fact SYSTEM-02/03 rule on. */
+               section 5.6 manifest). Whether its output was emitted —
+               crossed the Op's boundary via port result to an external
+               system — is the aggregate fact SYSTEM-02/03 rule on. A
+               summary produced and not emitted stays inside the boundary,
+               retained in the Track as a withheld artifact (adjudicated:
+               GAP-07, refined 2026-09-05). */
             attribute outputEmitted : ScalarValues::Boolean;
             port clearance : ~ClearanceWrite;
             port summary : SummaryWrite;

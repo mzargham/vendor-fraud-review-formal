@@ -10,7 +10,10 @@
 # the scanner finds sensitive data, GATE-03 fires, the stop obligation is
 # discharged by an escalation service acting for an accountable office, and
 # the Op stops before external transmission (WP section 5.2). The aggregate
-# is noOp: a statement about the boundary, not about the record. Everything
+# is noOp: a statement about the boundary, not about the record — this
+# Track is the INTERNAL record of the system of interest; final_output would
+# name an action output that crossed to an EXTERNAL system, and none did.
+# Everything
 # the run did is retained here — readings, guard results, the gate decision,
 # the escalation — and the anomaly summary the cog produced is retained too,
 # as a withheld artifact, never as final_output (adjudicated: GAP-07,

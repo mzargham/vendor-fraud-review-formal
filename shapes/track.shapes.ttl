@@ -166,7 +166,7 @@ vfr:OpExecutionShape
             }""" ;
     ] ;
     sh:sparql [
-        sh:message "A noOp run's Track cites no final_output, because nothing crossed the boundary; everything else about the stopped run — readings, guard results, the gate decision, the stop and its escalation, and any artifact withheld at the boundary — is retained and checked as for an executed run. This conditional reading departs from the pinned draft's unconditional include list (GAP-07 adjudication, refined 2026-09-05)." ;
+        sh:message "A noOp run's Track cites no final_output, because nothing crossed the boundary: the Track is the internal record of the system of interest, and final_output names an action output that crossed to an external system. Everything else about the stopped run — readings, guard results, the gate decision, the stop and its escalation, and any artifact withheld at the boundary — is retained and checked as for an executed run: the record that the Op tried, that policy prevented it, and why. This conditional reading departs from the pinned draft's unconditional include list (GAP-07 adjudication, refined 2026-09-05)." ;
         sh:select """
             SELECT $this WHERE {
                 $this <https://example.org/vfr#aggregateOutcome> "noOp" .

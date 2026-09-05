@@ -49,7 +49,7 @@ def test_every_ruling_and_note_is_attributed_dated_and_ordered(record):
     rulings = set(record.subjects(rdflib.RDF.type, V.Ruling))
     notes = set(record.subjects(rdflib.RDF.type, V.DesignNote))
     reviews = set(record.subjects(rdflib.RDF.type, V.ReviewNote))
-    assert len(rulings) == 18, "eighteen rulings expected in the record"
+    assert len(rulings) == 19, "nineteen rulings expected in the record"
     assert len(notes) == 7, "seven design notes expected in the record"
     assert len(reviews) == 2, "two external reviews expected in the record"
     orders = []

@@ -253,3 +253,6 @@ def test_withheld_artifact_cited_as_final_output_fails():
     assert "nothing crossed the boundary" in report, (
         f"the noOp message must say what a noOp Track retains and why it cites no output:\n{report}"
     )
+    assert "internal" in report and "external" in report, (
+        f"the noOp message must distinguish the internal record from external output:\n{report}"
+    )
