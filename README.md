@@ -1,63 +1,86 @@
 # vendor-fraud-review-formal
 
-The **Vendor Fraud Review Op** — the running example of *The Distributed AI
-Economy: Intelligence Hubs, Frames, Cogs, Ops, and the Accountability Plane*
-(Revision 9, August 2026) — implemented as an **executable specification**.
+The **Vendor Fraud Review Op** of *The Distributed AI Economy:
+Intelligence Hubs, Frames, Cogs, Ops, and the Accountability Plane*
+(Revision 9, August 2026), implemented as an executable specification.
+This is a translation, not an audit: the whitepaper's section 5.6
+manifest is rendered onto an RDF + SysML substrate without altering or
+judging the source, and every place the written form left something an
+executable form must decide, the judgment was flagged, attributed, and
+recorded rather than blended in.
 
-The whitepaper's section 5.6 manifest is rendered onto an RDF + SysML
-substrate, using only open standards:
+## The layers
 
-- **SKOS** — the paper's concepts (Op, Cog, Frame, Guard, Gate, Track, and
-  more), definitions verbatim from a sha256-pinned snapshot of the PDF, each
-  machine-checked against the source text.
-- **OpenSysML** (pinned v0.4.3) — the Op as an assembly of abstract and
-  concrete parts wired along ports, checked at three levels in one
-  toolchain: component (the four gates as `implies` constraints), wiring
-  (seam integrity in satisfy; structural seam conformance in code over the
-  conversion), and system (obligations discharged across components; a
-  stopped Op emits nothing; the aggregate outcome — executed vs noOp — must
-  cohere). The assembly's lifecycle (running → stopped | completed) runs
-  under trace. Counterexamples fail one per level, and a miswired seam is
-  refused by the wiring rules.
-- **PROV-O + EARL** — one execution Track: automatic Guard results (passed,
-  failed, cantTell), fired Gates, and a named human approval (`earl:manual`).
-- **SHACL** — shapes derived from the manifest's own `track.include` list,
-  with counterexamples proving they have teeth.
-- **SPARQL** — the section 5.3 Track purposes (auditability, governance,
-  trust) computed from the run graph.
+Each layer is machine-checked; nothing below is a prose-only claim.
+
+1. **A pinned source.** One content-addressed PDF snapshot of the
+   whitepaper (the filename is its own sha256). Every definition, quote,
+   and section locator in this repo is verified against it, inside the
+   section it cites.
+2. **A verbatim vocabulary.** The paper's concepts as SKOS, definitions
+   lifted exactly from the pinned text (`vocabulary/op-concepts.ttl`).
+3. **An executable model.** The manifest as an OpenSysML assembly:
+   oracle components wired along ports to a policy engine, counterparty
+   actions, and a summary cog; the four gates as satisfiable
+   constraints; checks at component, wiring, and system level; a
+   lifecycle run under trace (`model/vendor-fraud-review.sysml`). Every
+   named element traces to the source, to a recorded adjudication, or
+   declares itself scaffolding (`model/trace.ttl`).
+4. **A run record.** One fabricated execution as a PROV-O + EARL Track
+   with an oracle citation for every value a gate read
+   (`track/run-001.trig`), SHACL shapes it must conform to, and
+   counterexamples the shapes refuse.
+5. **Queries.** The five Track purposes section 5.3 names (auditability,
+   governance, learning, debugging, trust) computed by SPARQL over the
+   run graph (`queries/`).
+6. **A judgment record.** Code is not objective; its objectivity is
+   downstream of judgment calls. Every gap the translation surfaced, the
+   ruling that resolved it (verbatim, attributed, dated), and the
+   implementations that resulted are RDF
+   (`open-questions/adjudications.ttl`); the appendix pages are
+   generated views of it.
 
 ## Read it
 
-The primary artifact is a chaptered MyST walkthrough (`index.md` plus the
-six executed notebooks in `chapters/`): each chapter opens with what the
-whitepaper says, quoted and cited against the pinned snapshot
-(machine-checked verbatim), then executes and interprets. Worked examples
-mock the oracles and drive each scenario (the happy path, every gate
-binding with its obligation discharged or neglected, a halt honored and a
-halt ignored, a mislabeled category) through the committed policy text
-itself. The committed cell outputs are asserted equal to a fresh
-execution, so the rendered site shows exactly what execution shows.
+The walkthrough is a chaptered MyST site; its index page is the front
+door, and every claim on its pages is the output of an executed cell:
 
 ```sh
 uv sync
-uv run myst start                        # the walkthrough, served locally
-uv run jupyter lab                       # the chapter notebooks, interactive
+uv run myst start
 ```
 
-## Run the checks
+## Verify it
 
 ```sh
 checks/run-checks.sh
 ```
 
 One script: pinned toolchain, strict validation, the satisfy sweep, the
-counterexample inversion, byte-stable regeneration of `generated/`, and the
-full test suite. It writes `checks/out/report.json` and ends with a single
-`CHECKS: PASS|FAIL` line.
+counterexamples that must fail, byte-identical regeneration of every
+generated artifact (conversion, query results, both appendix pages, both
+derived counterexamples), the site build, and the full test suite. It
+ends with a single `CHECKS: PASS|FAIL` line.
 
-## Open questions
+## Layout
 
-Where a literal parsing of the paper under-specifies what an executable
-substrate requires, nothing was silently repaired: the reading in force is
-marked `provisional` at its point of use and logged as a PENDING entry in
-[open-questions/computability-gaps.md](open-questions/computability-gaps.md).
+| Path | What it holds |
+|---|---|
+| `sources/` | the sha256-pinned snapshot and its retrieval provenance |
+| `vocabulary/` | SKOS concepts, definitions verbatim from the snapshot |
+| `model/` | the executable assembly and its traceability map |
+| `track/` | the recorded run |
+| `shapes/` | SHACL over the Track, the judgment record, and the trace |
+| `queries/` | the five section 5.3 purposes as SPARQL |
+| `counterexamples/` | negatives every checking layer must refuse |
+| `open-questions/` | the judgment record and its two generated pages |
+| `chapters/`, `index.md` | the walkthrough (executed notebooks + front door) |
+| `exhibits.py` | the committed machinery the chapter cells call |
+| `checks/`, `tests/` | the gate script, renderers, and test suite |
+
+## Disclosure
+
+The whitepaper provides the manifest, not data. The recorded run, its
+named approver, the vendors, invoices, readings, and every human actor
+in the narration are fabricated example data; the named people are
+inventions. Nothing here comes from any real organization.

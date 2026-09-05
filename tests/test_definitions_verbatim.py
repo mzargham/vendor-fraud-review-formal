@@ -1,4 +1,4 @@
-"""The vocabulary is his text, provably.
+"""The vocabulary is the paper's text, provably.
 
 Every skos:definition in the vocabulary must appear verbatim (normalized) in
 the pinned PDF snapshot, and the snapshot's sha256 must match the Source

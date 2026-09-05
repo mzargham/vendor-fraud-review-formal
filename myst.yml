@@ -4,8 +4,10 @@ project:
   description: >
     The Intelligence Hub whitepaper's running example (Revision 9, section
     5.6) implemented on an RDF + SysML substrate: SKOS vocabulary verbatim
-    from the pinned source, gates as satisfiable constraints, a PROV-O + EARL
-    Track, SHACL shapes with counterexamples, and SPARQL over the run.
+    from the pinned source, gates as satisfiable constraints, every model
+    element traced to the source or to a recorded adjudication, a PROV-O +
+    EARL Track, SHACL shapes with counterexamples, and the section 5.3
+    Track purposes computed by SPARQL over the run.
   authors:
     - name: Michael Zargham
       orcid: 0000-0001-5279-690X

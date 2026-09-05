@@ -1,8 +1,9 @@
 """The no-silent-alteration rule is itself machine-checked.
 
-Every `provisional: GAP-nn` marker in the substrate has a matching entry in
-open-questions/computability-gaps.md, and every adjudication references an
-existing gap id. Gap entries stay PENDING until a logged adjudication.
+Every `provisional: GAP-nn` marker in the substrate has a matching entry
+in the generated gaps page (a view of the judgment record), and every
+adjudication references an existing gap id. A reading stays provisional
+until a ruling by the named adjudicator is recorded.
 """
 import re
 from pathlib import Path

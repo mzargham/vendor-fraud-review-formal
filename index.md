@@ -55,7 +55,9 @@ The substrate is a small stack of open standards, one layer per job:
    [@opensysml043] assembly: oracle components wired along ports to a
    policy engine, counterparty actions, and a summary cog, with the
    four gates as constraints and checks at three levels (component,
-   wiring, system).
+   wiring, system). Every named element of the model traces to the
+   source, to a recorded judgment, or declares itself scaffolding
+   (model/trace.ttl).
 4. **A run record.** One execution as a PROV-O [@provo2013] + EARL
    [@earl2017] Track, with SHACL [@shacl2017] shapes that the record
    must conform to, and counterexamples proving the shapes can refuse.
@@ -78,7 +80,8 @@ output. The chapters build in order, but each stands on its own:
 1. **The pinned source** — the snapshot, its hash, and the vocabulary
    checked verbatim against it.
 2. **The Op as an assembly** — the model, the four gates, the seams,
-   the lifecycle, and the counterexamples the specification refuses.
+   the lifecycle, the provenance of every element, and the
+   counterexamples the specification refuses.
 3. **Worked examples** — eight narrated runs with mocked oracles,
    driven through the committed policy text itself.
 4. **One type, three semantics** — the consensus-disagreement metric as

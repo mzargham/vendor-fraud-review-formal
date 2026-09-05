@@ -1,0 +1,5 @@
+signal,kind,detail
+https://example.org/vfr/track/run-001#guard-confidence,guard finding,extraction confidence 0.71 is below the 0.80 gate threshold
+https://example.org/vfr/track/run-001#guard-source-grounding,guard finding,the cited invoice passage is ambiguous about the delivery date; the claim can be neither grounded nor refuted from the approved sources
+https://example.org/vfr/track/run-001#guard-vendor-risk-reading,guard finding,vendor-risk-cog scored vendor V-2214 as high
+https://example.org/vfr/track/run-001#approval-01,human review,Reviewed the three lowest-confidence extractions against the invoice PDFs; amounts and dates check out. The risk score is driven by the 40 percent month-over-month invoice volume increase; flagging for procurement follow-up is warranted.
