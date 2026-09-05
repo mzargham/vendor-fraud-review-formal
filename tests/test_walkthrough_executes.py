@@ -214,6 +214,15 @@ def test_chapter_05_shows_the_shacl_inversion_and_the_outcomes(chapter_outputs):
     assert "responseCode" in text, (
         "the oracle interface contract (service/payload/code/response) is not demonstrated"
     )
+    # Learning is a calibration view (adjudicator's design note): signals
+    # mapped to the adaptation surface they act on.
+    assert "Acts on" in text, "the learning calibration mapping is not rendered"
+    assert "single point of" in text, (
+        "the parameter calibration surface is not surfaced"
+    )
+    assert "the gate set itself" in text, (
+        "the gateless finding's adaptation point is not surfaced"
+    )
 
 
 def test_chapter_06_lists_every_adjudicated_gap(chapter_outputs):

@@ -132,16 +132,25 @@ def test_every_gate_decision_used_an_oracle_backed_reading(track_dataset):
     assert rows == [], f"gate decisions that evaluated values with no citable oracle call: {rows}"
 
 
-def test_learning_signals_include_reviews_and_findings(track_dataset):
+def test_learning_signals_carry_their_calibration_linkage(track_dataset):
     # WP section 5.3 Learning: "corrections and human reviews become
-    # signals for improving Frames, Cogs, Ops, and Guards."
+    # signals for improving Frames, Cogs, Ops, and Guards." Learning acts
+    # ON the system (adjudicator's design note): each signal carries the
+    # gate it can calibrate through, where one is attached.
     rows = [r.asdict() for r in _query(track_dataset, "learning.rq")]
     kinds = {str(r["kind"]) for r in rows}
     assert kinds == {"human review", "guard finding"}, (
         f"learning signals must span reviews and findings: {kinds}"
     )
-    assert any("kind" in r and str(r["kind"]) == "human review" and r["detail"]
-               for r in rows), "the human review's rationale is not among the signals"
+    gates = {str(r["gate"]) for r in rows if r.get("gate") is not None}
+    assert {"GATE-01", "GATE-04"} <= gates, (
+        f"signals do not link to the gates they calibrate through: {gates}"
+    )
+    unlinked = [r for r in rows if r.get("gate") is None
+                and str(r["kind"]) == "guard finding"]
+    assert unlinked, (
+        "the gateless guard finding (the gate-set adaptation point) is missing"
+    )
 
 
 def test_debugging_chains_findings_to_their_oracle_calls(track_dataset):

@@ -1,18 +1,27 @@
 # Track purpose "Learning — corrections and human reviews become signals
-# for improving Frames, Cogs, Ops, and Guards" (WP section 5.3), as a
-# computation: every human review with its rationale, and every automatic
-# guard finding that did not pass, is an improvement signal the run left
-# behind.
+# for improving Frames, Cogs, Ops, and Guards" (WP section 5.3). Learning
+# acts ON the system, not within it: these signals are inputs to the
+# ability to calibrate it — change parameters, add or remove gates,
+# switch policies — so each signal carries the gate it can calibrate
+# through, where one is attached: a guard finding through the gate
+# decision it informed, a human review through the obligations it
+# discharged.
 PREFIX vfr: <https://example.org/vfr#>
 PREFIX earl: <http://www.w3.org/ns/earl#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
 
-SELECT ?signal ?kind ?detail
+SELECT ?signal ?kind ?detail ?gate
 WHERE {
     {
         ?signal a earl:Assertion ;
                 earl:mode earl:manual ;
                 vfr:rationale ?detail .
         BIND("human review" AS ?kind)
+        OPTIONAL {
+            ?signal vfr:discharges ?obligation .
+            ?obligation vfr:raisedBy ?gateDecision .
+            ?gateDecision vfr:gate ?gate .
+        }
     }
     UNION
     {
@@ -23,6 +32,10 @@ WHERE {
            earl:info ?detail .
         FILTER(?outcome != earl:passed)
         BIND("guard finding" AS ?kind)
+        OPTIONAL {
+            ?gateDecision prov:wasInformedBy ?signal ;
+                          vfr:gate ?gate .
+        }
     }
 }
-ORDER BY ?kind ?signal
+ORDER BY ?kind ?signal ?gate

@@ -698,6 +698,38 @@ def compare_governance():
     _result_table(cx_res)
 
 
+def show_learning():
+    """The Learning purpose as a calibration view: each signal mapped to
+    the part of the system it acts on, computed by joining the query
+    against the model's gates and parameters."""
+    gates = {gid: constraint for gid, _r, _t, constraint in _gates()}
+    params = re.findall(r"attribute (\w+) : [\w:]+ =", _parameters_block())
+    ds = _dataset("track/run-001.trig")
+    res = ds.query((ROOT / "queries" / "learning.rq").read_text())
+    rows = []
+    for row in res:
+        d = row.asdict()
+        gate = str(d["gate"]) if d.get("gate") is not None else None
+        if gate is not None:
+            hit = [p for p in params if p in gates.get(gate, "")]
+            acts = (f"{gate} — parameter {', '.join(hit)}, a single point of "
+                    "definition: recalibrating is one edit" if hit else gate)
+        elif str(d["kind"]) == "guard finding":
+            acts = ("no gate is attached to this guard: the gate set itself "
+                    "is the adaptation point (add a gate, or decide not to)")
+        else:
+            acts = "operator calibration: the rationale names what to change"
+        rows.append((
+            ("code", _short(d["signal"])),
+            str(d["kind"]),
+            str(d["detail"]),
+            acts,
+        ))
+    _table(("Signal", "Kind", "Finding", "Acts on"), rows)
+    print(f"learning signals: {len(rows)} — calibration targets computed "
+          "from the model's gates and factored parameters")
+
+
 def show_interface():
     ds = _dataset("track/run-001.trig")
     for row in ds.query((ROOT / "queries" / "interface.rq").read_text()):

@@ -517,3 +517,28 @@ adj:impl-governance-accountability
 adj:impl-risklevel prov:wasDerivedFrom adj:note-categories .
 adj:impl-confidencelevel prov:wasDerivedFrom adj:note-categories .
 adj:impl-interface01 prov:wasDerivedFrom adj:note-categories .
+
+adj:note-learning
+    a vfr:DesignNote ;
+    vfr:order 15 ;
+    vfr:entryTitle "design note: learning acts on the system; debugging verifies it" ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-05"^^xsd:date ;
+    vfr:noteText """learning needs work. its not about evaluating within the current ops its about the ability to calibrate them: change parameters or add/remove gates, switch policies if a particular one is not generating the intended behavior. learning acts on the system allowing it to adapt rather than within the system as it is currently constituted
+
+debugging relates to verificaiton--> ensuring correct implementation of what is specified. learning related to validation --> ensuring the op is fit for purpose and allows change in response to changing circumstances""" ;
+    vfr:changeNote """the Learning demonstration was reworked from a within-run signal listing into a calibration view: each signal is mapped to the part of the system it acts on — the factored parameter behind the gate it calibrates through (a single point of definition, so changing a threshold is one edit), the gate set itself where a guard finding has no gate attached, or the operator's policy choice. The section 5.3 grounding is the bullet's own words: the signals improve Frames, Cogs, Ops, and Guards — the constituents change. learning.rq gained the gate linkage (findings through the gate decisions they informed, reviews through the obligations they discharged); exhibits.show_learning computes the signal-to-adaptation-surface mapping from the query joined against the model's gates and parameters. The Debugging narration was reframed as the verification-side counterpart (implementation correct to the specification), with the verification/validation split explicitly attributed to the adjudicator, distinct from the paper's umbrella use of Validation.""" .
+
+adj:impl-learning-calibration
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the Learning purpose as a calibration view: signals mapped to the adaptation surface" ;
+    vfr:inFile "exhibits.py" ;
+    vfr:anchor "show_learning" ;
+    prov:wasDerivedFrom adj:note-learning .
+
+adj:impl-learning-query
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "learning query carries the gate linkage each signal calibrates through" ;
+    vfr:inFile "queries/learning.rq" ;
+    vfr:anchor "calibrate" ;
+    prov:wasDerivedFrom adj:note-learning .
