@@ -1,0 +1,22 @@
+# The interface contract (GAP-05 ruling), as a computation: for every value
+# the policy reads, the oracle citation — what service was called, what
+# payload was sent, what response code came back, and what response carried
+# the value. The system applies its policies to these values; it is not
+# their provider.
+PREFIX vfr: <https://example.org/vfr#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?variable ?value ?service ?requestPayload ?responseCode ?responsePayload
+WHERE {
+    ?reading a vfr:Reading ;
+             vfr:variable ?variable ;
+             vfr:value ?value ;
+             prov:wasGeneratedBy ?call .
+    ?call vfr:service ?serviceNode ;
+          vfr:requestPayload ?requestPayload ;
+          vfr:responseCode ?responseCode ;
+          vfr:responsePayload ?responsePayload .
+    ?serviceNode rdfs:label ?service .
+}
+ORDER BY ?variable

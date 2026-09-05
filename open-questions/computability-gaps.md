@@ -90,3 +90,28 @@ the compared spaces are known (bit-exact comparison, semantic distance, or
 another metric). If the comparison can be reduced to yes/no/cantTell facts
 being agreed or disagreed on, an error-correcting-code style interpretation
 becomes available.
+
+## GAP-05 — who provides the gate variables (oracle identity and citation)
+
+**Status:** ADJUDICATED (2026-09-04, see adjudication-log.md)
+**Locus:** WP §5.6 gates block and §4.5 Op composition — the manifest names
+the variables its gates read (`confidence`, `consensus_disagreement`,
+`sensitive_data_detected`, `vendor_risk`) but never declares what service
+provides each value, what was asked of it, or what came back. §5.3 lists
+"input data and source references" among Track contents without binding them
+to the gate variables.
+**Problem:** a policy engine cannot act on a value it cannot source; the
+thresholds are precise (0.80, 0.25 verbatim) but the values they test arrive
+from nowhere.
+**Substrate forces:** an identified provider and a citable exchange for every
+value a gate evaluates.
+**Possible readings:** (a) the values are ambient Op state, provenance out of
+scope; (b) each in-flight Guard is implicitly the provider of "its" variable;
+(c) every value is provided by an identified oracle, and the Track cites the
+call: service, request payload, response code, response payload.
+**Adjudicated reading in use:** (c) — `vfr:Oracle` / `vfr:OracleCall` /
+`vfr:Reading` in the Track's interface graph; every Gate decision must cite
+the reading it evaluated; shapes refuse unsourced readings and calls without
+a response code (track/run-001.trig, shapes/track.shapes.ttl,
+queries/interface.rq). Service identities are urn:example placeholders
+pending real endpoints.

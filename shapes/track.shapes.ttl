@@ -17,6 +17,54 @@ vfr:GateDecisionObligationShape
         sh:path [ sh:inversePath vfr:raisedBy ] ;
         sh:minCount 1 ;
         sh:message "Gate fired but raised no obligation (its then-clause names a required action)." ;
+    ] ;
+    sh:property [
+        sh:path prov:used ;
+        sh:minCount 1 ;
+        sh:message "A Gate decision must cite the reading it evaluated; the policy applies to oracle-provided values, it does not provide them." ;
+    ] .
+
+vfr:ReadingShape
+    a sh:NodeShape ;
+    sh:targetClass vfr:Reading ;
+    sh:property [
+        sh:path prov:wasGeneratedBy ;
+        sh:minCount 1 ;
+        sh:message "A reading must cite the oracle call that produced it." ;
+    ] ;
+    sh:property [
+        sh:path vfr:variable ;
+        sh:minCount 1 ;
+        sh:message "A reading must name the variable it provides." ;
+    ] ;
+    sh:property [
+        sh:path vfr:value ;
+        sh:minCount 1 ;
+        sh:message "A reading must carry the value the oracle returned." ;
+    ] .
+
+vfr:OracleCallShape
+    a sh:NodeShape ;
+    sh:targetClass vfr:OracleCall ;
+    sh:property [
+        sh:path vfr:service ;
+        sh:minCount 1 ;
+        sh:message "An oracle call must identify the service that was called." ;
+    ] ;
+    sh:property [
+        sh:path vfr:requestPayload ;
+        sh:minCount 1 ;
+        sh:message "An oracle call must record the payload that was sent." ;
+    ] ;
+    sh:property [
+        sh:path vfr:responseCode ;
+        sh:minCount 1 ;
+        sh:message "An oracle call must record the response code it received." ;
+    ] ;
+    sh:property [
+        sh:path vfr:responsePayload ;
+        sh:minCount 1 ;
+        sh:message "An oracle call must record the response it received." ;
     ] .
 
 vfr:ObligationShape

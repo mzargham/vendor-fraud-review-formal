@@ -1,0 +1,5 @@
+variable,value,service,requestPayload,responseCode,responsePayload
+confidence,0.71,"extraction-confidence service (invoice-extraction-cog telemetry, v2.3.1)","{""op"":""vendor-fraud-review"",""run"":""run-001"",""variable"":""confidence"",""batch"":""invoice-batch-2026-08""}",200,"{""confidence"":0.71}"
+consensus_disagreement,0.10,consensus-comparator service (v1.4.0),"{""op"":""vendor-fraud-review"",""run"":""run-001"",""variable"":""consensus_disagreement"",""cogs"":[""invoice-extraction-cog"",""vendor-risk-cog"",""anomaly-summary-cog""]}",200,"{""consensus_disagreement"":0.10}"
+sensitive_data_detected,false,sensitive-data-scanner service (v5.0.2),"{""op"":""vendor-fraud-review"",""run"":""run-001"",""variable"":""sensitive_data_detected"",""batch"":""invoice-batch-2026-08""}",200,"{""sensitive_data_detected"":false}"
+vendor_risk,high,vendor-risk-cog scoring endpoint (v0.9.7),"{""op"":""vendor-fraud-review"",""run"":""run-001"",""variable"":""vendor_risk"",""vendor"":""V-2214""}",200,"{""vendor_risk"":""high""}"

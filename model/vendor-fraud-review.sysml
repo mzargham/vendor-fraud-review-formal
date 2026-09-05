@@ -36,7 +36,12 @@ package VendorFraudReview {
                cogs: invoice-extraction-cog, vendor-risk-cog, anomaly-summary-cog
                Source: WP section 5.6, manifest sketch. */
 
-            /* Raw readings. provisional: GAP-04 (consensus_disagreement is
+            /* Raw readings. adjudicated: GAP-05 — every value here is
+               oracle-provided: an identified service was called with a
+               recorded payload and answered with a recorded code and
+               response (the Track's interface graph carries the citations).
+               This model applies the policy; it does not provide the
+               numbers. provisional: GAP-04 (consensus_disagreement is
                never defined; modeled as a scalar compared against the 0.25
                threshold, metric semantics left open pending adjudication). */
             attribute confidence : ScalarValues::Real;
@@ -64,9 +69,12 @@ package VendorFraudReview {
         }
 
         requirement def <'INTERFACE-01'> ConfidenceInterface {
-            doc /* adjudicated: GAP-03 — the interface contract between the
-               raw confidence reading and its level: the manifest's 0.80
-               threshold is the boundary of the simplified scheme. */
+            doc /* adjudicated: GAP-03 — the documented threshold rule
+               binding the oracle-provided numeric to its category: the
+               manifest's 0.80 threshold is the boundary of the simplified
+               scheme. Categories are the preferred interface; numerical
+               precision lives inside the oracles or in rules like this one
+               (design note, adjudication-log.md 2026-09-04). */
             subject op : VendorFraudReviewOp;
             require constraint { op.confidence < 0.80 implies op.confidenceLevel == ConfidenceLevel::low }
             require constraint { op.confidence >= 0.80 implies op.confidenceLevel == ConfidenceLevel::high }

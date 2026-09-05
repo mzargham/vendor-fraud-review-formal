@@ -43,3 +43,9 @@ def test_notebook_shows_the_shacl_inversion(executed_outputs):
 
 def test_notebook_shows_the_outcome_vocabulary(executed_outputs):
     assert "cantTell" in executed_outputs, "the cantTell outcome is not demonstrated"
+
+
+def test_notebook_shows_the_oracle_citations(executed_outputs):
+    assert "responseCode" in executed_outputs or "response code" in executed_outputs, (
+        "the oracle interface contract (service/payload/code/response) is not demonstrated"
+    )

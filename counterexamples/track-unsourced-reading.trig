@@ -1,0 +1,35 @@
+@prefix vfr: <https://example.org/vfr#> .
+@prefix run: <https://example.org/vfr/track/run-bad#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# COUNTEREXAMPLE: readings whose oracle citation is broken, both ways —
+# a reading with no oracle call at all, and a call that never recorded the
+# response code it got back. A number nobody can source is not a number the
+# policy may act on. Must fail the track shapes.
+
+run:interface {
+    run:reading-confidence
+        a vfr:Reading ;
+        vfr:variable "confidence" ;
+        vfr:value 0.71 .
+        # no prov:wasGeneratedBy: where did 0.71 come from?
+
+    run:oracle-call-vendor-risk
+        a vfr:OracleCall, prov:Activity ;
+        vfr:service <urn:example:service:vendor-risk-cog> ;
+        vfr:requestPayload "{\"vendor\":\"V-2214\"}" ;
+        vfr:responsePayload "{\"vendor_risk\":\"high\"}" ;
+        prov:generated run:reading-vendor-risk .
+        # no vfr:responseCode: did the call even succeed?
+
+    run:reading-vendor-risk
+        a vfr:Reading ;
+        vfr:variable "vendor_risk" ;
+        vfr:value "high" ;
+        prov:wasGeneratedBy run:oracle-call-vendor-risk .
+
+    <urn:example:service:vendor-risk-cog>
+        a vfr:Oracle, prov:SoftwareAgent ;
+        rdfs:label "vendor-risk-cog scoring endpoint (v0.9.7)" .
+}

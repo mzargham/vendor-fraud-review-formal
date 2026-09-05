@@ -57,3 +57,34 @@ reduce to yes/no/canttell facts we're agreeing or disagreeing on"
 
 **Changed:** nothing in the substrate; the entry remains PENDING with the
 ruling's direction recorded as an adjudication note.
+
+## 2026-09-04 — GAP-05
+
+**Ruling (verbatim):** "where ever we need a number we must assume an oracle
+that can provide it and have an identity for that oracle, and be able to
+precisely cite it. that means we need to know what service we called what
+payload we sent, what response code we got and what response we got. our
+system needs these answers to apply its policies but is not itself the
+provider of these numbers. so these make up interface contract."
+
+**Changed:** the Track gained an interface graph: four identified oracle
+services, one cited call per gate variable (request payload, response code,
+response payload), and a reading node per value. Gate decisions now cite the
+reading they evaluated. Shapes refuse unsourced readings, calls missing any
+of the four citation fields, and gate decisions with no cited reading. A new
+interface query renders the full citation table; a new counterexample proves
+the shapes bite.
+
+## 2026-09-04 — design note (logged at Z's direction)
+
+**Note (verbatim):** "the suggestion that this system prefer categories over
+numerical ranges as their interface contract and let the numerical precision
+live inside the oracles or within well documented threshold rules."
+
+**Standing in the substrate:** the raw numerics remain exactly as the
+manifest states them (GATE-01 and GATE-02 evaluate the literal 0.80 and 0.25
+comparisons); the category layer (RiskLevel, ConfidenceLevel) is the
+preferred interface; INTERFACE-01 is the documented threshold rule mapping
+number to category; the numbers themselves are oracle-provided (GAP-05).
+This note is a suggestion about the system's design, available to raise with
+the author; it changes no verbatim rendering of his text.

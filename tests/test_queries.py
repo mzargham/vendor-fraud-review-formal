@@ -50,6 +50,41 @@ def test_obligations_are_discharged_by_state_mutating_actions(track_dataset):
     assert int(count[0][0]) == 2, "run-001 should raise exactly two obligations"
 
 
+def test_every_gate_variable_cites_its_oracle(track_dataset):
+    # Interface contract (GAP-05 ruling): wherever the policy needs a value,
+    # an oracle provides it — and the Track must cite the call: what service,
+    # what payload sent, what response code, what response. The system
+    # applies its policies to these values; it is not their provider.
+    rows = [r.asdict() for r in _query(track_dataset, "interface.rq")]
+    variables = {str(r["variable"]) for r in rows}
+    assert variables == {
+        "confidence", "consensus_disagreement", "sensitive_data_detected", "vendor_risk",
+    }, f"gate variables without a complete oracle citation: {variables}"
+    for r in rows:
+        for field in ("service", "requestPayload", "responseCode", "responsePayload", "value"):
+            assert r.get(field) is not None, f"{r['variable']}: missing {field}"
+    confidence = next(r for r in rows if str(r["variable"]) == "confidence")
+    assert "0.71" in str(confidence["responsePayload"]), (
+        "the numeric value must appear in the oracle's cited response"
+    )
+
+
+def test_every_gate_decision_used_an_oracle_backed_reading(track_dataset):
+    rows = list(track_dataset.query("""
+        PREFIX vfr: <https://example.org/vfr#>
+        PREFIX prov: <http://www.w3.org/ns/prov#>
+        SELECT ?gateDecision WHERE {
+            ?gateDecision a vfr:GateDecision .
+            FILTER NOT EXISTS {
+                ?gateDecision prov:used ?reading .
+                ?reading a vfr:Reading ;
+                         prov:wasGeneratedBy ?call .
+                ?call vfr:responseCode ?code .
+            }
+        }"""))
+    assert rows == [], f"gate decisions that evaluated values with no citable oracle call: {rows}"
+
+
 def test_trust_outcome_distribution_is_fully_visible(track_dataset):
     rows = [r.asdict() for r in _query(track_dataset, "trust.rq")]
     assert rows, "trust query returned nothing"

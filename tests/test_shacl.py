@@ -6,11 +6,14 @@ from conftest import (
     CITATION_SHAPES,
     CX_TRACK,
     CX_VOCAB,
+    ROOT,
     SOURCES,
     TRACK,
     TRACK_SHAPES,
     VOCABULARY,
 )
+
+CX_READING = ROOT / "counterexamples" / "track-unsourced-reading.trig"
 
 
 def _graph(*paths, fmt=None):
@@ -48,4 +51,14 @@ def test_track_missing_approval_counterexample_fails():
     )
     assert "obligation" in report.lower(), (
         f"violation message does not name the undischarged obligation (GAP-02 ruling):\n{report}"
+    )
+
+
+def test_unsourced_reading_counterexample_fails():
+    # Interface contract (GAP-05 ruling): a reading with no citable oracle
+    # call — or an oracle call missing its response code — must be refused.
+    conforms, _, report = validate(_graph(CX_READING), shacl_graph=str(TRACK_SHAPES))
+    assert not conforms, "unsourced-reading counterexample conforms: shapes are toothless"
+    assert "oracle" in report.lower(), (
+        f"violation message does not name the missing oracle citation:\n{report}"
     )

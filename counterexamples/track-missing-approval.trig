@@ -8,7 +8,7 @@
 # Track of one synthetic execution of the Vendor Fraud Review Op — the
 # escalated run modeled in model/vendor-fraud-review.sysml (confidence 0.71
 # fires GATE-01; vendor_risk "high" fires GATE-04; a named human approves).
-# Graph layout: evidence / decisions / approvals / provenance.
+# Graph layout: interface / evidence / decisions / approvals / provenance.
 # All names and values are synthetic demonstration data.
 # COUNTEREXAMPLE: identical to run-001 except the approvals graph is absent —
 # two obligations were raised and no concrete action discharged them. Must
@@ -30,6 +30,92 @@ run:provenance {
         a prov:Entity ;
         rdfs:label "Anomaly summary; vendor V-2214 flagged for review" ;
         prov:wasGeneratedBy run:execution .
+}
+
+run:interface {
+    # The interface contract (adjudicated: GAP-05): every value the policy
+    # reads is provided by an identified oracle, and the Track cites the
+    # call — what service, what payload sent, what response code, what
+    # response. The system applies its policies to these values; it is not
+    # their provider. Numerical precision lives inside the oracles or in
+    # documented threshold rules (INTERFACE-01 in the model).
+
+    <urn:example:service:extraction-confidence>
+        a vfr:Oracle, prov:SoftwareAgent ;
+        rdfs:label "extraction-confidence service (invoice-extraction-cog telemetry, v2.3.1)" .
+
+    <urn:example:service:consensus-comparator>
+        a vfr:Oracle, prov:SoftwareAgent ;
+        rdfs:label "consensus-comparator service (v1.4.0)" .
+
+    <urn:example:service:sensitive-data-scanner>
+        a vfr:Oracle, prov:SoftwareAgent ;
+        rdfs:label "sensitive-data-scanner service (v5.0.2)" .
+
+    <urn:example:service:vendor-risk-cog>
+        a vfr:Oracle, prov:SoftwareAgent ;
+        rdfs:label "vendor-risk-cog scoring endpoint (v0.9.7)" .
+
+    run:oracle-call-confidence
+        a vfr:OracleCall, prov:Activity ;
+        vfr:service <urn:example:service:extraction-confidence> ;
+        vfr:requestPayload "{\"op\":\"vendor-fraud-review\",\"run\":\"run-001\",\"variable\":\"confidence\",\"batch\":\"invoice-batch-2026-08\"}" ;
+        vfr:responseCode "200" ;
+        vfr:responsePayload "{\"confidence\":0.71}" ;
+        prov:generated run:reading-confidence ;
+        prov:endedAtTime "2026-09-04T14:03:11Z"^^xsd:dateTime .
+
+    run:reading-confidence
+        a vfr:Reading ;
+        vfr:variable "confidence" ;
+        vfr:value 0.71 ;
+        prov:wasGeneratedBy run:oracle-call-confidence .
+
+    run:oracle-call-consensus
+        a vfr:OracleCall, prov:Activity ;
+        vfr:service <urn:example:service:consensus-comparator> ;
+        vfr:requestPayload "{\"op\":\"vendor-fraud-review\",\"run\":\"run-001\",\"variable\":\"consensus_disagreement\",\"cogs\":[\"invoice-extraction-cog\",\"vendor-risk-cog\",\"anomaly-summary-cog\"]}" ;
+        vfr:responseCode "200" ;
+        vfr:responsePayload "{\"consensus_disagreement\":0.10}" ;
+        prov:generated run:reading-consensus ;
+        prov:endedAtTime "2026-09-04T14:04:02Z"^^xsd:dateTime .
+
+    run:reading-consensus
+        a vfr:Reading ;
+        vfr:variable "consensus_disagreement" ;
+        vfr:value 0.10 ;
+        prov:wasGeneratedBy run:oracle-call-consensus .
+
+    run:oracle-call-sensitive
+        a vfr:OracleCall, prov:Activity ;
+        vfr:service <urn:example:service:sensitive-data-scanner> ;
+        vfr:requestPayload "{\"op\":\"vendor-fraud-review\",\"run\":\"run-001\",\"variable\":\"sensitive_data_detected\",\"batch\":\"invoice-batch-2026-08\"}" ;
+        vfr:responseCode "200" ;
+        vfr:responsePayload "{\"sensitive_data_detected\":false}" ;
+        prov:generated run:reading-sensitive ;
+        prov:endedAtTime "2026-09-04T14:04:40Z"^^xsd:dateTime .
+
+    run:reading-sensitive
+        a vfr:Reading ;
+        vfr:variable "sensitive_data_detected" ;
+        vfr:value false ;
+        prov:wasGeneratedBy run:oracle-call-sensitive .
+
+    run:oracle-call-vendor-risk
+        a vfr:OracleCall, prov:Activity ;
+        vfr:service <urn:example:service:vendor-risk-cog> ;
+        vfr:requestPayload "{\"op\":\"vendor-fraud-review\",\"run\":\"run-001\",\"variable\":\"vendor_risk\",\"vendor\":\"V-2214\"}" ;
+        vfr:responseCode "200" ;
+        vfr:responsePayload "{\"vendor_risk\":\"high\"}" ;
+        prov:generated run:reading-vendor-risk ;
+        prov:endedAtTime "2026-09-04T14:05:19Z"^^xsd:dateTime .
+
+    run:reading-vendor-risk
+        a vfr:Reading ;
+        vfr:variable "vendor_risk" ;
+        vfr:value "high" ;
+        prov:wasGeneratedBy run:oracle-call-vendor-risk ;
+        prov:wasDerivedFrom run:evidence-vendor-risk-score .
 }
 
 run:evidence {
@@ -83,7 +169,8 @@ run:decisions {
         vfr:gate "GATE-01" ;
         vfr:condition "confidence < 0.80" ;
         vfr:consequent "human_review_required" ;
-        prov:wasInformedBy run:guard-confidence .
+        prov:wasInformedBy run:guard-confidence ;
+        prov:used run:reading-confidence .
 
     run:gate-decision-02
         a vfr:GateDecision ;
@@ -91,7 +178,8 @@ run:decisions {
         vfr:gate "GATE-04" ;
         vfr:condition "vendor_risk == high" ;
         vfr:consequent "human_approval_required" ;
-        prov:wasInformedBy run:guard-vendor-risk-reading .
+        prov:wasInformedBy run:guard-vendor-risk-reading ;
+        prov:used run:reading-vendor-risk .
 
     # Obligations raised by the fired gates (adjudicated: GAP-02 — a
     # then-clause names an obligation: a required action, abstract, not yet
