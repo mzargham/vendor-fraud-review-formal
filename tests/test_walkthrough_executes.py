@@ -153,5 +153,5 @@ def test_chapter_05_shows_the_shacl_inversion_and_the_outcomes(chapter_outputs):
 
 def test_chapter_06_lists_every_adjudicated_gap(chapter_outputs):
     text = chapter_outputs["06-open-questions"]
-    for n in range(1, 9):
+    for n in range(1, 10):
         assert f"GAP-0{n}" in text, f"GAP-0{n} not surfaced in the open-questions chapter"

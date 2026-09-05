@@ -20,7 +20,7 @@ package VendorFraudReviewUnattended {
             attribute stopAndEscalate : ScalarValues::Boolean;
         }
 
-        part def HumanAction {
+        part def CounterpartyAction {
             attribute humanReviewPerformed : ScalarValues::Boolean;
             attribute escalationPerformed : ScalarValues::Boolean;
         }
@@ -31,7 +31,7 @@ package VendorFraudReviewUnattended {
 
         part def VendorFraudReviewOp {
             part policyEngine : PolicyEngine;
-            part humanAction : HumanAction;
+            part counterparty : CounterpartyAction;
             part summaryCog : AnomalySummaryCog;
         }
 
@@ -45,7 +45,7 @@ package VendorFraudReviewUnattended {
 
         requirement def <'SYSTEM-01'> ObligationsDischarged {
             subject op : VendorFraudReviewOp;
-            require constraint { op.policyEngine.humanReviewRequired implies op.humanAction.humanReviewPerformed }
+            require constraint { op.policyEngine.humanReviewRequired implies op.counterparty.humanReviewPerformed }
         }
 
         requirement def <'SYSTEM-02'> StopMeansNoOutput {
@@ -65,7 +65,7 @@ package VendorFraudReviewUnattended {
                 attribute :>> humanReviewRequired = false;
                 attribute :>> stopAndEscalate = false;
             }
-            part :>> humanAction {
+            part :>> counterparty {
                 attribute :>> humanReviewPerformed = false;
                 attribute :>> escalationPerformed = false;
             }
@@ -80,7 +80,7 @@ package VendorFraudReviewUnattended {
                 attribute :>> humanReviewRequired = true;
                 attribute :>> stopAndEscalate = false;
             }
-            part :>> humanAction {
+            part :>> counterparty {
                 attribute :>> humanReviewPerformed = false;
                 attribute :>> escalationPerformed = false;
             }
@@ -96,7 +96,7 @@ package VendorFraudReviewUnattended {
                 attribute :>> humanReviewRequired = false;
                 attribute :>> stopAndEscalate = true;
             }
-            part :>> humanAction {
+            part :>> counterparty {
                 attribute :>> humanReviewPerformed = false;
                 attribute :>> escalationPerformed = true;
             }

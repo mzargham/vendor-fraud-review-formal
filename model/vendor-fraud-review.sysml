@@ -186,15 +186,22 @@ package VendorFraudReview {
             port fromConsensus : ~ReadingWrite;
             port fromScanner : ~ReadingWrite;
             port fromRisk : ~ReadingWrite;
-            port toHuman : ObligationWrite;
+            port toCounterparty : ObligationWrite;
             port toCog : ClearanceWrite;
         }
 
-        part def HumanAction :> OpComponent {
+        part def CounterpartyAction :> OpComponent {
             doc /* The concrete actions that discharge obligations
                (adjudicated: GAP-02 — a concrete action discharges an
                obligation and must also mutate state; the Track evidences
-               both). */
+               both). Who acts: the manifest names a human for review
+               (GATE-01) and approval (GATE-04), and those attribute
+               names keep the manifest's words. For expert review and
+               escalation the paper does not specify the actor, and none
+               is assumed here: the actor is another system outside the
+               modeled boundary, acting on the Op, with a counterparty
+               assumed accountable for its behavior (provisional:
+               GAP-09). */
             attribute humanReviewPerformed : ScalarValues::Boolean;
             attribute expertReviewPerformed : ScalarValues::Boolean;
             attribute escalationPerformed : ScalarValues::Boolean;
@@ -225,7 +232,9 @@ package VendorFraudReview {
             end consumer : ~ReadingWrite;
         }
         interface def ObligationSeam {
-            doc /* Raised obligations cross to the humans who discharge them. */
+            doc /* Raised obligations cross to the counterparty that
+               discharges them: human where the manifest says so,
+               otherwise unspecified (provisional: GAP-09). */
             end supplier : ObligationWrite;
             end consumer : ~ObligationWrite;
         }
@@ -245,8 +254,9 @@ package VendorFraudReview {
                cogs: invoice-extraction-cog, vendor-risk-cog, anomaly-summary-cog
                Source: WP section 5.6, manifest sketch.
                The Op as an assembly: four oracle components feed the policy
-               engine; obligations flow to the human actions; clearance
-               flows to the summary cog; the boundary exposes the result.
+               engine; obligations flow to the counterparty actions;
+               clearance flows to the summary cog; the boundary exposes
+               the result.
                Interface usages are declared before the parts they connect
                (executor materializes in declaration order). */
 
@@ -254,7 +264,7 @@ package VendorFraudReview {
             interface consensusSeam : ReadingSeam connect consensusOracle.reading to policyEngine.fromConsensus;
             interface scannerSeam : ReadingSeam connect scannerOracle.reading to policyEngine.fromScanner;
             interface riskSeam : ReadingSeam connect riskOracle.reading to policyEngine.fromRisk;
-            interface obligationSeam : ObligationSeam connect policyEngine.toHuman to humanAction.fromEngine;
+            interface obligationSeam : ObligationSeam connect policyEngine.toCounterparty to counterparty.fromEngine;
             interface clearanceSeam : ClearanceSeam connect policyEngine.toCog to summaryCog.clearance;
 
             part confidenceOracle : ExtractionConfidenceOracle;
@@ -262,7 +272,7 @@ package VendorFraudReview {
             part scannerOracle : SensitiveDataScannerOracle;
             part riskOracle : VendorRiskOracle;
             part policyEngine : PolicyEngine;
-            part humanAction : HumanAction;
+            part counterparty : CounterpartyAction;
             part summaryCog : AnomalySummaryCog;
 
             port result : SummaryWrite;
@@ -372,12 +382,13 @@ package VendorFraudReview {
             doc /* adjudicated: GAP-02 — a closed run must show every raised
                obligation discharged by a concrete action; genuinely a
                system property: raised in the policy engine, discharged in
-               the human actions. */
+               the counterparty actions (provisional: GAP-09 on who may
+               act). */
             subject op : VendorFraudReviewOp;
-            require constraint { op.policyEngine.humanReviewRequired implies op.humanAction.humanReviewPerformed }
-            require constraint { op.policyEngine.expertReviewRequired implies op.humanAction.expertReviewPerformed }
-            require constraint { op.policyEngine.stopAndEscalate implies op.humanAction.escalationPerformed }
-            require constraint { op.policyEngine.humanApprovalRequired implies op.humanAction.humanApprovalGiven }
+            require constraint { op.policyEngine.humanReviewRequired implies op.counterparty.humanReviewPerformed }
+            require constraint { op.policyEngine.expertReviewRequired implies op.counterparty.expertReviewPerformed }
+            require constraint { op.policyEngine.stopAndEscalate implies op.counterparty.escalationPerformed }
+            require constraint { op.policyEngine.humanApprovalRequired implies op.counterparty.humanApprovalGiven }
         }
 
         requirement def <'SYSTEM-02'> StopMeansNoOutput {
@@ -422,7 +433,7 @@ package VendorFraudReview {
                 attribute :>> stopAndEscalate = false;
                 attribute :>> humanApprovalRequired = false;
             }
-            part :>> humanAction {
+            part :>> counterparty {
                 attribute :>> humanReviewPerformed = false;
                 attribute :>> expertReviewPerformed = false;
                 attribute :>> escalationPerformed = false;
@@ -451,7 +462,7 @@ package VendorFraudReview {
                 attribute :>> stopAndEscalate = false;
                 attribute :>> humanApprovalRequired = true;
             }
-            part :>> humanAction {
+            part :>> counterparty {
                 attribute :>> humanReviewPerformed = true;
                 attribute :>> expertReviewPerformed = false;
                 attribute :>> escalationPerformed = false;

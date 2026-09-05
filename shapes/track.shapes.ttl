@@ -73,7 +73,7 @@ vfr:ObligationShape
     sh:property [
         sh:path [ sh:inversePath vfr:discharges ] ;
         sh:minCount 1 ;
-        sh:message "Obligation raised but not discharged: no human approval action recorded (section 5.6: human_approvals are part of the Track)." ;
+        sh:message "Obligation raised but not discharged: no discharging action recorded (section 5.6 lists human_approvals in the Track; where the manifest does not name a human the actor is unspecified — provisional: GAP-09)." ;
     ] .
 
 vfr:DischargingActionShape
@@ -81,18 +81,18 @@ vfr:DischargingActionShape
     sh:targetSubjectsOf vfr:discharges ;
     sh:property [
         sh:path earl:mode ;
-        sh:hasValue earl:manual ;
-        sh:message "An action discharging an obligation must be an earl:manual assertion." ;
+        sh:minCount 1 ;
+        sh:message "A discharging action must declare its mode: earl:manual for a human act, earl:automatic for another system outside the modeled Op acting on it (provisional: GAP-09 — the paper specifies a human only where the manifest says so)." ;
     ] ;
     sh:property [
         sh:path prov:wasAssociatedWith ;
         sh:minCount 1 ;
-        sh:message "A human approval must name its approver (prov:wasAssociatedWith)." ;
+        sh:message "A discharging action, approval included, must name the party accountable for it (prov:wasAssociatedWith) — human or not, an accountable counterparty is assumed (provisional: GAP-09)." ;
     ] ;
     sh:property [
         sh:path vfr:rationale ;
         sh:minCount 1 ;
-        sh:message "A human approval must carry a rationale." ;
+        sh:message "A discharging action must carry a rationale." ;
     ] ;
     sh:property [
         sh:path prov:generated ;

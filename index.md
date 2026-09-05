@@ -44,9 +44,9 @@ The substrate is a small stack of open standards, one layer per job:
    locators, and checked against the PDF by the test suite.
 3. **An executable model.** The section 5.6 manifest as an OpenSysML
    [@opensysml043] assembly: oracle components wired along ports to a
-   policy engine, human actions, and a summary cog, with the four gates
-   as constraints and checks at three levels (component, wiring,
-   system).
+   policy engine, counterparty actions, and a summary cog, with the
+   four gates as constraints and checks at three levels (component,
+   wiring, system).
 4. **A run record.** One execution as a PROV-O [@provo2013] + EARL
    [@earl2017] Track, with SHACL [@shacl2017] shapes that the record
    must conform to, and counterexamples proving the shapes can refuse.

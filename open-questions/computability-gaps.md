@@ -182,9 +182,37 @@ guards sit on the flow, what reaches the output producer.
 **Possible readings:** (a) a pipeline in the order the cogs are listed;
 (b) a hub topology — a supervising engine mediates all flows; (c) guard
 placement per lifecycle stage (§5.4) with gates inline on each seam.
-**Adjudicated reading in use:** (b) — oracles → policy engine → human
-action / summary cog (model/vendor-fraud-review.sysml, the seams in
-VendorFraudReviewOp). **Claimed as this formalization's contribution**, not
+**Adjudicated reading in use:** (b) — oracles → policy engine →
+counterparty action / summary cog (model/vendor-fraud-review.sysml, the
+seams in VendorFraudReviewOp; the component was renamed from "human
+action" under GAP-09). **Claimed as this formalization's contribution**, not
 a defect in the paper: an explicit, checkable topology is a benefit gained
 by shifting from the textual to the computational representation of the
 same concepts. The prose could not carry it; the model must, and does.
+
+## GAP-09 — who performs the discharging actions
+
+**Status:** ADJUDICATED (2026-09-04, see adjudication-log.md)
+**Locus:** WP §5.6 gates (`human_review_required`,
+`human_approval_required` name a human; `expert_review_required` and
+`stop_and_escalate` do not) and §5.2 ("routes the output to human
+review", "escalates to an expert", "stops before external transmission").
+**Problem:** the assembly needs one component to hold the concrete
+actions that discharge obligations, and its first name (HumanAction)
+painted all four actions human. The manifest specifies a human for two
+of the four; for expert review and the escalation target the actor is
+unspecified.
+**Substrate forces:** the discharging component must be typed and named;
+the Track's discharging-action shape must say what mode and agent
+evidence is required.
+**Possible readings:** (a) all discharges human (over-reads the source);
+(b) actor unspecified where the text is silent — modeled as another
+system outside the modeled boundary acting on the Op, with a
+counterparty assumed accountable for its behavior.
+**Adjudicated reading in use:** (b). The component is CounterpartyAction;
+the two manifest-named human attributes keep the manifest's words
+(humanReviewPerformed, humanApprovalGiven); the discharging-action shape
+requires a declared mode (manual or automatic) and a named accountable
+party rather than requiring every discharge to be manual. The
+accountable-counterparty assumption is explicitly the adjudicator's
+interpretation, not the paper's.

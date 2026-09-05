@@ -174,3 +174,27 @@ deliberately unbound. The notebook evaluates all three on one answer
 matrix and shows the gate firing under some and not others — the same
 correctly-typed policy construction, different behavior. The Track records
 which metric a run used. Nothing anywhere selects a winner.
+
+## 2026-09-04 — GAP-09
+
+**Ruling (verbatim):** "i am not sure we can say 'cross to the human
+actions' as actions may be performed by other automated systems. i do
+personally assume all automated systems have a party accountable for
+their behavior but not that any particular actor is human. do not
+contradict Travis' text but if its left unspecified do not inject the
+expectation of human action, instead assume its an other system outside
+the bounds of what is modeled acting on the system that is modeled, and
+we can assume there is a counterparty accountable for those actions. if
+necessary you can add my interpretation as explicitly mine and log it
+with adjudications."
+
+**Changed:** part def HumanAction renamed CounterpartyAction (usage
+humanAction → counterparty, port toHuman → toCounterparty) in the model,
+the counterexamples, and the scenario template; its doc states which two
+actions the manifest names human and that the other two actors are
+unspecified. The obligation-seam doc and SYSTEM-01 doc updated. The
+Track's discharging-action shape no longer requires earl:manual on every
+discharge: it requires a declared mode and a named accountable party
+(prov:wasAssociatedWith), with the accountable-counterparty assumption
+marked as the adjudicator's own interpretation. Walkthrough narration
+(index and chapter 2) reworded to match.

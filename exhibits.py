@@ -221,7 +221,7 @@ SCENARIO_TEMPLATE = """    package RunConfigurations {
                 attribute :>> stopAndEscalate = @SAE@;
                 attribute :>> humanApprovalRequired = @HAR@;
             }
-            part :>> humanAction {
+            part :>> counterparty {
                 attribute :>> humanReviewPerformed = @HRP@;
                 attribute :>> expertReviewPerformed = @ERP@;
                 attribute :>> escalationPerformed = @ESP@;
