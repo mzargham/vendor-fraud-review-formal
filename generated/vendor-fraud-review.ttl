@@ -2290,8 +2290,10 @@ elmt:VendorFraudReview__Manifest__ReadingSeam___400
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__ReadingSeam___400_om ;
     sysml:owningMembership elmt:VendorFraudReview__Manifest__ReadingSeam___400_om ;
     sysml:body """ An oracle's returned value crosses to the policy engine.
-               provisional: GAP-08 (the paper draws no internal wiring;
-               this topology is drawn from the section 4.1/4.5 narrative). """ .
+               adjudicated: GAP-08 — the paper draws no internal wiring;
+               this explicit, checkable topology is the formalization's
+               contribution, gained by shifting from the textual to the
+               computational representation. """ .
 
 elmt:VendorFraudReview__Manifest__ReadingSeam___400_om
     a sysml:OwningMembership ;

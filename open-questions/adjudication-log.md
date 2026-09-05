@@ -125,3 +125,29 @@ verbatim), and aggregate-outcome coherence at system level. AggregateOutcome
 {executed, noOp} names the distinction; the assembly's lifecycle (running →
 stopped | completed) runs under trace. GAP-07 (track.include final_output
 for stopped runs) and GAP-08 (wiring topology) logged PENDING.
+
+## 2026-09-04 — GAP-07
+
+**Ruling (verbatim):** "we need it to be conditional but we should flag that
+we've made that judgement and acknowledge it departs from pinned draft"
+
+**Changed:** final_output retention is now conditional on the aggregate
+outcome: an executed run's Track must retain it; a noOp run's Track must
+not carry one. Encoded as SPARQL constraints in shapes/track.shapes.ttl,
+whose violation messages acknowledge the departure from the pinned draft in
+so many words; the Track now states its aggregate outcome as a required
+field; run-001 records "executed". Inline negative cases prove both
+directions bite.
+
+## 2026-09-04 — GAP-08
+
+**Ruling (verbatim):** "we claim this is our contribution, and as a benefit
+we get for shifting to the computational rather than textual representation
+of the same concepts"
+
+**Changed:** the drawn topology (oracles → policy engine → human action /
+summary cog) is no longer provisional: it is claimed as the formalization's
+contribution. The gap entry and the seam doc comment reframe it as a
+capability the computational representation adds — an explicit topology the
+wiring rules can check — rather than an under-specification to be repaired
+in the source text.

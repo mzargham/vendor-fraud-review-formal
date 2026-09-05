@@ -173,8 +173,10 @@ package VendorFraudReview {
 
         interface def ReadingSeam {
             doc /* An oracle's returned value crosses to the policy engine.
-               provisional: GAP-08 (the paper draws no internal wiring;
-               this topology is drawn from the section 4.1/4.5 narrative). */
+               adjudicated: GAP-08 — the paper draws no internal wiring;
+               this explicit, checkable topology is the formalization's
+               contribution, gained by shifting from the textual to the
+               computational representation. */
             end supplier : ReadingWrite;
             end consumer : ~ReadingWrite;
         }

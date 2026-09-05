@@ -69,6 +69,20 @@ def test_track_records_the_configuration_parameters_in_force(track_dataset):
     assert str(rows[0]["trigger"]) == "high"
 
 
+def test_track_states_its_aggregate_outcome(track_dataset):
+    # GAP-06/07: the Track says whether the Op executed or was a no-op;
+    # run-001 executed and retained its final output.
+    rows = list(track_dataset.query("""
+        PREFIX vfr: <https://example.org/vfr#>
+        SELECT ?outcome ?output WHERE {
+            ?e a vfr:OpExecution ;
+               vfr:aggregateOutcome ?outcome ;
+               vfr:finalOutput ?output .
+        }"""))
+    assert len(rows) == 1
+    assert str(rows[0][0]) == "executed"
+
+
 def test_every_gate_variable_cites_its_oracle(track_dataset):
     # Interface contract (GAP-05 ruling): wherever the policy needs a value,
     # an oracle provides it — and the Track must cite the call: what service,

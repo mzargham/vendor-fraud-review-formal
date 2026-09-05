@@ -71,6 +71,59 @@ def test_execution_without_parameters_fails():
     )
 
 
+def _bare_execution(extra=""):
+    data = rdflib.Graph()
+    data.parse(data=f"""
+        @prefix vfr: <https://example.org/vfr#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        <urn:example:run-x:execution> a vfr:OpExecution ;
+            rdfs:label "a minimal execution" ;
+            vfr:framesApplied "f" ; vfr:cogsInvoked "c" ;
+            vfr:parameters <urn:example:run-x:params> ;
+            {extra}
+            rdfs:comment "guard results and prov:used omitted on purpose" .
+    """, format="turtle")
+    return data
+
+
+def test_executed_run_without_final_output_fails():
+    # GAP-07 adjudication: final_output inclusion is CONDITIONAL — an
+    # executed run must retain it.
+    conforms, _, report = validate(
+        _bare_execution('vfr:aggregateOutcome "executed" ;'),
+        shacl_graph=str(TRACK_SHAPES),
+    )
+    assert not conforms
+    assert "final_output" in report.lower(), (
+        f"violation does not name the missing final_output:\n{report}"
+    )
+
+
+def test_stopped_run_with_final_output_fails():
+    # GAP-07 adjudication, the other direction: a noOp run transmits
+    # nothing, so a final_output on its Track is a violation. This reading
+    # departs from the pinned draft's unconditional include list, and the
+    # violation message must say so.
+    conforms, _, report = validate(
+        _bare_execution(
+            'vfr:aggregateOutcome "noOp" ; vfr:finalOutput <urn:example:run-x:out> ;'
+        ),
+        shacl_graph=str(TRACK_SHAPES),
+    )
+    assert not conforms
+    assert "departs from the pinned draft" in report, (
+        f"the departure from the pinned draft is not acknowledged in the message:\n{report}"
+    )
+
+
+def test_execution_must_state_its_aggregate_outcome():
+    conforms, _, report = validate(_bare_execution(), shacl_graph=str(TRACK_SHAPES))
+    assert not conforms
+    assert "aggregate outcome" in report.lower(), (
+        f"violation does not name the missing aggregate outcome:\n{report}"
+    )
+
+
 def test_unsourced_reading_counterexample_fails():
     # Interface contract (GAP-05 ruling): a reading with no citable oracle
     # call — or an oracle call missing its response code — must be refused.

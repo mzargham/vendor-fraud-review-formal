@@ -139,7 +139,7 @@ completed) exercised under trace.
 
 ## GAP-07 — `track.include` lists `final_output` unconditionally
 
-**Status:** PENDING
+**Status:** ADJUDICATED (2026-09-04, see adjudication-log.md)
 **Locus:** WP §5.6 manifest, `track: include: - final_output`; §5.2 "the Op
 stops before external transmission".
 **Problem:** a stopped run has no final output to retain, yet the manifest's
@@ -152,12 +152,15 @@ stopped run's Track is written.
 **Possible readings:** (a) conditional inclusion (include when produced);
 (b) the stop-and-escalation record is the final output of a stopped run;
 (c) unconditional, so a stopped run's Track is non-conformant by design.
-**Provisional reading in use:** none — Track and shapes unchanged pending
-adjudication.
+**Adjudicated reading in use:** (a) — conditional inclusion: an executed
+run's Track must retain final_output; a noOp run's Track carries none.
+**This is a judgment, and it departs from the pinned draft**, which lists
+final_output unconditionally; the departure is acknowledged in the shape
+messages themselves (shapes/track.shapes.ttl) and flagged for the author.
 
 ## GAP-08 — the Op's internal wiring topology
 
-**Status:** PENDING
+**Status:** ADJUDICATED (2026-09-04, see adjudication-log.md)
 **Locus:** WP §4.5 (an Op composes Cogs, Frames, a supervising model,
 integration logic) and the §5.6 manifest (lists of frames, cogs, guards,
 gates) — no dataflow between them is ever drawn.
@@ -168,7 +171,9 @@ guards sit on the flow, what reaches the output producer.
 **Possible readings:** (a) a pipeline in the order the cogs are listed;
 (b) a hub topology — a supervising engine mediates all flows; (c) guard
 placement per lifecycle stage (§5.4) with gates inline on each seam.
-**Provisional reading in use:** (b) — oracles → policy engine → human
+**Adjudicated reading in use:** (b) — oracles → policy engine → human
 action / summary cog (model/vendor-fraud-review.sysml, the seams in
-VendorFraudReviewOp), drawn from the §4.1/§4.5 narrative. Marked
-provisional at the ReadingSeam definition.
+VendorFraudReviewOp). **Claimed as this formalization's contribution**, not
+a defect in the paper: an explicit, checkable topology is a benefit gained
+by shifting from the textual to the computational representation of the
+same concepts. The prose could not carry it; the model must, and does.

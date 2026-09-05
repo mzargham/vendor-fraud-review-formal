@@ -138,12 +138,32 @@ vfr:OpExecutionShape
         sh:message "Track must include guard_results (section 5.6 track.include)." ;
     ] ;
     sh:property [
-        sh:path vfr:finalOutput ;
-        sh:minCount 1 ;
-        sh:message "Track must include final_output (section 5.6 track.include)." ;
-    ] ;
-    sh:property [
         sh:path vfr:parameters ;
         sh:minCount 1 ;
         sh:message "Track must include the configuration parameters in force (section 5.3 Track contents)." ;
+    ] ;
+    sh:property [
+        sh:path vfr:aggregateOutcome ;
+        sh:minCount 1 ;
+        sh:message "Track must state the aggregate outcome — executed or noOp (GAP-06 adjudication)." ;
+    ] ;
+    # GAP-07 adjudication: final_output inclusion is CONDITIONAL on the
+    # aggregate outcome. This is a judgment, and it departs from the pinned
+    # draft (Rev 9 section 5.6 lists final_output unconditionally); the
+    # departure is acknowledged here and logged in open-questions/.
+    sh:sparql [
+        sh:message "An executed run's Track must include final_output (section 5.6 track.include, conditional reading — GAP-07)." ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://example.org/vfr#aggregateOutcome> "executed" .
+                FILTER NOT EXISTS { $this <https://example.org/vfr#finalOutput> ?o }
+            }""" ;
+    ] ;
+    sh:sparql [
+        sh:message "A stopped run transmits nothing: a noOp Track carries no final_output. This conditional reading departs from the pinned draft's unconditional include list (GAP-07 adjudication)." ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://example.org/vfr#aggregateOutcome> "noOp" .
+                $this <https://example.org/vfr#finalOutput> ?o .
+            }""" ;
     ] .
