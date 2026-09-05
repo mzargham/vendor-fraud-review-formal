@@ -7,7 +7,9 @@ PREFIX earl: <http://www.w3.org/ns/earl#>
 PREFIX prov: <http://www.w3.org/ns/prov#>
 PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
 
-SELECT ?gate ?condition ?guardFinding ?obliged ?evidence ?approver ?rationale
+SELECT ?gate ?condition ?guardFinding ?obliged
+       (GROUP_CONCAT(?evidenceLabel; separator="; ") AS ?evidence)
+       ?approver ?rationale
 WHERE {
     ?gateDecision a vfr:GateDecision ;
                   vfr:gate ?gate ;
@@ -21,6 +23,7 @@ WHERE {
             prov:used ?evidenceEntity ;
             prov:wasAssociatedWith ?approverAgent .
     ?approverAgent rdfs:label ?approver .
-    ?evidenceEntity rdfs:label ?evidence .
+    ?evidenceEntity rdfs:label ?evidenceLabel .
 }
-ORDER BY ?gate ?evidence
+GROUP BY ?gate ?condition ?guardFinding ?obliged ?approver ?rationale
+ORDER BY ?gate

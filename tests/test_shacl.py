@@ -1,4 +1,4 @@
-"""His section 5.6 track.include list and Gate-approval rules are enforced, with teeth."""
+"""The section 5.6 track.include list and Gate-approval rules are enforced, with teeth."""
 import rdflib
 from pyshacl import validate
 

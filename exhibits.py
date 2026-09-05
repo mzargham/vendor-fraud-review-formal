@@ -390,7 +390,7 @@ SCENARIO_TEMPLATE = """    package RunConfigurations {
 """
 
 
-def run_scenario(name, readings, recorded):
+def run_scenario(name, readings, recorded, policy_text=None):
     print(f"scenario '{name}'")
     conf = mock_oracle("confidence", readings["confidence"])
     cons = mock_oracle("consensus_disagreement", readings["consensus_disagreement"])
@@ -415,7 +415,7 @@ def run_scenario(name, readings, recorded):
     for k, v in fills.items():
         scenario = scenario.replace(k, v)
     with tempfile.NamedTemporaryFile("w", suffix=".sysml", delete=False) as f:
-        f.write(_policy_text() + scenario)
+        f.write((policy_text if policy_text is not None else _policy_text()) + scenario)
         path = f.name
     r = _sysml(path, "-satisfy=RunConfigurations")
     for line in r.stdout.splitlines():
@@ -726,8 +726,48 @@ def show_learning():
             acts,
         ))
     _table(("Signal", "Kind", "Finding", "Acts on"), rows)
-    print(f"learning signals: {len(rows)} — calibration targets computed "
-          "from the model's gates and factored parameters")
+    distinct = len({r[0] for r in rows})
+    print(f"learning signals: {distinct}, in {len(rows)} signal-to-surface "
+          "pairs — calibration targets computed from the model's gates and "
+          "factored parameters")
+
+
+def show_learning_example():
+    """A worked calibration (a logged suggestion in the judgment record):
+    treat unknown vendor risk as high, in keeping with a conservative
+    posture. The committed policy is untouched; the variant policy text
+    exists only inside this function, to show one declared edit changing
+    what the system obliges."""
+    readings = {"confidence": 0.92, "consensus_disagreement": 0.10,
+                "sensitive_data_detected": False, "vendor_risk": "unknown"}
+    print("under the committed policy, GATE-04 binds on high alone; an "
+          "unknown-risk vendor obliges nothing:")
+    run_scenario("unknown-vendor-under-committed-policy", readings,
+                 {"confidenceLevel": "high", "outputEmitted": True,
+                  "aggregate": "executed"})
+    original = ("pe.vendorRisk == pe.policy.vendorRiskTrigger "
+                "implies pe.humanApprovalRequired")
+    conservative = ("(pe.vendorRisk == pe.policy.vendorRiskTrigger or "
+                    "pe.vendorRisk == RiskLevel::unknown) "
+                    "implies pe.humanApprovalRequired")
+    policy = _policy_text()
+    assert original in policy, "GATE-04 constraint not found where expected"
+    variant = policy.replace(original, conservative)
+    print("\nthe calibration, one edit at the declared gate "
+          "(a variant for this cell only; the committed policy is unchanged):")
+    print(f"  - {original}")
+    print(f"  + {conservative}")
+    print("\nunder the conservative variant, the same evidence obliges an "
+          "approval that was not obliged before:")
+    run_scenario("unknown-vendor-under-conservative-variant", readings,
+                 {"confidenceLevel": "high", "outputEmitted": True,
+                  "aggregate": "executed"}, policy_text=variant)
+    print()
+    run_scenario("unknown-vendor-conservative-approved", readings,
+                 {"confidenceLevel": "high",
+                  "humanApprovalRequired": True, "humanApprovalGiven": True,
+                  "outputEmitted": True, "aggregate": "executed"},
+                 policy_text=variant)
 
 
 def show_interface():
@@ -772,6 +812,17 @@ def show_adjudication_record():
     _table(("Gap", "Problem", "Surfaced", "Status", "Resolution"), rows)
 
 
+def _md_lite(text):
+    """Escape for HTML, then render the two markdown forms the record's
+    prose uses (backtick code spans, **bold**) and keep line breaks."""
+    import html as html_mod
+
+    s = html_mod.escape(str(text))
+    s = re.sub(r"\*\*(.+?)\*\*", r"<strong>\1</strong>", s)
+    s = re.sub(r"`([^`]+)`", r"<code>\1</code>", s)
+    return s.replace("\n", "<br/>")
+
+
 def show_gap_characterizations():
     import html as html_mod
 
@@ -795,7 +846,7 @@ def show_gap_characterizations():
             fields.append(("Notes", note))
         items = "\n".join(
             f'<li style="text-align:left"><strong>{label}:</strong> '
-            f"{html_mod.escape(str(value))}</li>"
+            f"{_md_lite(value)}</li>"
             for label, value in fields
         )
         blocks.append(
@@ -819,20 +870,27 @@ def show_rulings_log():
         ((int(g.value(n, V.order)), n) for n in set(g.subjects(V.order, None))),
     )
     blocks = []
+    rulings = notes = 0
     for order, node in entries:
-        text = g.value(node, V.rulingText) or g.value(node, V.noteText)
+        text = g.value(node, V.rulingText)
+        if text is not None:
+            rulings += 1
+        else:
+            text = g.value(node, V.noteText)
+            notes += 1
         blocks.append(
             f'<p style="text-align:left"><strong>{order}. '
             f"{html_mod.escape(str(g.value(node, V.entryTitle)))}</strong> "
             f"({g.value(node, PROV.generatedAtTime)}, "
             f"{_local(g.value(node, PROV.wasAttributedTo))})</p>\n"
-            f'<blockquote style="text-align:left">{html_mod.escape(str(text))}'
+            f'<blockquote style="text-align:left">{_md_lite(text)}'
             "</blockquote>\n"
             f'<p style="text-align:left"><em>Changed:</em> '
-            f"{html_mod.escape(str(g.value(node, V.changeNote)))}</p>"
+            f"{_md_lite(g.value(node, V.changeNote))}</p>"
         )
     display(HTML("\n".join(blocks)))
-    print(f"log entries rendered: {len(entries)}")
+    print(f"log entries rendered: {len(entries)} — "
+          f"{rulings} rulings, {notes} design notes")
 
 
 def show_judgment_trace():
@@ -845,12 +903,16 @@ def show_judgment_trace():
     for impl in sorted(g.subjects(rdflib.RDF.type, V.Implementation), key=str):
         ruling = g.value(impl, PROV.wasDerivedFrom)
         gap = g.value(ruling, V.resolves) or g.value(ruling, V.defers)
+        if gap is not None:
+            resolves = f"{_local(gap)} @ {g.value(gap, V.locator)}"
+        else:
+            resolves = "design note (no gap: a recorded suggestion)"
         rows.append((
             str(g.value(impl, rdflib.RDFS.label)),
             ("code", str(g.value(impl, V.inFile))),
             ("code", f"{_local(ruling)} ({_local(g.value(ruling, PROV.wasAttributedTo))}, "
                      f"{g.value(ruling, PROV.generatedAtTime)})"),
-            ("code", f"{_local(gap)} @ {g.value(gap, V.locator)}"),
+            ("code", resolves),
         ))
     _table(("Implementation", "File", "Derived from ruling", "Resolves gap"), rows)
     print(f"traceable implementations: {len(rows)} "

@@ -223,6 +223,13 @@ def test_chapter_05_shows_the_shacl_inversion_and_the_outcomes(chapter_outputs):
     assert "the gate set itself" in text, (
         "the gateless finding's adaptation point is not surfaced"
     )
+    # The worked calibration (unknown treated as high, a logged
+    # suggestion): the committed policy obliges nothing, the one-line
+    # conservative variant obliges an approval.
+    assert "scenario 'unknown-vendor-under-committed-policy': POLICY SATISFIED" in text
+    assert "scenario 'unknown-vendor-under-conservative-variant': POLICY VIOLATED" in text
+    assert "scenario 'unknown-vendor-conservative-approved': POLICY SATISFIED" in text
+    assert "+ (pe.vendorRisk" in text, "the calibration edit is not shown as a diff"
 
 
 def test_chapter_06_lists_every_adjudicated_gap(chapter_outputs):

@@ -24,11 +24,18 @@ TRIG_HEADER = """\
 """
 
 
+SYSML_BANNER = """\
+// GENERATED COUNTEREXAMPLE (checks/render_counterexamples.py): the
+// committed policy text of model/vendor-fraud-review.sysml, byte-identical,
+// plus three runs that must FAIL satisfy — this file is NOT the model.
+"""
+
+
 def render_run_unattended():
     model = (ROOT / "model" / "vendor-fraud-review.sysml").read_text()
     policy = model.split("    package RunConfigurations {")[0]
     tail = (ROOT / "counterexamples" / "run-unattended.tail").read_text()
-    return policy + tail
+    return SYSML_BANNER + policy + tail
 
 
 def render_track_missing_approval():

@@ -89,11 +89,14 @@ package VendorFraudReview {
 
         abstract part def OracleService :> OpComponent {
             doc /* adjudicated: GAP-05 — every value the policy reads is
-               provided by an identified oracle; the Track cites each call
-               (service, payload, response code, response). The components
-               below hold what their service returned; the policy engine
-               rules on it; WIRE-01..04 check the two agree across the
-               seam. */
+               provided by an identified oracle. An oracle is a process
+               that answers a question: a service the Op queries for a
+               value it does not compute itself, with each exchange cited
+               (service, payload, response code, response). The term is
+               the adjudicator's, from the GAP-05 ruling; the paper does
+               not use it. The components below hold what their service
+               returned; the policy engine rules on it; WIRE-01..04 check
+               the two agree across the seam. */
             attribute service : ScalarValues::String;
         }
 

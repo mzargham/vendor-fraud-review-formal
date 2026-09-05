@@ -31,8 +31,8 @@ Each layer is machine-checked; nothing below is a prose-only claim.
    (`track/run-001.trig`), SHACL shapes it must conform to, and
    counterexamples the shapes refuse.
 5. **Queries.** The five Track purposes section 5.3 names (auditability,
-   governance, learning, debugging, trust) computed by SPARQL over the
-   run graph (`queries/`).
+   governance, learning, debugging, trust), plus the GAP-05 interface
+   contract, computed by SPARQL over the run graph (`queries/`).
 6. **A judgment record.** Code is not objective; its objectivity is
    downstream of judgment calls. Every gap the translation surfaced, the
    ruling that resolved it (verbatim, attributed, dated), and the
@@ -71,12 +71,23 @@ a single `CHECKS: PASS|FAIL` line.
 | `model/` | the executable assembly and its traceability map |
 | `track/` | the recorded run |
 | `shapes/` | SHACL over the Track, the judgment record, and the trace |
-| `queries/` | the five section 5.3 purposes as SPARQL |
+| `queries/` | the five section 5.3 purposes + the interface contract, as SPARQL |
 | `counterexamples/` | negatives every checking layer must refuse |
 | `open-questions/` | the judgment record (adjudications.ttl) |
+| `generated/` | byte-stability witnesses: the RDF conversion and query results the checks re-render and diff |
+| `toolchain/` | the checksum-verified fetch of the pinned evaluator |
 | `chapters/`, `index.md` | the walkthrough (executed notebooks + front door) |
 | `exhibits.py` | the committed machinery the chapter cells call |
 | `checks/`, `tests/` | the gate script, renderers, and test suite |
+
+## Publishing
+
+`.github/workflows/deploy.yml` gates and publishes: on every push to
+main it runs the full check gate on a clean runner (the same
+`checks/run-checks.sh`, ending in one PASS/FAIL), and only a passing
+gate deploys the walkthrough to GitHub Pages. One-time setup after the
+repository has a GitHub remote: Settings → Pages → Source → GitHub
+Actions.
 
 ## Disclosure
 

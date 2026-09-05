@@ -2,6 +2,8 @@
 name = "vendor-fraud-review-formal"
 version = "0.1.0"
 description = "The Vendor Fraud Review Op (Intelligence Hub whitepaper, Rev 9, section 5.6) implemented as an executable specification"
+authors = [{ name = "Michael Zargham" }]
+readme = "README.md"
 requires-python = ">=3.11"
 dependencies = [
     "rdflib>=7.0",

@@ -392,7 +392,7 @@ adj:GAP-04
     vfr:locusDetail """WP §5.6: `- if: consensus_disagreement > 0.25`; §5.5 Consensus row ("Three Cogs classify a document and two must agree; outlier extractions flagged; …").""" ;
     vfr:substrateForces "a typed quantity for the comparison to execute." ;
     vfr:possibleReadings "(a) fraction of dissenting Cogs; (b) 1 − pairwise agreement rate; (c) a task-specific divergence score normalized to [0, 1]." ;
-    vfr:readingInUse """deliberately open, with the openness made structural. The metric's TYPE is fixed (a fact-by-checker answer matrix of nullable Booleans mapped to a scalar in [0, 1] against the 0.25 threshold — the abstract DisagreementMetric in the model), and three type-satisfying alternatives with different semantics are exhibited (dissent-fraction, strict-quorum-undecodable, erasure-aware-undecodable), evaluated on the same answer matrix in the notebook, where they disagree about whether the gate fires. No metric is chosen: a correctly constructed policy is not the same as a fit-for-purpose policy, and what is right for the job here is an open algorithmic policy design question — unlikely to have a unique correct answer, with many viable answers carrying different implications on incentives, and not limited to these three. The comparator oracle's metric slot is typed and unbound; a deployment binds it, and the Track records which metric a run used (recording is not endorsing).""" ;
+    vfr:readingInUse """deliberately open, with the openness made structural. The metric's TYPE is fixed (a fact-by-checker answer matrix of nullable Booleans mapped to a scalar in [0, 1] against the 0.25 threshold — the abstract DisagreementMetric in the model), and three type-satisfying alternatives with different semantics are exhibited (dissent-fraction, strict-quorum-undecodable, erasure-aware-undecodable), evaluated on the same answer matrix in chapter 4 of the walkthrough, where they disagree about whether the gate fires. No metric is chosen: a correctly constructed policy is not the same as a fit-for-purpose policy, and what is right for the job here is an open algorithmic policy design question — unlikely to have a unique correct answer, with many viable answers carrying different implications on incentives, and not limited to these three. The comparator oracle's metric slot is typed and unbound; a deployment binds it, and the Track records which metric a run used (recording is not endorsing).""" ;
     vfr:note """**Earlier deferral note (2026-09-04):** revisit when the compared spaces are known; if the comparison reduces to yes/no/cantTell facts, an error-correcting-code style interpretation becomes available — that reduction is now the type signature.
 **Type clarified (2026-09-04, ruling logged in this record):** the answer base type is a nullable Boolean, for type-checking support. Given a datum as context, and irrespective of which Cog produced it, a checker answers "do you agree with the datum?": True = agree, False = disagree, null = cannot tell (the Track's earl:cantTell). Checkers are factored apart from generators: a Cog that produced a datum may itself answer False when asked whether it stands; the optional convention that a producer files True about its own output is NOT assumed.""" .
 
@@ -551,3 +551,40 @@ adj:impl-learning-query
     vfr:inFile "queries/learning.rq" ;
     vfr:anchor "calibrate" ;
     prov:wasDerivedFrom adj:note-learning .
+
+adj:note-unknown-conservative
+    a vfr:DesignNote ;
+    vfr:order 17 ;
+    vfr:entryTitle "design note: a worked calibration — unknown as high" ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-05"^^xsd:date ;
+    vfr:noteText """a learning example might be that in the high risk vs low risk vs unknown enum that unknown should be treated as high risk in keeping with a conservative posture""" ;
+    vfr:changeNote """chapter 5's Learning section gained a worked calibration: an unknown-risk vendor is run under the committed policy (GATE-04 binds on high alone, so nothing is obliged), then the one-line conservative edit is shown as a diff and the same evidence is rerun under the variant, which now obliges a human approval. The committed policy is untouched — the manifest's literal gate stays as adjudicated — and the variant exists only inside the cell, as a suggestion the record holds for the author.""" .
+
+adj:impl-learning-example
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the worked calibration: unknown treated as high under a conservative variant" ;
+    vfr:inFile "exhibits.py" ;
+    vfr:anchor "show_learning_example" ;
+    prov:wasDerivedFrom adj:note-unknown-conservative .
+
+adj:note-oracle-term
+    a vfr:DesignNote ;
+    vfr:order 18 ;
+    vfr:entryTitle "design note: the oracle term, defined" ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-05"^^xsd:date ;
+    vfr:noteText """i think we may need to provide a definition for oracle or swap in a term from travis' paper that suffices for process than answers a question. in my work i would consider it an authoritative source of truth but he does not use that term""" ;
+    vfr:changeNote """the term is kept and defined rather than swapped: the paper has no term for the provider of a value a gate reads, so the walkthrough now defines oracle at first use and in the model's OracleService doc — an oracle is a process that answers a question: an identified service the Op queries for a value it does not compute itself, with each exchange cited (service, request payload, response code, response). The definition is marked as the adjudicator's term, introduced by the GAP-05 ruling; the adjudicator's own preferred term from outside this engagement is deliberately not used.""" .
+
+vfr:Oracle
+    rdfs:label "Oracle" ;
+    rdfs:comment "A process that answers a question: an identified service the Op queries for a value it does not compute itself, with each exchange cited (service, request payload, response code, response payload). The adjudicator's term, introduced by the GAP-05 ruling; the paper does not use it." ;
+    vfr:introducedBy adj:ruling-gap05 .
+
+adj:impl-oracle-definition
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the oracle term defined at first use and on the model's OracleService" ;
+    vfr:inFile "model/vendor-fraud-review.sysml" ;
+    vfr:anchor "An oracle is a process" ;
+    prov:wasDerivedFrom adj:note-oracle-term .

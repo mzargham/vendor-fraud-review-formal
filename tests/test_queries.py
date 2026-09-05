@@ -1,4 +1,4 @@
-"""His section 5.3 Track purposes are answerable by computation."""
+"""The whitepaper's section 5.3 Track purposes are answerable by computation."""
 import rdflib
 
 from conftest import EARL, QUERIES

@@ -1,0 +1,55 @@
+# Gate, then publish. The full check gate (checks/run-checks.sh — pinned
+# toolchain, strict validation, satisfy sweep, counterexamples that must
+# fail, byte-identical regeneration, site build, full test suite) must
+# PASS before the walkthrough deploys to GitHub Pages. The deploy job
+# publishes the MyST site built from the committed, execution-verified
+# notebook outputs.
+name: checks-and-deploy
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v5
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - name: system dependencies (pdftotext for the verbatim checks)
+        run: sudo apt-get update && sudo apt-get install -y poppler-utils
+      - name: python environment
+        run: uv sync
+      - name: full gate
+        run: bash checks/run-checks.sh
+      - name: build the site for Pages
+        env:
+          REPO_NAME: ${{ github.event.repository.name }}
+        run: BASE_URL="/${REPO_NAME}" uv run myst build --html
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: _build/html
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: checks
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
