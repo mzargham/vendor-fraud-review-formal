@@ -66,6 +66,10 @@ def test_committed_outputs_equal_fresh_execution(executed_chapters):
         for i, (c, f) in enumerate(zip(committed.cells, fresh.cells)):
             if c.cell_type != "code":
                 continue
+            if "latest-report" in c.get("metadata", {}).get("tags", []):
+                # The checks-report cell shows whatever the latest
+                # checks/out/report.json says; that is the point of it.
+                continue
             assert _cell_text(c) == _cell_text(f), (
                 f"{path.name} cell {i}: committed output differs from fresh execution"
             )

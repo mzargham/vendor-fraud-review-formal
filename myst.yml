@@ -6,7 +6,49 @@ project:
     5.6) implemented on an RDF + SysML substrate: SKOS vocabulary verbatim
     from the pinned source, gates as satisfiable constraints, a PROV-O + EARL
     Track, SHACL shapes with counterexamples, and SPARQL over the run.
+  authors:
+    - name: Michael Zargham
+      orcid: 0000-0001-5279-690X
+      affiliations:
+        - Dynamical Systems Group
+  exclude:
+    - README.md
+  numbering:
+    headings: true
+  abbreviations:
+    RDF: Resource Description Framework
+    SKOS: Simple Knowledge Organization System
+    PROV: Provenance Ontology (PROV-O)
+    EARL: Evaluation and Report Language
+    SHACL: Shapes Constraint Language
+    SPARQL: SPARQL Protocol and RDF Query Language
+  bibliography:
+    - references.bib
+  error_rules:
+    - rule: doi-exists
+      severity: ignore
+      keys:
+        - oliphant2026
+        - skos2009
+        - provo2013
+        - earl2017
+        - shacl2017
+        - sparql2013
+        - rdf2014
+        - opensysml043
   toc:
-    - file: demonstration.ipynb
+    - file: index.md
+    - title: Walkthrough
+      children:
+        - file: chapters/01-pinned-source.ipynb
+        - file: chapters/02-op-as-assembly.ipynb
+        - file: chapters/03-worked-examples.ipynb
+        - file: chapters/04-one-type-three-semantics.ipynb
+        - file: chapters/05-the-track.ipynb
+        - file: chapters/06-open-questions.ipynb
+    - title: Appendix
+      children:
+        - file: open-questions/computability-gaps.md
+        - file: open-questions/adjudication-log.md
 site:
   template: book-theme
