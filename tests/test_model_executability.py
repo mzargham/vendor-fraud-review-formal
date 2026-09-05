@@ -53,17 +53,20 @@ def test_counterexample_run_fails_satisfy():
     )
 
 
-def test_counterexample_catches_three_failure_kinds():
+def test_counterexample_catches_four_failure_kinds():
     # Three distinct ways a run can be wrong: the gate fired but no
     # obligation was raised (component level); an obligation was raised but
     # never discharged (system level, GAP-02); and the Op stopped but
     # emitted output anyway (aggregate level, GAP-06 — section 5.2: "the Op
-    # stops before external transmission").
+    # stops before external transmission"); and a disagreement reading
+    # outside the metric class's declared codomain [0, 1] (type level,
+    # TYPE-01 — second external review, 2026-09-05).
     r = run_sysml(str(CX_MODEL), "-satisfy=RunConfigurations")
-    assert r.stdout.count("fails") >= 3, (
-        f"expected gate, discharge, and stopped-but-emitted violations:\n{r.stdout}"
+    assert r.stdout.count("fails") >= 4, (
+        f"expected gate, discharge, stopped-but-emitted, and out-of-range violations:\n{r.stdout}"
     )
-    for marker in ("unattendedGate01", "undischargedSystem01", "emittedSystem02"):
+    for marker in ("unattendedGate01", "undischargedSystem01", "emittedSystem02",
+                   "outOfRangeType01"):
         assert f"{marker} fails" in r.stdout, (
             f"missing the {marker} violation:\n{r.stdout}"
         )
@@ -73,7 +76,7 @@ def test_model_declares_three_check_levels():
     # Component (GATE-, INTERFACE-), wiring (WIRE-), and system (SYSTEM-)
     # checks all present in the model and all surviving conversion.
     source = MODEL.read_text()
-    for rid in ("GATE-01", "GATE-02", "GATE-03", "GATE-04", "INTERFACE-01",
+    for rid in ("GATE-01", "GATE-02", "GATE-03", "GATE-04", "INTERFACE-01", "TYPE-01",
                 "WIRE-01", "WIRE-02", "WIRE-03", "WIRE-04",
                 "SYSTEM-01", "SYSTEM-02", "SYSTEM-03"):
         assert f"<'{rid}'>" in source, f"{rid} missing from the model"

@@ -1,4 +1,6 @@
 """The section 5.6 track.include list and Gate-approval rules are enforced, with teeth."""
+import re
+
 import rdflib
 from pyshacl import validate
 
@@ -14,6 +16,7 @@ from conftest import (
 )
 
 CX_READING = ROOT / "counterexamples" / "track-unsourced-reading.trig"
+CX_UNGATED = ROOT / "counterexamples" / "track-ungated-reading.trig"
 
 
 def _data(text):
@@ -165,3 +168,43 @@ def test_unsourced_reading_counterexample_fails():
     assert "oracle" in report.lower(), (
         f"violation message does not name the missing oracle citation:\n{report}"
     )
+
+
+def test_consensus_call_without_its_input_matrix_fails():
+    # GAP-12 (second external review, 2026-09-05): an oracle call that names
+    # a disagreement metric must record the metric's INPUT — the
+    # fact-by-checker answer matrix — or the recorded value cannot be
+    # recomputed by anyone.
+    src = TRACK.read_text()
+    assert "vfr:answerMatrix" in src, "run-001 must record the consensus metric's input"
+    tampered = re.sub(r"\n\s*vfr:answerMatrix [^;]*;", "", src)
+    assert tampered != src, "tamper did not apply"
+    conforms, _, report = validate(_data(tampered), shacl_graph=str(TRACK_SHAPES))
+    assert not conforms, "a metric reading with no recorded input conforms"
+    assert "matrix" in report.lower(), f"violation does not name the missing matrix:\n{report}"
+
+
+def test_ungated_reading_counterexample_fails():
+    # The gates are one-way in the model (GAP-10); in the Track the same
+    # one-directionality was closed the other way: a reading whose value
+    # satisfies a gate's condition must be evaluated by a recorded gate
+    # decision, and a gate decision must be consistent with the reading it
+    # cites (second external review, 2026-09-05).
+    conforms, _, report = validate(_graph(CX_UNGATED), shacl_graph=str(TRACK_SHAPES))
+    assert not conforms, "ungated-reading counterexample conforms: shapes are toothless"
+    assert "no recorded gate decision" in report.lower(), (
+        f"violation does not name the missing gate decision:\n{report}"
+    )
+    assert "does not satisfy" in report.lower(), (
+        f"violation does not name the inconsistent gate decision:\n{report}"
+    )
+
+
+def test_gate_decision_on_a_clean_reading_fails():
+    src = TRACK.read_text()
+    tampered = src.replace('vfr:variable "confidence" ;\n        vfr:value 0.71 ;',
+                           'vfr:variable "confidence" ;\n        vfr:value 0.92 ;')
+    assert tampered != src, "tamper did not apply"
+    conforms, _, report = validate(_data(tampered), shacl_graph=str(TRACK_SHAPES))
+    assert not conforms, "GATE-01 recorded as fired on a reading of 0.92 conforms"
+    assert "does not satisfy" in report.lower(), f"\n{report}"

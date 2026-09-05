@@ -173,3 +173,75 @@ vfr:OpExecutionShape
                 $this <https://example.org/vfr#finalOutput> ?o .
             }""" ;
     ] .
+
+# Second external review (2026-09-05). Three shapes close two findings.
+# GAP-12: an oracle call that names a disagreement metric must carry the
+# metric's input, or the recorded value is a number nobody can recompute.
+# And the one-directionality the review found in the model's gates had a
+# twin in this record: nothing tied a gate decision to the value of the
+# reading it cited, so a Track could show a reading past its threshold
+# with no decision, or a decision on a reading that could not have fired
+# the gate. Both directions are now refused, against the parameters in
+# force for the run (the vfr:ConfigurationParameters node the execution
+# records).
+
+vfr:MetricInputShape
+    a sh:NodeShape ;
+    sh:targetClass vfr:OracleCall ;
+    sh:sparql [
+        sh:message "An oracle call that names a disagreement metric must record the metric's input — the fact-by-checker answer matrix — so the recorded value can be recomputed by anyone holding the Track (adjudicated: GAP-12)." ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://example.org/vfr#metric> ?metric .
+                FILTER NOT EXISTS { $this <https://example.org/vfr#answerMatrix> ?matrix }
+            }""" ;
+    ] .
+
+vfr:GateDecisionConsistencyShape
+    a sh:NodeShape ;
+    sh:targetClass vfr:GateDecision ;
+    sh:sparql [
+        sh:message "A gate decision cites a reading whose value does not satisfy the gate's condition against the parameters in force: the Track says the gate fired on a value that could not have fired it (second external review, 2026-09-05)." ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://example.org/vfr#gate> ?gate ;
+                      <http://www.w3.org/ns/prov#used> ?reading .
+                ?reading <https://example.org/vfr#value> ?v .
+                ?p a <https://example.org/vfr#ConfigurationParameters> ;
+                   <https://example.org/vfr#confidenceThreshold> ?ct ;
+                   <https://example.org/vfr#consensusDisagreementThreshold> ?dt ;
+                   <https://example.org/vfr#vendorRiskTrigger> ?rt .
+                FILTER (
+                    (?gate = "GATE-01" && !(?v < ?ct)) ||
+                    (?gate = "GATE-02" && !(?v > ?dt)) ||
+                    (?gate = "GATE-03" && ?v != true) ||
+                    (?gate = "GATE-04" && str(?v) != ?rt)
+                )
+            }""" ;
+    ] .
+
+vfr:UngatedReadingShape
+    a sh:NodeShape ;
+    sh:targetClass vfr:Reading ;
+    sh:sparql [
+        sh:message "A reading whose value satisfies a gate's condition against the parameters in force has no recorded gate decision: the Track shows the condition held and hides whether the gate fired (second external review, 2026-09-05)." ;
+        sh:select """
+            SELECT $this WHERE {
+                $this <https://example.org/vfr#variable> ?var ;
+                      <https://example.org/vfr#value> ?v .
+                ?p a <https://example.org/vfr#ConfigurationParameters> ;
+                   <https://example.org/vfr#confidenceThreshold> ?ct ;
+                   <https://example.org/vfr#consensusDisagreementThreshold> ?dt ;
+                   <https://example.org/vfr#vendorRiskTrigger> ?rt .
+                FILTER (
+                    (?var = "confidence" && ?v < ?ct) ||
+                    (?var = "consensus_disagreement" && ?v > ?dt) ||
+                    (?var = "sensitive_data_detected" && ?v = true) ||
+                    (?var = "vendor_risk" && str(?v) = ?rt)
+                )
+                FILTER NOT EXISTS {
+                    ?decision a <https://example.org/vfr#GateDecision> ;
+                              <http://www.w3.org/ns/prov#used> $this .
+                }
+            }""" ;
+    ] .

@@ -1,0 +1,94 @@
+@prefix vfr: <https://example.org/vfr#> .
+@prefix run: <https://example.org/vfr/track/run-ungated#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# COUNTEREXAMPLE: gate decisions and readings that disagree, both ways —
+# a confidence reading of 0.71, below the 0.80 threshold in force, with no
+# GATE-01 decision anywhere in the record; and a GATE-04 decision that
+# cites a vendor-risk reading of "low". Either a gate fired and the Track
+# hides it, or the Track says a gate fired on a value that could not have
+# fired it. Every citation field is present, so the only violations are
+# the two the consistency shapes raise. Must fail shapes/track.shapes.ttl
+# (second external review, 2026-09-05).
+
+run:provenance {
+    run:policy-parameters
+        a vfr:ConfigurationParameters ;
+        rdfs:label "Validation Strategy parameters in force (model defaults)" ;
+        vfr:confidenceThreshold 0.80 ;
+        vfr:consensusDisagreementThreshold 0.25 ;
+        vfr:vendorRiskTrigger "high" .
+}
+
+run:interface {
+    <urn:example:service:extraction-confidence>
+        a vfr:Oracle, prov:SoftwareAgent ;
+        rdfs:label "extraction-confidence service (invoice-extraction-cog telemetry, v2.3.1)" .
+
+    <urn:example:service:vendor-risk-cog>
+        a vfr:Oracle, prov:SoftwareAgent ;
+        rdfs:label "vendor-risk-cog scoring endpoint (v0.9.7)" .
+
+    run:oracle-call-confidence
+        a vfr:OracleCall, prov:Activity ;
+        vfr:service <urn:example:service:extraction-confidence> ;
+        vfr:requestPayload "{\"op\":\"vendor-fraud-review\",\"run\":\"run-ungated\",\"variable\":\"confidence\"}" ;
+        vfr:responseCode "200" ;
+        vfr:responsePayload "{\"confidence\":0.71}" ;
+        prov:generated run:reading-confidence .
+
+    run:reading-confidence
+        a vfr:Reading ;
+        vfr:variable "confidence" ;
+        vfr:value 0.71 ;
+        prov:wasGeneratedBy run:oracle-call-confidence .
+        # 0.71 < 0.80, and no gate decision cites this reading.
+
+    run:oracle-call-vendor-risk
+        a vfr:OracleCall, prov:Activity ;
+        vfr:service <urn:example:service:vendor-risk-cog> ;
+        vfr:requestPayload "{\"op\":\"vendor-fraud-review\",\"run\":\"run-ungated\",\"variable\":\"vendor_risk\"}" ;
+        vfr:responseCode "200" ;
+        vfr:responsePayload "{\"vendor_risk\":\"low\"}" ;
+        prov:generated run:reading-vendor-risk .
+
+    run:reading-vendor-risk
+        a vfr:Reading ;
+        vfr:variable "vendor_risk" ;
+        vfr:value "low" ;
+        prov:wasGeneratedBy run:oracle-call-vendor-risk .
+}
+
+run:decisions {
+    run:gate-decision-04
+        a vfr:GateDecision ;
+        rdfs:label "GATE-04 fired" ;
+        vfr:gate "GATE-04" ;
+        vfr:condition "vendor_risk == high" ;
+        vfr:consequent "human_approval_required" ;
+        prov:used run:reading-vendor-risk .
+        # the cited reading is "low": this decision could not have fired.
+
+    run:obligation-human-approval
+        a vfr:Obligation ;
+        rdfs:label "human approval required" ;
+        vfr:raisedBy run:gate-decision-04 .
+}
+
+run:approvals {
+    run:approval-01
+        a earl:Assertion, prov:Activity ;
+        rdfs:label "human approval of the vendor flag" ;
+        earl:mode earl:manual ;
+        earl:result [ a earl:TestResult ; earl:outcome earl:passed ] ;
+        vfr:discharges run:obligation-human-approval ;
+        vfr:rationale "Approved." ;
+        prov:generated run:state-after-approval ;
+        prov:wasAssociatedWith run:approver .
+
+    run:state-after-approval a prov:Entity ; prov:wasGeneratedBy run:approval-01 .
+    run:approver a prov:Agent, prov:Person ; rdfs:label "an invented approver" .
+}

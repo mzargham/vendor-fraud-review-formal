@@ -142,6 +142,8 @@ def test_chapter_03_narrates_the_worked_examples(chapter_outputs):
         "scenario 'pii-stopped-but-emitted': POLICY VIOLATED",
         "scenario 'high-risk-vendor-approved': POLICY SATISFIED — aggregate: executed",
         "scenario 'mislabeled-confidence': POLICY VIOLATED",
+        # GAP-10: the degenerate run the one-way gates cannot refuse
+        "scenario 'escalate-everything': POLICY SATISFIED — aggregate: noOp",
     ):
         assert marker in text, f"missing worked example: {marker}"
 
@@ -166,7 +168,7 @@ def test_chapter_04_shows_one_type_three_semantics(chapter_outputs):
     # The definitions render as a parsed table, not a monospace doc dump;
     # the only source excerpt is the unbound metric slot.
     assert "<table" in text, "metric definitions must render as a table"
-    assert "part metric : DisagreementMetric;" in text, (
+    assert "part metric : ConsensusInadequacyMetric;" in text, (
         "the deliberately unbound metric slot is not shown"
     )
     assert "\n            doc" not in text, "doc walls must not be dumped at source indent"
@@ -186,6 +188,25 @@ def test_chapter_04_shows_one_type_three_semantics(chapter_outputs):
     assert "the paper's own section 5.5 example" in text, (
         "the section 5.5 two-of-three example is not evaluated live"
     )
+    # Second external review (2026-09-05): the class's properties are
+    # declared in the model and proved by enumeration; the reachability
+    # proposition; the boundary case kept apart from the headline; the
+    # recorded run re-evaluated under every binding; the sensitivity sweep.
+    assert "declared = computed: 15 of 15 cells agree" in text, (
+        "the property matrix does not show the model's declarations matching enumeration"
+    )
+    assert "GATE-02 cannot fire under: strict-quorum-undecodable, erasure-aware-undecodable" in text, (
+        "the reachability proposition is not exhibited"
+    )
+    assert "(exactly on the boundary)" in text, "the boundary case is not exhibited apart"
+    assert "equals the recorded value: True" in text, (
+        "run-001's recorded reading is not recomputed from its recorded matrix"
+    )
+    assert "(the binding this run used)" in text, "run-001 is not re-evaluated under every binding"
+    assert "P(bindings disagree about whether GATE-02 fires)" in text, (
+        "the sensitivity sweep is not exhibited"
+    )
+    assert "marginal firing rate per binding" in text, "per-binding firing rates are not shown"
 
 
 def test_chapter_05_shows_the_shacl_inversion_and_the_outcomes(chapter_outputs):

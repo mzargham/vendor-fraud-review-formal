@@ -83,10 +83,13 @@ output. The chapters build in order, but each stands on its own:
 2. **The Op as an assembly** — the model, the four gates, the seams,
    the lifecycle, the provenance of every element, and the
    counterexamples the specification refuses.
-3. **Worked examples** — eight narrated runs with mocked oracles,
-   driven through the committed policy text itself.
+3. **Worked examples** — nine narrated runs with mocked oracles,
+   driven through the committed policy text itself, including the one
+   the specification cannot refuse: escalate everything, emit nothing.
 4. **One type, three semantics** — the consensus-disagreement metric as
-   an open policy question, exhibited rather than answered.
+   an open policy question, exhibited rather than answered: a typed
+   class whose declared properties are proved, and two bindings under
+   which the gate cannot fire on the recorded ensemble.
 5. **The Track** — the durable record, its shapes, and the queries that
    answer the paper's own questions about it.
 6. **Open questions** — everything the translation could not settle
@@ -104,9 +107,13 @@ demand. Value-domain constraints (closed value sets, datatypes,
 cardinality) are enforced where declared — the aggregate outcome and
 assertion modes are closed domains — but the constraint set is not an
 exhaustive semantic domain model of every property. It grows as review
-surfaces findings; an external review of this repository drove the
-current set, and is recorded in the judgment record like everything
-else.
+surfaces findings; two external reviews of this repository drove the
+current set (the second closed the metric class's type, the Track's
+gate-to-reading consistency, and the record of the metric's input), and
+both are recorded in the judgment record like everything else. The
+gates themselves are one-way implications, as the manifest writes them:
+the specification refuses under-escalation and admits over-escalation,
+and the worked examples show both.
 
 ## Running it
 

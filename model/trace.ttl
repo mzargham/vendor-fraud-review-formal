@@ -173,12 +173,45 @@ trace:CounterpartyAction
     vfr:derivedFromRuling adj:ruling-gap09 ;
     vfr:derivedFromRuling adj:ruling-gap02 .
 
+trace:ConsensusInadequacyMetric
+    a vfr:ModelElement ;
+    vfr:elementName "ConsensusInadequacyMetric" ;
+    vfr:kind "part def" ;
+    vfr:derivedFromRuling adj:ruling-gap04 ;
+    vfr:derivedFromRuling adj:ruling-gap04-clarification ;
+    vfr:derivedFromRuling adj:ruling-gap04-class-split ;
+    vfr:derivedFromRuling adj:ruling-gap04-matrix .
+
 trace:DisagreementMetric
     a vfr:ModelElement ;
     vfr:elementName "DisagreementMetric" ;
     vfr:kind "part def" ;
     vfr:derivedFromRuling adj:ruling-gap04 ;
-    vfr:derivedFromRuling adj:ruling-gap04-clarification .
+    vfr:derivedFromRuling adj:ruling-gap04-class-split .
+
+trace:UndecodabilityMetric
+    a vfr:ModelElement ;
+    vfr:elementName "UndecodabilityMetric" ;
+    vfr:kind "part def" ;
+    vfr:derivedFromRuling adj:ruling-gap04-class-split .
+
+trace:DenominatorBasis
+    a vfr:ModelElement ;
+    vfr:elementName "DenominatorBasis" ;
+    vfr:kind "enum def" ;
+    vfr:derivedFromRuling adj:ruling-gap11 .
+
+trace:NullPolicy
+    a vfr:ModelElement ;
+    vfr:elementName "NullPolicy" ;
+    vfr:kind "enum def" ;
+    vfr:derivedFromRuling adj:ruling-gap04-class-split .
+
+trace:TYPE_01
+    a vfr:ModelElement ;
+    vfr:elementName "TYPE-01" ;
+    vfr:kind "requirement def" ;
+    vfr:derivedFromRuling adj:ruling-gap04 .
 
 trace:DissentFractionMetric
     a vfr:ModelElement ;

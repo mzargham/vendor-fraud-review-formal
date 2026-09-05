@@ -48,13 +48,18 @@ def test_every_gap_is_fully_characterized(record):
 def test_every_ruling_and_note_is_attributed_dated_and_ordered(record):
     rulings = set(record.subjects(rdflib.RDF.type, V.Ruling))
     notes = set(record.subjects(rdflib.RDF.type, V.DesignNote))
-    assert len(rulings) == 12, "twelve rulings expected in the record"
+    reviews = set(record.subjects(rdflib.RDF.type, V.ReviewNote))
+    assert len(rulings) == 17, "seventeen rulings expected in the record"
     assert len(notes) == 7, "seven design notes expected in the record"
+    assert len(reviews) == 2, "two external reviews expected in the record"
     orders = []
-    for entry in rulings | notes:
+    for entry in rulings | notes | reviews:
         agent = record.value(entry, PROV.wasAttributedTo)
         assert agent is not None, f"{entry} names no adjudicator"
-        assert "mzargham" in str(agent), f"{entry} attributed to {agent}, not mzargham"
+        if entry in reviews:
+            assert "reviewer" in str(agent), f"{entry} attributed to {agent}, not a reviewer"
+        else:
+            assert "mzargham" in str(agent), f"{entry} attributed to {agent}, not mzargham"
         assert record.value(entry, PROV.generatedAtTime) is not None, f"{entry} undated"
         text = record.value(entry, V.rulingText) or record.value(entry, V.noteText)
         assert text is not None, f"{entry} carries no verbatim text"
