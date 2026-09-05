@@ -58,9 +58,10 @@ The substrate is a small stack of open standards, one layer per job:
    wiring, system). Every named element of the model traces to the
    source, to a recorded judgment, or declares itself scaffolding
    (model/trace.ttl).
-4. **A run record.** One execution as a PROV-O [@provo2013] + EARL
-   [@earl2017] Track, with SHACL [@shacl2017] shapes that the record
-   must conform to, and counterexamples proving the shapes can refuse.
+4. **A run record.** Two executions as PROV-O [@provo2013] + EARL
+   [@earl2017] Tracks, one executed and one stopped, with SHACL
+   [@shacl2017] shapes that both records must conform to, and
+   counterexamples proving the shapes can refuse.
 5. **Queries.** The five purposes section 5.3 names for a Track
    (auditability, governance, learning, debugging, trust), plus the
    GAP-05 interface contract, answered by SPARQL [@sparql2013] over the
@@ -110,8 +111,9 @@ exhaustive semantic domain model of every property. It grows as review
 surfaces findings; two external reviews of this repository drove the
 current set (the second closed the metric class's type, the Track's
 gate-to-reading consistency, and the record of the metric's input), and
-both are recorded in the judgment record like everything else. The
-gates themselves are one-way implications, as the manifest writes them:
+both are recorded in the judgment record like everything else, as is
+the author's own re-reading of the Track chapter (the GAP-07
+refinements). The gates themselves are one-way implications, as the manifest writes them:
 the specification refuses under-escalation and admits over-escalation,
 and the worked examples show both.
 

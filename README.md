@@ -23,15 +23,17 @@ Each layer is machine-checked; nothing below is a prose-only claim.
    oracle components wired along ports to a policy engine, counterparty
    actions, and a summary cog; the four gates as satisfiable
    constraints; the consensus metric as a typed class whose declared
-   properties are proved by enumeration; checks at type, component,
-   wiring, and system level; a
+   properties are proved by enumeration and whose codomain is checked
+   at the component level; checks at component, wiring, and system
+   level; a
    lifecycle run under trace (`model/vendor-fraud-review.sysml`). Every
    named element traces to the source, to a recorded adjudication, or
    declares itself scaffolding (`model/trace.ttl`).
-4. **A run record.** One fabricated execution as a PROV-O + EARL Track
-   with an oracle citation for every value a gate read
-   (`track/run-001.trig`), SHACL shapes it must conform to, and
-   counterexamples the shapes refuse.
+4. **A run record.** Two fabricated executions as PROV-O + EARL Tracks
+   with an oracle citation for every value a gate read: an executed run
+   (`track/run-001.trig`) and a stopped run that retains everything but
+   a final output (`track/run-002.trig`), SHACL shapes both must conform
+   to, and counterexamples the shapes refuse.
 5. **Queries.** The five Track purposes section 5.3 names (auditability,
    governance, learning, debugging, trust), plus the GAP-05 interface
    contract, computed by SPARQL over the run graph (`queries/`).
@@ -71,7 +73,7 @@ a single `CHECKS: PASS|FAIL` line.
 | `sources/` | the sha256-pinned snapshot and its retrieval provenance |
 | `vocabulary/` | SKOS concepts, definitions verbatim from the snapshot |
 | `model/` | the executable assembly and its traceability map |
-| `track/` | the recorded run |
+| `track/` | the recorded runs: one executed, one stopped |
 | `shapes/` | SHACL over the Track, the judgment record, and the trace |
 | `queries/` | the five section 5.3 purposes + the interface contract, as SPARQL |
 | `counterexamples/` | negatives every checking layer must refuse |
@@ -93,8 +95,8 @@ Actions.
 
 ## Disclosure
 
-The whitepaper provides the manifest, not data. The recorded run, its
-named approver, the vendors, invoices, readings, and every human actor
+The whitepaper provides the manifest, not data. The recorded runs, their
+named approver and escalation service, the vendors, invoices, readings, and every human actor
 in the narration are fabricated example data; the named people are
 inventions. Nothing here comes from any real organization.
 

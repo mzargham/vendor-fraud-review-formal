@@ -211,7 +211,8 @@ trace:TYPE_01
     a vfr:ModelElement ;
     vfr:elementName "TYPE-01" ;
     vfr:kind "requirement def" ;
-    vfr:derivedFromRuling adj:ruling-gap04 .
+    vfr:derivedFromRuling adj:ruling-gap04 ;
+    vfr:derivedFromRuling adj:ruling-gap04-class-split .
 
 trace:DissentFractionMetric
     a vfr:ModelElement ;

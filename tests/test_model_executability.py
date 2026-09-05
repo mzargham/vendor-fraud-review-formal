@@ -59,8 +59,8 @@ def test_counterexample_catches_four_failure_kinds():
     # never discharged (system level, GAP-02); and the Op stopped but
     # emitted output anyway (aggregate level, GAP-06 — section 5.2: "the Op
     # stops before external transmission"); and a disagreement reading
-    # outside the metric class's declared codomain [0, 1] (type level,
-    # TYPE-01 — second external review, 2026-09-05).
+    # outside the metric class's declared codomain [0, 1] (component
+    # level, TYPE-01 — second external review, 2026-09-05).
     r = run_sysml(str(CX_MODEL), "-satisfy=RunConfigurations")
     assert r.stdout.count("fails") >= 4, (
         f"expected gate, discharge, stopped-but-emitted, and out-of-range violations:\n{r.stdout}"
@@ -120,3 +120,18 @@ def test_conversion_is_deterministic_and_keeps_the_gates():
         assert gate in serialized, (
             f"{gate} did not survive -convert ttl (silent converter drop?)"
         )
+
+
+def test_the_boundary_is_stated_where_the_outcome_is_defined():
+    # GAP-07, refined 2026-09-05 (the adjudicator's ruling): noOp means no
+    # action output over the Op's boundary; the trace evidence is internal
+    # to the system of interest and is kept. The model must say so where
+    # the outcome and the emitted output are defined, so a reader of the
+    # model alone gets the distinction.
+    source = MODEL.read_text()
+    outcome = re.search(r"enum def AggregateOutcome \{.*?doc /\*(.*?)\*/", source, re.S).group(1)
+    assert "boundary" in outcome and "internal" in outcome, (
+        "AggregateOutcome's doc must state that noOp is about the boundary and the record is internal"
+    )
+    cog = re.search(r"part def AnomalySummaryCog.*?doc /\*(.*?)\*/", source, re.S).group(1)
+    assert "boundary" in cog, "outputEmitted must be defined as crossing the Op's boundary"
