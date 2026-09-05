@@ -1,0 +1,24 @@
+# Track purpose "Auditability — an organization can reconstruct why a decision
+# was made" (WP section 5.3), as a computation: for each fired Gate, the chain
+# from gate condition to guard finding to evidence to named approver and
+# rationale.
+PREFIX vfr: <https://example.org/vfr#>
+PREFIX earl: <http://www.w3.org/ns/earl#>
+PREFIX prov: <http://www.w3.org/ns/prov#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?gate ?condition ?guardFinding ?evidence ?approver ?rationale
+WHERE {
+    ?gateDecision a vfr:GateDecision ;
+                  vfr:gate ?gate ;
+                  vfr:condition ?condition ;
+                  prov:wasInformedBy ?guard .
+    ?guard earl:result/earl:info ?guardFinding .
+    ?approval vfr:answers ?gateDecision ;
+              vfr:rationale ?rationale ;
+              prov:used ?evidenceEntity ;
+              prov:wasAssociatedWith ?approverAgent .
+    ?approverAgent rdfs:label ?approver .
+    ?evidenceEntity rdfs:label ?evidence .
+}
+ORDER BY ?gate ?evidence

@@ -1,0 +1,19 @@
+# Track purpose "Governance — compliance teams can verify that required
+# procedures were followed" (WP section 5.3), as a computation: every Gate
+# that fired must be answered by an earl:manual assertion. Rows returned are
+# violations; an empty result is compliance.
+PREFIX vfr: <https://example.org/vfr#>
+PREFIX earl: <http://www.w3.org/ns/earl#>
+
+SELECT ?gateDecision ?gate ?consequent
+WHERE {
+    ?gateDecision a vfr:GateDecision ;
+                  vfr:gate ?gate ;
+                  vfr:consequent ?consequent .
+    FILTER NOT EXISTS {
+        ?approval a earl:Assertion ;
+                  earl:mode earl:manual ;
+                  vfr:answers ?gateDecision .
+    }
+}
+ORDER BY ?gate

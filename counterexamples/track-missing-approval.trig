@@ -1,0 +1,103 @@
+@prefix vfr: <https://example.org/vfr#> .
+@prefix run: <https://example.org/vfr/track/run-001#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Track of one synthetic execution of the Vendor Fraud Review Op — the
+# escalated run modeled in model/vendor-fraud-review.sysml (confidence 0.71
+# fires GATE-01; vendor_risk "high" fires GATE-04; a named human approves).
+# Graph layout: evidence / decisions / approvals / provenance.
+# All names and values are synthetic demonstration data.
+# COUNTEREXAMPLE: identical to run-001 except the approvals graph is absent —
+# two gates fired and no human approval was recorded. Must fail the track shapes.
+
+run:provenance {
+    run:execution
+        a prov:Activity, vfr:OpExecution ;
+        rdfs:label "Vendor Fraud Review Op — run 001 (escalated)" ;
+        vfr:op "vendor-fraud-review" ;
+        vfr:framesApplied "company-policy", "procurement-rules", "fraud-detection-methodology" ;
+        vfr:cogsInvoked "invoice-extraction-cog", "vendor-risk-cog", "anomaly-summary-cog" ;
+        prov:used run:evidence-invoice-batch, run:evidence-vendor-risk-score ;
+        vfr:finalOutput run:output-anomaly-summary ;
+        prov:startedAtTime "2026-09-04T14:00:00Z"^^xsd:dateTime ;
+        prov:endedAtTime "2026-09-04T14:07:42Z"^^xsd:dateTime .
+
+    run:output-anomaly-summary
+        a prov:Entity ;
+        rdfs:label "Anomaly summary; vendor V-2214 flagged for review" ;
+        prov:wasGeneratedBy run:execution .
+}
+
+run:evidence {
+    run:evidence-invoice-batch
+        a prov:Entity ;
+        rdfs:label "Invoice batch 2026-08 (vendor V-2214), 37 invoices" ;
+        vfr:payloadHash "sha256:9c3ad2f41b6f8f0f6f3f4f0a3e0d9b1c2a4e5d6f7a8b9c0d1e2f3a4b5c6d7e8f" ;
+        prov:wasDerivedFrom <urn:example:erp:invoice-batch-2026-08> .
+
+    run:evidence-vendor-risk-score
+        a prov:Entity ;
+        rdfs:label "Vendor risk score for V-2214: high" ;
+        vfr:value "high" ;
+        vfr:payloadHash "sha256:1f2e3d4c5b6a79881726354443526170fedcba9876543210ffeeddccbbaa9900" ;
+        prov:wasAttributedTo <urn:example:cog:vendor-risk-cog> .
+}
+
+run:decisions {
+    # Guard results — automatic checks, per WP section 5.6 guard lists.
+    run:guard-schema
+        a earl:Assertion ;
+        rdfs:label "schema-guard (post_run)" ;
+        earl:test <urn:example:guard:schema-guard> ;
+        earl:subject run:execution ;
+        earl:mode earl:automatic ;
+        earl:result [ a earl:TestResult ; earl:outcome earl:passed ;
+                      earl:info "extracted invoice records conform to the declared schema" ] .
+
+    run:guard-confidence
+        a earl:Assertion ;
+        rdfs:label "confidence-guard (in_flight)" ;
+        earl:test <urn:example:guard:confidence-guard> ;
+        earl:subject run:execution ;
+        earl:mode earl:automatic ;
+        earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+                      earl:info "extraction confidence 0.71 is below the 0.80 gate threshold" ] .
+
+    run:guard-source-grounding
+        a earl:Assertion ;
+        rdfs:label "source-grounding-guard (post_run)" ;
+        earl:test <urn:example:guard:source-grounding-guard> ;
+        earl:subject run:execution ;
+        earl:mode earl:automatic ;
+        earl:result [ a earl:TestResult ; earl:outcome earl:cantTell ;
+                      earl:info "the cited invoice passage is ambiguous about the delivery date; the claim can be neither grounded nor refuted from the approved sources" ] .
+
+    # Gate decisions — what the fired gates required, per the manifest.
+    run:gate-decision-01
+        a vfr:GateDecision ;
+        rdfs:label "GATE-01 fired" ;
+        vfr:gate "GATE-01" ;
+        vfr:condition "confidence < 0.80" ;
+        vfr:consequent "human_review_required" ;
+        prov:wasInformedBy run:guard-confidence .
+
+    run:gate-decision-02
+        a vfr:GateDecision ;
+        rdfs:label "GATE-04 fired" ;
+        vfr:gate "GATE-04" ;
+        vfr:condition "vendor_risk == high" ;
+        vfr:consequent "human_approval_required" ;
+        prov:wasInformedBy run:guard-vendor-risk-reading .
+
+    run:guard-vendor-risk-reading
+        a earl:Assertion ;
+        rdfs:label "vendor risk reading (in_flight)" ;
+        earl:test <urn:example:guard:tool-use-policy-guard> ;
+        earl:subject run:execution ;
+        earl:mode earl:automatic ;
+        earl:result [ a earl:TestResult ; earl:outcome earl:failed ;
+                      earl:info "vendor-risk-cog scored vendor V-2214 as high" ] .
+}

@@ -1,0 +1,82 @@
+@prefix vfr: <https://example.org/vfr#> .
+@prefix earl: <http://www.w3.org/ns/earl#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+# Shapes derived from the whitepaper's own declarations:
+# - the section 5.6 track.include list (frames_used, cogs_invoked,
+#   source_documents, guard_results, gate_decisions, human_approvals,
+#   final_output), and
+# - the gate consequents that require a human.
+# A Track that fails these is missing something the manifest says it retains.
+
+vfr:GateDecisionApprovalShape
+    a sh:NodeShape ;
+    sh:targetClass vfr:GateDecision ;
+    sh:property [
+        sh:path [ sh:inversePath vfr:answers ] ;
+        sh:minCount 1 ;
+        sh:message "Gate fired but no human approval answers it (section 5.6: human_approvals are part of the Track)." ;
+    ] .
+
+vfr:ApprovalShape
+    a sh:NodeShape ;
+    sh:targetSubjectsOf vfr:answers ;
+    sh:property [
+        sh:path earl:mode ;
+        sh:hasValue earl:manual ;
+        sh:message "An approval answering a Gate must be an earl:manual assertion." ;
+    ] ;
+    sh:property [
+        sh:path prov:wasAssociatedWith ;
+        sh:minCount 1 ;
+        sh:message "A human approval must name its approver (prov:wasAssociatedWith)." ;
+    ] ;
+    sh:property [
+        sh:path vfr:rationale ;
+        sh:minCount 1 ;
+        sh:message "A human approval must carry a rationale." ;
+    ] .
+
+vfr:AssertionShape
+    a sh:NodeShape ;
+    sh:targetClass earl:Assertion ;
+    sh:property [
+        sh:path earl:mode ;
+        sh:minCount 1 ;
+        sh:message "Every assertion must declare its mode (earl:automatic or earl:manual)." ;
+    ] ;
+    sh:property [
+        sh:path ( earl:result earl:outcome ) ;
+        sh:minCount 1 ;
+        sh:message "Every assertion must carry an outcome (passed / failed / cantTell)." ;
+    ] .
+
+vfr:OpExecutionShape
+    a sh:NodeShape ;
+    sh:targetClass vfr:OpExecution ;
+    sh:property [
+        sh:path vfr:framesApplied ;
+        sh:minCount 1 ;
+        sh:message "Track must include frames_used (section 5.6 track.include)." ;
+    ] ;
+    sh:property [
+        sh:path vfr:cogsInvoked ;
+        sh:minCount 1 ;
+        sh:message "Track must include cogs_invoked (section 5.6 track.include)." ;
+    ] ;
+    sh:property [
+        sh:path prov:used ;
+        sh:minCount 1 ;
+        sh:message "Track must include source_documents (section 5.6 track.include)." ;
+    ] ;
+    sh:property [
+        sh:path [ sh:inversePath earl:subject ] ;
+        sh:minCount 1 ;
+        sh:message "Track must include guard_results (section 5.6 track.include)." ;
+    ] ;
+    sh:property [
+        sh:path vfr:finalOutput ;
+        sh:minCount 1 ;
+        sh:message "Track must include final_output (section 5.6 track.include)." ;
+    ] .

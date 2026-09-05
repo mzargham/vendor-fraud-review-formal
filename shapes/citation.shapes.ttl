@@ -1,0 +1,26 @@
+@prefix vfr: <https://example.org/vfr#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+@prefix sh: <http://www.w3.org/ns/shacl#> .
+
+# A definition with no verified source is an invention. Any concept that
+# materializes a skos:definition must cite a source, and that source must
+# have been verified against its content hash.
+
+vfr:DefinedConceptShape
+    a sh:NodeShape ;
+    sh:targetSubjectsOf skos:definition ;
+    sh:property [
+        sh:path vfr:cites ;
+        sh:minCount 1 ;
+        sh:message "A definition must cite its source; an uncited definition is an invention." ;
+    ] ;
+    sh:property [
+        sh:path ( vfr:cites vfr:wasVerifiedBy ) ;
+        sh:minCount 1 ;
+        sh:message "The cited source must be verified against its content hash." ;
+    ] ;
+    sh:property [
+        sh:path vfr:locator ;
+        sh:minCount 1 ;
+        sh:message "A definition must carry a section locator into its source." ;
+    ] .

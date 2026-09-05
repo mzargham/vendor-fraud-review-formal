@@ -1,0 +1,15 @@
+# Track purpose "Trust — users and customers can see that AI work was not
+# merely generated, but validated" (WP section 5.3), as a computation: the
+# full outcome distribution of the run, by assertion and mode. cantTell is
+# visible, never absorbed into a pass.
+PREFIX earl: <http://www.w3.org/ns/earl#>
+PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#>
+
+SELECT ?assertion ?label ?mode ?outcome
+WHERE {
+    ?assertion a earl:Assertion ;
+               rdfs:label ?label ;
+               earl:mode ?mode ;
+               earl:result/earl:outcome ?outcome .
+}
+ORDER BY ?mode ?label

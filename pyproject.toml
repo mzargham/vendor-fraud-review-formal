@@ -16,3 +16,6 @@ dev = [
     "jupyter>=1.0",
     "ipykernel>=6.29",
 ]
+
+[tool.pytest.ini_options]
+filterwarnings = ["ignore::DeprecationWarning:rdflib"]

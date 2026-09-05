@@ -1,0 +1,11 @@
+@prefix vfr: <https://example.org/vfr#> .
+@prefix skos: <http://www.w3.org/2004/02/skos/core#> .
+
+# COUNTEREXAMPLE: a concept with a plausible-sounding definition that cites
+# no source — exactly what the citation shapes must refuse. The definition
+# below is invented, not from the whitepaper. Must fail SHACL.
+
+vfr:Overseer
+    a skos:Concept ;
+    skos:prefLabel "Overseer" ;
+    skos:definition "An Overseer is the component that supervises all Cogs in a Hub and approves their outputs automatically." .
