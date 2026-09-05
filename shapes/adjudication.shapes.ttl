@@ -1,0 +1,51 @@
+@prefix sh:   <http://www.w3.org/ns/shacl#> .
+@prefix vfr:  <https://example.org/vfr#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+
+# Shapes over the judgment record itself. The same discipline the Track
+# gets applies to the adjudications: a gap must be fully characterized and
+# resolved; a ruling must be attributed, dated, and verbatim; an
+# implementation must say what it derives from and where it lives.
+
+vfr:GapShape
+    a sh:NodeShape ;
+    sh:targetClass vfr:ComputabilityGap ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ;
+        sh:message "A gap must carry a label." ] ;
+    sh:property [ sh:path vfr:problem ; sh:minCount 1 ;
+        sh:message "A gap must state the problem: what the text leaves unspecified." ] ;
+    sh:property [ sh:path vfr:locator ; sh:minCount 1 ;
+        sh:message "A gap must locate itself in the pinned source." ] ;
+    sh:property [ sh:path vfr:cites ; sh:minCount 1 ;
+        sh:message "A gap must cite the source it was surfaced against." ] ;
+    sh:property [ sh:path vfr:surfacedOn ; sh:minCount 1 ;
+        sh:message "A gap must record when it was surfaced." ] ;
+    sh:property [ sh:path vfr:surfacedHow ; sh:minCount 1 ;
+        sh:message "A gap must record how it was surfaced." ] ;
+    sh:property [ sh:path vfr:status ; sh:minCount 1 ;
+        sh:message "A gap must state its status." ] ;
+    sh:property [ sh:path [ sh:inversePath vfr:resolves ] ; sh:minCount 1 ;
+        sh:message "A gap must be resolved by a recorded ruling; until then the reading in force is provisional." ] .
+
+vfr:RulingShape
+    a sh:NodeShape ;
+    sh:targetClass vfr:Ruling ;
+    sh:property [ sh:path vfr:rulingText ; sh:minCount 1 ;
+        sh:message "A ruling must carry its text verbatim." ] ;
+    sh:property [ sh:path prov:wasAttributedTo ; sh:minCount 1 ;
+        sh:message "A ruling must name its adjudicator (prov:wasAttributedTo): judgment is attributed, never anonymous." ] ;
+    sh:property [ sh:path prov:generatedAtTime ; sh:minCount 1 ;
+        sh:message "A ruling must be dated." ] .
+
+vfr:ImplementationShape
+    a sh:NodeShape ;
+    sh:targetClass vfr:Implementation ;
+    sh:property [ sh:path rdfs:label ; sh:minCount 1 ;
+        sh:message "An implementation must say what it is." ] ;
+    sh:property [ sh:path vfr:inFile ; sh:minCount 1 ;
+        sh:message "An implementation must say where it lives." ] ;
+    sh:property [ sh:path vfr:anchor ; sh:minCount 1 ;
+        sh:message "An implementation must carry a resolvable anchor into its file." ] ;
+    sh:property [ sh:path prov:wasDerivedFrom ; sh:minCount 1 ;
+        sh:message "An implementation must say which ruling it derives from: code's objectivity is downstream of judgment." ] .

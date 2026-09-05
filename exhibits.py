@@ -622,11 +622,76 @@ def show_interface():
 
 # ---------------------------------------------------------------- chapter 06
 
-def list_open_questions():
-    text = (ROOT / "open-questions" / "computability-gaps.md").read_text()
-    for m in re.finditer(r"^## (GAP-\d+) — (.+?)$.*?\*\*Status:\*\* (.+)$", text, re.S | re.M):
-        status = re.sub(r"\s*\([^)]*\)", "", m.group(3)).strip()
-        print(f"{m.group(1)}  [{status}]  {m.group(2)}")
+def _adjudication_graph():
+    import rdflib
+
+    g = rdflib.Graph()
+    g.parse(ROOT / "open-questions" / "adjudications.ttl", format="turtle")
+    return g
+
+
+def show_adjudication_record():
+    import rdflib
+
+    g = _adjudication_graph()
+    V = rdflib.Namespace(VFR)
+    PROV = rdflib.Namespace("http://www.w3.org/ns/prov#")
+    rows = []
+    for gap in sorted(g.subjects(rdflib.RDF.type, V.ComputabilityGap), key=str):
+        rulings = sorted(set(g.subjects(V.resolves, gap)) | set(g.subjects(V.defers, gap)), key=str)
+        who = sorted({_local(g.value(r, PROV.wasAttributedTo)) for r in rulings})
+        dates = sorted({str(g.value(r, PROV.generatedAtTime)) for r in rulings})
+        rows.append((
+            ("code", f"{_local(gap)} — {g.value(gap, rdflib.RDFS.label)}"),
+            str(g.value(gap, V.problem)),
+            f"{g.value(gap, V.surfacedOn)}: {g.value(gap, V.surfacedHow)}",
+            ("code", str(g.value(gap, V.status))),
+            f"{len(rulings)} ruling(s) by {', '.join(who)} on {', '.join(dates)}",
+        ))
+    _table(("Gap", "Problem", "Surfaced", "Status", "Resolution"), rows)
+
+
+def show_judgment_trace():
+    import rdflib
+
+    g = _adjudication_graph()
+    V = rdflib.Namespace(VFR)
+    PROV = rdflib.Namespace("http://www.w3.org/ns/prov#")
+    rows = []
+    for impl in sorted(g.subjects(rdflib.RDF.type, V.Implementation), key=str):
+        ruling = g.value(impl, PROV.wasDerivedFrom)
+        gap = g.value(ruling, V.resolves) or g.value(ruling, V.defers)
+        rows.append((
+            str(g.value(impl, rdflib.RDFS.label)),
+            ("code", str(g.value(impl, V.inFile))),
+            ("code", f"{_local(ruling)} ({_local(g.value(ruling, PROV.wasAttributedTo))}, "
+                     f"{g.value(ruling, PROV.generatedAtTime)})"),
+            ("code", f"{_local(gap)} @ {g.value(gap, V.locator)}"),
+        ))
+    _table(("Implementation", "File", "Derived from ruling", "Resolves gap"), rows)
+    print(f"traceable implementations: {len(rows)} "
+          "(each: implementation -> ruling -> named adjudicator -> gap -> pinned source)")
+
+
+def check_adjudication_record():
+    import rdflib
+    from pyshacl import validate
+
+    g = _adjudication_graph()
+    V = rdflib.Namespace(VFR)
+    n_gaps = len(set(g.subjects(rdflib.RDF.type, V.ComputabilityGap)))
+    n_rulings = len(set(g.subjects(rdflib.RDF.type, V.Ruling)))
+    n_impls = len(set(g.subjects(rdflib.RDF.type, V.Implementation)))
+    conforms, _, _ = validate(g, shacl_graph=str(ROOT / "shapes" / "adjudication.shapes.ttl"))
+    print(f"the record ({n_gaps} gaps, {n_rulings} rulings, {n_impls} implementations) "
+          f"conforms: {conforms}")
+    cx = rdflib.Graph()
+    cx.parse(ROOT / "counterexamples" / "adjudication-unattributed.ttl", format="turtle")
+    conforms, results, _ = validate(cx, shacl_graph=str(ROOT / "shapes" / "adjudication.shapes.ttl"))
+    SH = rdflib.Namespace("http://www.w3.org/ns/shacl#")
+    print(f"unattributed-ruling counterexample   conforms: {conforms}")
+    for v in results.subjects(rdflib.RDF.type, SH.ValidationResult):
+        print(f"  {results.value(v, SH.resultMessage)}")
 
 
 def show_checks_outcomes():

@@ -1,0 +1,25 @@
+@prefix adj:  <https://example.org/vfr/adjudications#> .
+@prefix vfr:  <https://example.org/vfr#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+# Counterexample: a ruling with text and a date but NO adjudicator. Must
+# fail shapes/adjudication.shapes.ttl — judgment enters the record only
+# when it is attributed to a named actor.
+
+adj:cx-gap
+    a vfr:ComputabilityGap ;
+    rdfs:label "an example gap" ;
+    vfr:problem "an under-specified detail" ;
+    vfr:locator "§0.0" ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:surfacedOn "2026-09-04"^^xsd:date ;
+    vfr:surfacedHow "constructed counterexample" ;
+    vfr:status "adjudicated" .
+
+adj:cx-ruling
+    a vfr:Ruling ;
+    vfr:resolves adj:cx-gap ;
+    prov:generatedAtTime "2026-09-04"^^xsd:date ;
+    vfr:rulingText "an unattributed ruling" .

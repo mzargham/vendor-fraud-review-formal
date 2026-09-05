@@ -204,3 +204,12 @@ def test_chapter_06_lists_every_adjudicated_gap(chapter_outputs):
     text = chapter_outputs["06-open-questions"]
     for n in range(1, 10):
         assert f"GAP-0{n}" in text, f"GAP-0{n} not surfaced in the open-questions chapter"
+    # The judgment layer is a computational record: gaps, attributed
+    # rulings, and derived implementations render from the RDF, the full
+    # code-to-judgment trace is shown, and the record's own shapes run
+    # with their counterexample.
+    assert "mzargham" in text, "the named adjudicator does not appear in the record"
+    assert text.count("<table") >= 2, "the record and the trace must render as tables"
+    assert "conforms: True" in text, "the record's shape conformance is not shown"
+    assert "conforms: False" in text, "the unattributed counterexample is not refused"
+    assert "adjudicator" in text, "the attribution requirement is not surfaced"

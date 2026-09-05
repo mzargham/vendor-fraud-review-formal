@@ -62,6 +62,12 @@ The substrate is a small stack of open standards, one layer per job:
 5. **Queries.** The purposes section 5.3 names for a Track
    (auditability, governance, trust) answered by SPARQL [@sparql2013]
    over the run graph [@rdf2014].
+6. **A judgment record.** Code is not objective; its objectivity is
+   downstream of judgment calls. Where the text under-specified what an
+   executable specification requires, each gap, the ruling that
+   resolved it (verbatim, attributed to a named adjudicator, dated),
+   and the implementations that resulted are themselves RDF, traceable
+   end to end and checked by their own shapes.
 
 ## How to read it
 

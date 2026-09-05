@@ -1,0 +1,367 @@
+@prefix adj:  <https://example.org/vfr/adjudications#> .
+@prefix vfr:  <https://example.org/vfr#> .
+@prefix prov: <http://www.w3.org/ns/prov#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd:  <http://www.w3.org/2001/XMLSchema#> .
+
+# The judgment record. The executable specification's objectivity is
+# downstream of judgment calls: where the text corpus under-specified what
+# an implementation requires, each gap was flagged and characterized, a
+# named adjudicator ruled, and implementations derive from the rulings.
+# This file is the machine-readable record of that chain; the markdown
+# files beside it are the narrative archive (full problem statements,
+# possible readings, change notes). Ruling texts here are verbatim and
+# tested against adjudication-log.md.
+
+adj:mzargham
+    a prov:Agent, prov:Person ;
+    rdfs:label "mzargham (Michael Zargham, adjudicator)" .
+
+adj:translation
+    a prov:Activity ;
+    rdfs:label "literal translation of the section 5.6 manifest onto the RDF + SysML substrate" ;
+    prov:used vfr:source-whitepaper-rev9 .
+
+# ---------------------------------------------------------------- gaps
+
+adj:GAP-01
+    a vfr:ComputabilityGap ;
+    rdfs:label "the type of vendor_risk and the value high" ;
+    vfr:problem "high is an unquoted symbol; the manifest declares no type or value set for vendor_risk. An executable comparison needs both." ;
+    vfr:locator "§5.6" ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:surfacedOn "2026-09-04"^^xsd:date ;
+    vfr:surfacedHow "typing the vendor_risk == high comparison during the literal translation of the gates block" ;
+    vfr:status "adjudicated" ;
+    prov:wasGeneratedBy adj:translation .
+
+adj:GAP-02
+    a vfr:ComputabilityGap ;
+    rdfs:label "what a then: clause names" ;
+    vfr:problem "Whether a then-clause names a state the Op enters, an obligation to be discharged, or an action to be performed is not stated." ;
+    vfr:locator "§5.6, §5.2" ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:surfacedOn "2026-09-04"^^xsd:date ;
+    vfr:surfacedHow "typing the four then-clauses: stop_and_escalate is grammatically an action while human_review_required is a predicate" ;
+    vfr:status "adjudicated" ;
+    prov:wasGeneratedBy adj:translation .
+
+adj:GAP-03
+    a vfr:ComputabilityGap ;
+    rdfs:label "the provenance and granularity of confidence" ;
+    vfr:problem "The manifest never says which Guard produces the confidence value the gate reads, nor whether it is per-output, per-Cog, or per-run." ;
+    vfr:locator "§5.6, §5.1" ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:surfacedOn "2026-09-04"^^xsd:date ;
+    vfr:surfacedHow "grounding the confidence variable of GATE-01: three Cogs run in this Op and each could carry its own confidence" ;
+    vfr:status "adjudicated" ;
+    prov:wasGeneratedBy adj:translation .
+
+adj:GAP-04
+    a vfr:ComputabilityGap ;
+    rdfs:label "the semantics of consensus_disagreement" ;
+    vfr:problem "No definition of the disagreement metric is given: not its range, not what it is computed over, not how two-of-three-must-agree maps to a number comparable with 0.25." ;
+    vfr:locator "§5.6, §5.5" ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:surfacedOn "2026-09-04"^^xsd:date ;
+    vfr:surfacedHow "typing the consensus_disagreement > 0.25 comparison; the section 5.5 two-of-three example gave no number" ;
+    vfr:status "adjudicated-open" ;
+    prov:wasGeneratedBy adj:translation .
+
+adj:GAP-05
+    a vfr:ComputabilityGap ;
+    rdfs:label "who provides the gate variables" ;
+    vfr:problem "The gate variables have no stated provider; an executable policy needs a citable source for every value it reads." ;
+    vfr:locator "§5.6" ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:surfacedOn "2026-09-04"^^xsd:date ;
+    vfr:surfacedHow "the adjudicator's review of the worked examples: numerical values were appearing without an identified provider" ;
+    vfr:status "adjudicated" ;
+    prov:wasGeneratedBy adj:translation .
+
+adj:GAP-06
+    a vfr:ComputabilityGap ;
+    rdfs:label "aggregate outcome: navigating the rules vs executing" ;
+    vfr:problem "Navigating the rules successfully and executing are different facts; the flat reading could not distinguish a stopped run from a completed one." ;
+    vfr:locator "§4.5, §5.2" ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:surfacedOn "2026-09-04"^^xsd:date ;
+    vfr:surfacedHow "the adjudicator's review of the stop-and-escalate worked example: POLICY SATISFIED looked identical for a halted run and a completed one" ;
+    vfr:status "adjudicated" ;
+    prov:wasGeneratedBy adj:translation .
+
+adj:GAP-07
+    a vfr:ComputabilityGap ;
+    rdfs:label "track.include lists final_output unconditionally" ;
+    vfr:problem "track.include lists final_output unconditionally, but a section 5.2 stopped run transmits nothing to retain." ;
+    vfr:locator "§5.6, §5.2" ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:surfacedOn "2026-09-04"^^xsd:date ;
+    vfr:surfacedHow "modeling aggregate outcomes: a noOp run cannot satisfy an unconditional final_output requirement" ;
+    vfr:status "adjudicated" ;
+    prov:wasGeneratedBy adj:translation .
+
+adj:GAP-08
+    a vfr:ComputabilityGap ;
+    rdfs:label "the Op's internal wiring topology" ;
+    vfr:problem "Assembling the Op as components wired along ports requires a dataflow topology the paper never draws." ;
+    vfr:locator "§4.5, §5.6" ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:surfacedOn "2026-09-04"^^xsd:date ;
+    vfr:surfacedHow "assembling the Op as components per the GAP-06 directive: which component feeds which is stated nowhere" ;
+    vfr:status "adjudicated" ;
+    prov:wasGeneratedBy adj:translation .
+
+adj:GAP-09
+    a vfr:ComputabilityGap ;
+    rdfs:label "who performs the discharging actions" ;
+    vfr:problem "One component holds the discharging actions; the manifest names a human for two of the four, and the other actors are unspecified." ;
+    vfr:locator "§5.6, §5.2" ;
+    vfr:cites vfr:source-whitepaper-rev9 ;
+    vfr:surfacedOn "2026-09-04"^^xsd:date ;
+    vfr:surfacedHow "the adjudicator's review of the walkthrough narration: 'cross to the human actions' over-read the source" ;
+    vfr:status "adjudicated" ;
+    prov:wasGeneratedBy adj:translation .
+
+# ------------------------------------------------------------- rulings
+
+adj:ruling-gap01
+    a vfr:Ruling ;
+    vfr:resolves adj:GAP-01 ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-04"^^xsd:date ;
+    vfr:rulingText """convert it to an enum with high, low and unknown. and flag it as an interpretation and a place where modeling could be enhanced with an actual risk model in the future.""" .
+
+adj:ruling-gap02
+    a vfr:Ruling ;
+    vfr:resolves adj:GAP-02 ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-04"^^xsd:date ;
+    vfr:rulingText """needs to be decomposed. we don't want hybrids, state, obligation (is a required action that is abstract, not yet materialized) whereas a concrete action can discharge an obligation; these are distinct concepts. if state x implies obligation, then the action which discharges that obligation must also mutate state.""" .
+
+adj:ruling-gap03
+    a vfr:Ruling ;
+    vfr:resolves adj:GAP-03 ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-04"^^xsd:date ;
+    vfr:rulingText """confidence level treated with enum similar to risk. likely requires its own confidence model eventually but here can serve as an interface contract with a simplified scheme. notes on future enrichment""" .
+
+adj:ruling-gap04-deferral
+    a vfr:Ruling ;
+    vfr:defers adj:GAP-04 ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-04"^^xsd:date ;
+    vfr:rulingText """we need to come back to this when we have a better sense of what the spaces are being compared. is this bit-exact comparison, semantic distance or some other metrics. if we can get this tighter we can treat it as error correcting code style interpretation. this requires we can reduce to yes/no/canttell facts we're agreeing or disagreeing on""" .
+
+adj:ruling-gap04
+    a vfr:Ruling ;
+    vfr:resolves adj:GAP-04 ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-04"^^xsd:date ;
+    vfr:rulingText """given we don't want to push policy decisions. i think this is an excellent place to show breadth. Travis' rule doesn't say what the numer is so we can provide a type signature and three alternatives which are all type satisfying but have different semantics. then we can highlight that correctly constructed policies are not the same as fit for purpose polices and that what is 'right for the job' is an open question here. and the right answer is not limited to these 3 options. its an open algorithmic policy design question, which is likely to have no unique correct answer but rather many viable answers with different implications on incentives""" .
+
+adj:ruling-gap04-clarification
+    a vfr:Ruling ;
+    vfr:refines adj:ruling-gap04 ;
+    vfr:resolves adj:GAP-04 ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-04"^^xsd:date ;
+    vfr:rulingText """'{agree, no, cantTell}' -> '{True, False, Null}' but further clarified as {agree, diagree, cannot tell} basically we want the base data type to be nullable Bool for better type checking support but the semantics are given a datum as context (irrespective of which Cog produced it) there is a check bool check that can bet True, False or null which is the answer do you agree with the datum. optionally we can assume the cog which produced the datum in question files True but in my experience its best to factor checkers apart from generators so its strictly possible for a cog to produce a datum and still return false when asked if that data is true. this clarification is going to need an adjudication record""" .
+
+adj:ruling-gap05
+    a vfr:Ruling ;
+    vfr:resolves adj:GAP-05 ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-04"^^xsd:date ;
+    vfr:rulingText """where ever we need a number we must assume an oracle that can provide it and have an identity for that oracle, and be able to precisely cite it. that means we need to know what service we called what payload we sent, what response code we got and what response we got. our system needs these answers to apply its policies but is not itself the provider of these numbers. so these make up interface contract.""" .
+
+adj:ruling-gap06
+    a vfr:Ruling ;
+    vfr:resolves adj:GAP-06 ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-04"^^xsd:date ;
+    vfr:rulingText """this reveals that we need to account for aggregate outputs. we successfully navigated the rules but the aggregate is no-op. which is different than successfully navigating the rules and executing. my intuition is that we've severely underutilitized the opensysml tool for its ability to define abstract and concrete parts, then wire them together along ports. this is what allows us to assemble complex workflows with both component level checks, wiring level checks, and system level checks with one toolchain""" .
+
+adj:ruling-gap07
+    a vfr:Ruling ;
+    vfr:resolves adj:GAP-07 ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-04"^^xsd:date ;
+    vfr:rulingText """we need it to be conditional but we should flag that we've made that judgement and acknowledge it departs from pinned draft""" .
+
+adj:ruling-gap08
+    a vfr:Ruling ;
+    vfr:resolves adj:GAP-08 ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-04"^^xsd:date ;
+    vfr:rulingText """we claim this is our contribution, and as a benefit we get for shifting to the computational rather than textual representation of the same concepts""" .
+
+adj:ruling-gap09
+    a vfr:Ruling ;
+    vfr:resolves adj:GAP-09 ;
+    prov:wasAttributedTo adj:mzargham ;
+    prov:generatedAtTime "2026-09-04"^^xsd:date ;
+    vfr:rulingText """i am not sure we can say 'cross to the human actions' as actions may be performed by other automated systems. i do personally assume all automated systems have a party accountable for their behavior but not that any particular actor is human. do not contradict Travis' text but if its left unspecified do not inject the expectation of human action, instead assume its an other system outside the bounds of what is modeled acting on the system that is modeled, and we can assume there is a counterparty accountable for those actions. if necessary you can add my interpretation as explicitly mine and log it with adjudications.""" .
+
+# ------------------------------------------- implementations (derived)
+
+adj:impl-risklevel
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "enum def RiskLevel {high, low, unknown}" ;
+    vfr:inFile "model/vendor-fraud-review.sysml" ;
+    vfr:anchor "RiskLevel" ;
+    prov:wasDerivedFrom adj:ruling-gap01 .
+
+adj:impl-system01
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "SYSTEM-01 ObligationsDischarged: state implies obligation; discharge crosses components" ;
+    vfr:inFile "model/vendor-fraud-review.sysml" ;
+    vfr:anchor "SYSTEM-01" ;
+    prov:wasDerivedFrom adj:ruling-gap02 .
+
+adj:impl-discharges
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "vfr:discharges + prov:generated in the run record: a discharging action mutates state" ;
+    vfr:inFile "track/run-001.trig" ;
+    vfr:anchor "vfr:discharges" ;
+    prov:wasDerivedFrom adj:ruling-gap02 .
+
+adj:impl-dischargeshape
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "DischargingActionShape: obligations must be discharged by recorded, state-mutating actions" ;
+    vfr:inFile "shapes/track.shapes.ttl" ;
+    vfr:anchor "DischargingActionShape" ;
+    prov:wasDerivedFrom adj:ruling-gap02 .
+
+adj:impl-confidencelevel
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "enum def ConfidenceLevel {high, low, unknown}" ;
+    vfr:inFile "model/vendor-fraud-review.sysml" ;
+    vfr:anchor "ConfidenceLevel" ;
+    prov:wasDerivedFrom adj:ruling-gap03 .
+
+adj:impl-interface01
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "INTERFACE-01: the documented threshold rule binding number to category" ;
+    vfr:inFile "model/vendor-fraud-review.sysml" ;
+    vfr:anchor "INTERFACE-01" ;
+    prov:wasDerivedFrom adj:ruling-gap03 .
+
+adj:impl-disagreementmetric
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "abstract part def DisagreementMetric + three type-satisfying concretes" ;
+    vfr:inFile "model/vendor-fraud-review.sysml" ;
+    vfr:anchor "DisagreementMetric" ;
+    prov:wasDerivedFrom adj:ruling-gap04 .
+
+adj:impl-metricslot
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the comparator oracle's deliberately unbound metric slot" ;
+    vfr:inFile "model/vendor-fraud-review.sysml" ;
+    vfr:anchor "part metric : DisagreementMetric;" ;
+    prov:wasDerivedFrom adj:ruling-gap04 .
+
+adj:impl-metrics-map
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the implementation mapping keyed by metric id" ;
+    vfr:inFile "exhibits.py" ;
+    vfr:anchor "METRICS" ;
+    prov:wasDerivedFrom adj:ruling-gap04 .
+
+adj:impl-track-metric
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the Track records which metric a run used (recording is not endorsing)" ;
+    vfr:inFile "track/run-001.trig" ;
+    vfr:anchor "vfr:metric" ;
+    prov:wasDerivedFrom adj:ruling-gap04 .
+
+adj:impl-nullable-type
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the nullable-Boolean answer type in the implementations" ;
+    vfr:inFile "exhibits.py" ;
+    vfr:anchor "bool | None" ;
+    prov:wasDerivedFrom adj:ruling-gap04-clarification .
+
+adj:impl-nullable-doc
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the abstract definition's nullable-Boolean answer semantics" ;
+    vfr:inFile "model/vendor-fraud-review.sysml" ;
+    vfr:anchor "nullable Booleans" ;
+    prov:wasDerivedFrom adj:ruling-gap04-clarification .
+
+adj:impl-oraclecall
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "identified oracle services with cited calls (service, payload, response code, response)" ;
+    vfr:inFile "track/run-001.trig" ;
+    vfr:anchor "vfr:OracleCall" ;
+    prov:wasDerivedFrom adj:ruling-gap05 .
+
+adj:impl-interface-query
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the interface query rendering the full citation per gate variable" ;
+    vfr:inFile "queries/interface.rq" ;
+    vfr:anchor "responseCode" ;
+    prov:wasDerivedFrom adj:ruling-gap05 .
+
+adj:impl-oraclecall-shape
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "OracleCallShape: calls missing any citation field are refused" ;
+    vfr:inFile "shapes/track.shapes.ttl" ;
+    vfr:anchor "OracleCallShape" ;
+    prov:wasDerivedFrom adj:ruling-gap05 .
+
+adj:impl-aggregateoutcome
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "enum def AggregateOutcome {executed, noOp}" ;
+    vfr:inFile "model/vendor-fraud-review.sysml" ;
+    vfr:anchor "AggregateOutcome" ;
+    prov:wasDerivedFrom adj:ruling-gap06 .
+
+adj:impl-system02
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "SYSTEM-02 StopMeansNoOutput (section 5.2 verbatim grounding)" ;
+    vfr:inFile "model/vendor-fraud-review.sysml" ;
+    vfr:anchor "SYSTEM-02" ;
+    prov:wasDerivedFrom adj:ruling-gap06 .
+
+adj:impl-system03
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "SYSTEM-03 OutcomeCoherence: the aggregate must cohere with what was emitted" ;
+    vfr:inFile "model/vendor-fraud-review.sysml" ;
+    vfr:anchor "SYSTEM-03" ;
+    prov:wasDerivedFrom adj:ruling-gap06 .
+
+adj:impl-lifecycle
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the assembly lifecycle (running to stopped or completed) exercised under trace" ;
+    vfr:inFile "model/vendor-fraud-review.sysml" ;
+    vfr:anchor "ExerciseContexts" ;
+    prov:wasDerivedFrom adj:ruling-gap06 .
+
+adj:impl-conditional-retention
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "conditional final_output retention, with the departure acknowledged in the shape messages" ;
+    vfr:inFile "shapes/track.shapes.ttl" ;
+    vfr:anchor "departs from the pinned draft" ;
+    prov:wasDerivedFrom adj:ruling-gap07 .
+
+adj:impl-seams
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the six declared seams of the assembly (the drawn topology, claimed as contribution)" ;
+    vfr:inFile "model/vendor-fraud-review.sysml" ;
+    vfr:anchor "obligationSeam" ;
+    prov:wasDerivedFrom adj:ruling-gap08 .
+
+adj:impl-counterparty
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "CounterpartyAction: the discharging actor is unspecified where the manifest does not name a human" ;
+    vfr:inFile "model/vendor-fraud-review.sysml" ;
+    vfr:anchor "CounterpartyAction" ;
+    prov:wasDerivedFrom adj:ruling-gap09 .
+
+adj:impl-mode-property
+    a vfr:Implementation, prov:Entity ;
+    rdfs:label "the discharging-action shape requires a declared mode and an accountable party, not humanness" ;
+    vfr:inFile "shapes/track.shapes.ttl" ;
+    vfr:anchor "declare its mode" ;
+    prov:wasDerivedFrom adj:ruling-gap09 .
