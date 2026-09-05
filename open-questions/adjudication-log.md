@@ -88,3 +88,18 @@ preferred interface; INTERFACE-01 is the documented threshold rule mapping
 number to category; the numbers themselves are oracle-provided (GAP-05).
 This note is a suggestion about the system's design, available to raise with
 the author; it changes no verbatim rendering of his text.
+
+## 2026-09-04 — design note: parameters factored
+
+**Note (verbatim):** "numerical parameters in policies need to be factored
+out as parameters. this is part of what the implementation can do easily
+that a whitepaper cannot."
+
+**Changed:** the thresholds became single-point definitions
+(ValidationStrategyParameters: confidenceThreshold = 0.80,
+consensusDisagreementThreshold = 0.25, vendorRiskTrigger = high) that
+GATE-01, GATE-02, GATE-04, and INTERFACE-01 reference; outside verbatim doc
+quotes each literal now appears exactly once, enforced by test. The Track
+records the parameter values in force per run — which is his own §5.3
+("the model versions and configuration parameters") made executable — and
+an execution that omits them fails the shapes.

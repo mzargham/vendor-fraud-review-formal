@@ -30,11 +30,28 @@ package VendorFraudReview {
             unknown;
         }
 
+        part def ValidationStrategyParameters {
+            doc /* The numerical parameters of the policy, factored out as
+               single-point definitions the gates reference — what an
+               implementation can do that a whitepaper cannot. The defaults
+               are the manifest's literals, verbatim; changing a threshold
+               is a change HERE, nowhere else, and the Track records the
+               values in force per run (WP section 5.3: Track contents
+               include "the model versions and configuration parameters"). */
+            attribute confidenceThreshold : ScalarValues::Real = 0.80;
+            attribute consensusDisagreementThreshold : ScalarValues::Real = 0.25;
+            attribute vendorRiskTrigger : RiskLevel = RiskLevel::high;
+        }
+
         part def VendorFraudReviewOp {
             doc /* op: name: vendor-fraud-review
                frames: company-policy, procurement-rules, fraud-detection-methodology
                cogs: invoice-extraction-cog, vendor-risk-cog, anomaly-summary-cog
                Source: WP section 5.6, manifest sketch. */
+
+            /* The policy's numerical parameters, factored (see
+               ValidationStrategyParameters). */
+            part policy : ValidationStrategyParameters;
 
             /* Raw readings. adjudicated: GAP-05 — every value here is
                oracle-provided: an identified service was called with a
@@ -76,8 +93,8 @@ package VendorFraudReview {
                precision lives inside the oracles or in rules like this one
                (design note, adjudication-log.md 2026-09-04). */
             subject op : VendorFraudReviewOp;
-            require constraint { op.confidence < 0.80 implies op.confidenceLevel == ConfidenceLevel::low }
-            require constraint { op.confidence >= 0.80 implies op.confidenceLevel == ConfidenceLevel::high }
+            require constraint { op.confidence < op.policy.confidenceThreshold implies op.confidenceLevel == ConfidenceLevel::low }
+            require constraint { op.confidence >= op.policy.confidenceThreshold implies op.confidenceLevel == ConfidenceLevel::high }
         }
 
         requirement def <'GATE-01'> ConfidenceGate {
@@ -85,7 +102,7 @@ package VendorFraudReview {
                     then: human_review_required
                Source: WP section 5.6 gates block, verbatim. */
             subject op : VendorFraudReviewOp;
-            require constraint { op.confidence < 0.80 implies op.humanReviewRequired }
+            require constraint { op.confidence < op.policy.confidenceThreshold implies op.humanReviewRequired }
         }
 
         requirement def <'GATE-02'> ConsensusGate {
@@ -93,7 +110,7 @@ package VendorFraudReview {
                     then: expert_review_required
                Source: WP section 5.6 gates block, verbatim. */
             subject op : VendorFraudReviewOp;
-            require constraint { op.consensusDisagreement > 0.25 implies op.expertReviewRequired }
+            require constraint { op.consensusDisagreement > op.policy.consensusDisagreementThreshold implies op.expertReviewRequired }
         }
 
         requirement def <'GATE-03'> SensitiveDataGate {
@@ -110,7 +127,7 @@ package VendorFraudReview {
                Source: WP section 5.6 gates block, verbatim.
                adjudicated: GAP-01 — high is RiskLevel::high. */
             subject op : VendorFraudReviewOp;
-            require constraint { op.vendorRisk == RiskLevel::high implies op.humanApprovalRequired }
+            require constraint { op.vendorRisk == op.policy.vendorRiskTrigger implies op.humanApprovalRequired }
         }
 
         requirement def <'DISCHARGE-01'> ObligationsDischarged {

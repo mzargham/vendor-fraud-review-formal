@@ -7,7 +7,12 @@ package VendorFraudReviewUnattended {
        Self-contained on purpose. */
 
     package Manifest {
+        part def ValidationStrategyParameters {
+            attribute confidenceThreshold : ScalarValues::Real = 0.80;
+        }
+
         part def VendorFraudReviewOp {
+            part policy : ValidationStrategyParameters;
             attribute confidence : ScalarValues::Real;
             attribute humanReviewRequired : ScalarValues::Boolean;
             attribute humanReviewPerformed : ScalarValues::Boolean;
@@ -18,7 +23,7 @@ package VendorFraudReviewUnattended {
                     then: human_review_required
                Source: WP section 5.6 gates block, verbatim. */
             subject op : VendorFraudReviewOp;
-            require constraint { op.confidence < 0.80 implies op.humanReviewRequired }
+            require constraint { op.confidence < op.policy.confidenceThreshold implies op.humanReviewRequired }
         }
 
         requirement def <'DISCHARGE-01'> ObligationsDischarged {

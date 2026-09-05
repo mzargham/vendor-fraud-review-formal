@@ -54,6 +54,23 @@ def test_track_missing_approval_counterexample_fails():
     )
 
 
+def test_execution_without_parameters_fails():
+    # WP section 5.3 Track contents include "configuration parameters"; an
+    # execution that does not record the parameters it ran with is refused.
+    data = rdflib.Graph()
+    data.parse(data="""
+        @prefix vfr: <https://example.org/vfr#> .
+        @prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+        <urn:example:run-bare:execution> a vfr:OpExecution ;
+            rdfs:label "an execution recording nothing" .
+    """, format="turtle")
+    conforms, _, report = validate(data, shacl_graph=str(TRACK_SHAPES))
+    assert not conforms
+    assert "configuration parameters" in report.lower(), (
+        f"violation message does not name the missing configuration parameters:\n{report}"
+    )
+
+
 def test_unsourced_reading_counterexample_fails():
     # Interface contract (GAP-05 ruling): a reading with no citable oracle
     # call — or an oracle call missing its response code — must be refused.

@@ -1,7 +1,35 @@
 """The manifest's gate logic computes, says yes and no honestly, and survives conversion."""
+import re
+
 import rdflib
 
 from conftest import CX_MODEL, MODEL, run_sysml
+
+
+def _strip_doc_comments(source: str) -> str:
+    return re.sub(r"/\*.*?\*/", "", source, flags=re.S)
+
+
+def test_thresholds_are_factored_as_parameters():
+    # Numerical parameters in policies are factored out as single-point
+    # definitions the gates reference — what an implementation can do that a
+    # whitepaper cannot. Outside verbatim doc quotes, each manifest literal
+    # appears exactly once (its parameter default), and the parameters are
+    # named.
+    stripped = _strip_doc_comments(MODEL.read_text())
+    assert stripped.count("0.80") == 1, "0.80 must appear exactly once: as a parameter default"
+    assert stripped.count("0.25") == 1, "0.25 must appear exactly once: as a parameter default"
+    for name in ("confidenceThreshold", "consensusDisagreementThreshold", "vendorRiskTrigger"):
+        assert name in stripped, f"named parameter {name} missing from the model"
+    cx_stripped = _strip_doc_comments(CX_MODEL.read_text())
+    assert cx_stripped.count("0.80") == 1, "counterexample must use the same factoring"
+
+
+def test_parameters_survive_conversion():
+    r = run_sysml(str(MODEL), "-convert", "ttl")
+    assert r.returncode == 0
+    for name in ("confidenceThreshold", "consensusDisagreementThreshold"):
+        assert name in r.stdout, f"parameter {name} did not survive -convert ttl"
 
 
 def test_model_validates_strict():

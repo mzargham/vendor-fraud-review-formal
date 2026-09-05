@@ -54,9 +54,9 @@ elmt:VendorFraudReview__Manifest
     sysml:owningMembership elmt:VendorFraudReview__Manifest_om ;
     sysml:declaredName "Manifest" ;
     sysx:hasBody "true"^^xsd:boolean ;
-    sysml:ownedMember elmt:VendorFraudReview__Manifest__RiskLevel, elmt:VendorFraudReview__Manifest__ConfidenceLevel, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp, elmt:VendorFraudReview__Manifest__ConfidenceInterface, elmt:VendorFraudReview__Manifest__ConfidenceGate, elmt:VendorFraudReview__Manifest__ConsensusGate, elmt:VendorFraudReview__Manifest__SensitiveDataGate, elmt:VendorFraudReview__Manifest__VendorRiskGate, elmt:VendorFraudReview__Manifest__ObligationsDischarged ;
-    sysml:ownedMembership elmt:VendorFraudReview__Manifest__RiskLevel_om, elmt:VendorFraudReview__Manifest__ConfidenceLevel_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp_om, elmt:VendorFraudReview__Manifest__ConfidenceInterface_om, elmt:VendorFraudReview__Manifest__ConfidenceGate_om, elmt:VendorFraudReview__Manifest__ConsensusGate_om, elmt:VendorFraudReview__Manifest__SensitiveDataGate_om, elmt:VendorFraudReview__Manifest__VendorRiskGate_om, elmt:VendorFraudReview__Manifest__ObligationsDischarged_om ;
-    sysml:ownedRelationship elmt:VendorFraudReview__Manifest__RiskLevel_om, elmt:VendorFraudReview__Manifest__ConfidenceLevel_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp_om, elmt:VendorFraudReview__Manifest__ConfidenceInterface_om, elmt:VendorFraudReview__Manifest__ConfidenceGate_om, elmt:VendorFraudReview__Manifest__ConsensusGate_om, elmt:VendorFraudReview__Manifest__SensitiveDataGate_om, elmt:VendorFraudReview__Manifest__VendorRiskGate_om, elmt:VendorFraudReview__Manifest__ObligationsDischarged_om .
+    sysml:ownedMember elmt:VendorFraudReview__Manifest__RiskLevel, elmt:VendorFraudReview__Manifest__ConfidenceLevel, elmt:VendorFraudReview__Manifest__ValidationStrategyParameters, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp, elmt:VendorFraudReview__Manifest__ConfidenceInterface, elmt:VendorFraudReview__Manifest__ConfidenceGate, elmt:VendorFraudReview__Manifest__ConsensusGate, elmt:VendorFraudReview__Manifest__SensitiveDataGate, elmt:VendorFraudReview__Manifest__VendorRiskGate, elmt:VendorFraudReview__Manifest__ObligationsDischarged ;
+    sysml:ownedMembership elmt:VendorFraudReview__Manifest__RiskLevel_om, elmt:VendorFraudReview__Manifest__ConfidenceLevel_om, elmt:VendorFraudReview__Manifest__ValidationStrategyParameters_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp_om, elmt:VendorFraudReview__Manifest__ConfidenceInterface_om, elmt:VendorFraudReview__Manifest__ConfidenceGate_om, elmt:VendorFraudReview__Manifest__ConsensusGate_om, elmt:VendorFraudReview__Manifest__SensitiveDataGate_om, elmt:VendorFraudReview__Manifest__VendorRiskGate_om, elmt:VendorFraudReview__Manifest__ObligationsDischarged_om ;
+    sysml:ownedRelationship elmt:VendorFraudReview__Manifest__RiskLevel_om, elmt:VendorFraudReview__Manifest__ConfidenceLevel_om, elmt:VendorFraudReview__Manifest__ValidationStrategyParameters_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp_om, elmt:VendorFraudReview__Manifest__ConfidenceInterface_om, elmt:VendorFraudReview__Manifest__ConfidenceGate_om, elmt:VendorFraudReview__Manifest__ConsensusGate_om, elmt:VendorFraudReview__Manifest__SensitiveDataGate_om, elmt:VendorFraudReview__Manifest__VendorRiskGate_om, elmt:VendorFraudReview__Manifest__ObligationsDischarged_om .
 
 elmt:VendorFraudReview__Manifest_om
     a sysml:OwningMembership ;
@@ -321,22 +321,172 @@ elmt:VendorFraudReview__Manifest__ConfidenceLevel__unknown_om
     sysml:ownedMemberFeature elmt:VendorFraudReview__Manifest__ConfidenceLevel__unknown ;
     sysml:owningType elmt:VendorFraudReview__Manifest__ConfidenceLevel .
 
+elmt:VendorFraudReview__Manifest__ValidationStrategyParameters
+    a sysml:PartDefinition ;
+    sysml:qualifiedName "VendorFraudReview::Manifest::ValidationStrategyParameters" ;
+    sysml:elementId "VendorFraudReview__Manifest__ValidationStrategyParameters" ;
+    sysx:memberIndex "2"^^xsd:integer ;
+    sysml:owningNamespace elmt:VendorFraudReview__Manifest ;
+    sysml:owner elmt:VendorFraudReview__Manifest ;
+    sysml:owningRelationship elmt:VendorFraudReview__Manifest__ValidationStrategyParameters_om ;
+    sysml:owningMembership elmt:VendorFraudReview__Manifest__ValidationStrategyParameters_om ;
+    sysml:declaredName "ValidationStrategyParameters" ;
+    sysx:hasBody "true"^^xsd:boolean ;
+    sysml:ownedMember elmt:VendorFraudReview__Manifest__ValidationStrategyParameters___400, elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold, elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold, elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger ;
+    sysml:ownedMembership elmt:VendorFraudReview__Manifest__ValidationStrategyParameters___400_om, elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold_om, elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold_om, elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger_om ;
+    sysml:ownedRelationship elmt:VendorFraudReview__Manifest__ValidationStrategyParameters___400_om, elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold_om, elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold_om, elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger_om ;
+    sysml:ownedFeature elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold, elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold, elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger ;
+    sysml:ownedFeatureMembership elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold_om, elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold_om, elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger_om .
+
+elmt:VendorFraudReview__Manifest__ValidationStrategyParameters_om
+    a sysml:OwningMembership ;
+    sysml:elementId "VendorFraudReview__Manifest__ValidationStrategyParameters_om" ;
+    sysml:owner elmt:VendorFraudReview__Manifest ;
+    sysml:memberElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:ownedMemberElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:ownedRelatedElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:owningRelatedElement elmt:VendorFraudReview__Manifest ;
+    sysml:membershipOwningNamespace elmt:VendorFraudReview__Manifest .
+
+elmt:VendorFraudReview__Manifest__ValidationStrategyParameters___400
+    a sysml:Documentation ;
+    sysml:qualifiedName "VendorFraudReview::Manifest::ValidationStrategyParameters::@0" ;
+    sysml:elementId "VendorFraudReview__Manifest__ValidationStrategyParameters___400" ;
+    sysx:memberIndex "0"^^xsd:integer ;
+    sysml:owningNamespace elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:owner elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:owningRelationship elmt:VendorFraudReview__Manifest__ValidationStrategyParameters___400_om ;
+    sysml:owningMembership elmt:VendorFraudReview__Manifest__ValidationStrategyParameters___400_om ;
+    sysml:body """ The numerical parameters of the policy, factored out as
+               single-point definitions the gates reference — what an
+               implementation can do that a whitepaper cannot. The defaults
+               are the manifest's literals, verbatim; changing a threshold
+               is a change HERE, nowhere else, and the Track records the
+               values in force per run (WP section 5.3: Track contents
+               include \"the model versions and configuration parameters\"). """ .
+
+elmt:VendorFraudReview__Manifest__ValidationStrategyParameters___400_om
+    a sysml:OwningMembership ;
+    sysml:elementId "VendorFraudReview__Manifest__ValidationStrategyParameters___400_om" ;
+    sysml:owner elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:memberElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters___400 ;
+    sysml:ownedMemberElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters___400 ;
+    sysml:ownedRelatedElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters___400 ;
+    sysml:owningRelatedElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:membershipOwningNamespace elmt:VendorFraudReview__Manifest__ValidationStrategyParameters .
+
+elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold
+    a sysml:AttributeUsage ;
+    sysml:qualifiedName "VendorFraudReview::Manifest::ValidationStrategyParameters::confidenceThreshold" ;
+    sysml:elementId "VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold" ;
+    sysx:memberIndex "1"^^xsd:integer ;
+    sysml:owningNamespace elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:owner elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:owningRelationship elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold_om ;
+    sysml:owningMembership elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold_om ;
+    sysml:declaredName "confidenceThreshold" ;
+    sysml:type "ScalarValues::Real" ;
+    sysml:value expr:VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold_pvalue ;
+    sysx:hasBody "false"^^xsd:boolean .
+
+elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold_om
+    a sysml:FeatureMembership ;
+    sysml:elementId "VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold_om" ;
+    sysml:owner elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:memberElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold ;
+    sysml:ownedMemberElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold ;
+    sysml:ownedRelatedElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold ;
+    sysml:owningRelatedElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:membershipOwningNamespace elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:ownedMemberFeature elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold ;
+    sysml:owningType elmt:VendorFraudReview__Manifest__ValidationStrategyParameters .
+
+expr:VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold_pvalue
+    a sysml:LiteralRational ;
+    sysx:sourceText "0.80" ;
+    sysml:elementId "VendorFraudReview__Manifest__ValidationStrategyParameters__confidenceThreshold_pvalue" ;
+    sysml:value "0.80"^^xsd:decimal .
+
+elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold
+    a sysml:AttributeUsage ;
+    sysml:qualifiedName "VendorFraudReview::Manifest::ValidationStrategyParameters::consensusDisagreementThreshold" ;
+    sysml:elementId "VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold" ;
+    sysx:memberIndex "2"^^xsd:integer ;
+    sysml:owningNamespace elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:owner elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:owningRelationship elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold_om ;
+    sysml:owningMembership elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold_om ;
+    sysml:declaredName "consensusDisagreementThreshold" ;
+    sysml:type "ScalarValues::Real" ;
+    sysml:value expr:VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold_pvalue ;
+    sysx:hasBody "false"^^xsd:boolean .
+
+elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold_om
+    a sysml:FeatureMembership ;
+    sysml:elementId "VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold_om" ;
+    sysml:owner elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:memberElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold ;
+    sysml:ownedMemberElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold ;
+    sysml:ownedRelatedElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold ;
+    sysml:owningRelatedElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:membershipOwningNamespace elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:ownedMemberFeature elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold ;
+    sysml:owningType elmt:VendorFraudReview__Manifest__ValidationStrategyParameters .
+
+expr:VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold_pvalue
+    a sysml:LiteralRational ;
+    sysx:sourceText "0.25" ;
+    sysml:elementId "VendorFraudReview__Manifest__ValidationStrategyParameters__consensusDisagreementThreshold_pvalue" ;
+    sysml:value "0.25"^^xsd:decimal .
+
+elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger
+    a sysml:AttributeUsage ;
+    sysml:qualifiedName "VendorFraudReview::Manifest::ValidationStrategyParameters::vendorRiskTrigger" ;
+    sysml:elementId "VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger" ;
+    sysx:memberIndex "3"^^xsd:integer ;
+    sysml:owningNamespace elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:owner elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:owningRelationship elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger_om ;
+    sysml:owningMembership elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger_om ;
+    sysml:declaredName "vendorRiskTrigger" ;
+    sysml:type elmt:VendorFraudReview__Manifest__RiskLevel ;
+    sysml:value expr:VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger_pvalue ;
+    sysx:hasBody "false"^^xsd:boolean .
+
+elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger_om
+    a sysml:FeatureMembership ;
+    sysml:elementId "VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger_om" ;
+    sysml:owner elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:memberElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger ;
+    sysml:ownedMemberElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger ;
+    sysml:ownedRelatedElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger ;
+    sysml:owningRelatedElement elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:membershipOwningNamespace elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysml:ownedMemberFeature elmt:VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger ;
+    sysml:owningType elmt:VendorFraudReview__Manifest__ValidationStrategyParameters .
+
+expr:VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger_pvalue
+    a sysml:FeatureReferenceExpression ;
+    sysx:sourceText "RiskLevel::high" ;
+    sysml:elementId "VendorFraudReview__Manifest__ValidationStrategyParameters__vendorRiskTrigger_pvalue" ;
+    sysml:referent elmt:VendorFraudReview__Manifest__RiskLevel__high .
+
 elmt:VendorFraudReview__Manifest__VendorFraudReviewOp
     a sysml:PartDefinition ;
     sysml:qualifiedName "VendorFraudReview::Manifest::VendorFraudReviewOp" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorFraudReviewOp" ;
-    sysx:memberIndex "2"^^xsd:integer ;
+    sysx:memberIndex "3"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest ;
     sysml:owner elmt:VendorFraudReview__Manifest ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp_om ;
     sysml:owningMembership elmt:VendorFraudReview__Manifest__VendorFraudReviewOp_om ;
     sysml:declaredName "VendorFraudReviewOp" ;
     sysx:hasBody "true"^^xsd:boolean ;
-    sysml:ownedMember elmt:VendorFraudReview__Manifest__VendorFraudReviewOp___400, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidence, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidenceLevel, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__consensusDisagreement, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__sensitiveDataDetected, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__vendorRisk, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewRequired, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewRequired, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__stopAndEscalate, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalRequired, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewPerformed, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewPerformed, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__escalationPerformed, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalGiven ;
-    sysml:ownedMembership elmt:VendorFraudReview__Manifest__VendorFraudReviewOp___400_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidence_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidenceLevel_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__consensusDisagreement_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__sensitiveDataDetected_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__vendorRisk_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__stopAndEscalate_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__escalationPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalGiven_om ;
-    sysml:ownedRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp___400_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidence_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidenceLevel_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__consensusDisagreement_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__sensitiveDataDetected_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__vendorRisk_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__stopAndEscalate_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__escalationPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalGiven_om ;
-    sysml:ownedFeature elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidence, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidenceLevel, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__consensusDisagreement, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__sensitiveDataDetected, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__vendorRisk, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewRequired, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewRequired, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__stopAndEscalate, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalRequired, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewPerformed, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewPerformed, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__escalationPerformed, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalGiven ;
-    sysml:ownedFeatureMembership elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidence_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidenceLevel_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__consensusDisagreement_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__sensitiveDataDetected_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__vendorRisk_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__stopAndEscalate_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__escalationPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalGiven_om .
+    sysml:ownedMember elmt:VendorFraudReview__Manifest__VendorFraudReviewOp___400, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__policy, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidence, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidenceLevel, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__consensusDisagreement, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__sensitiveDataDetected, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__vendorRisk, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewRequired, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewRequired, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__stopAndEscalate, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalRequired, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewPerformed, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewPerformed, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__escalationPerformed, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalGiven ;
+    sysml:ownedMembership elmt:VendorFraudReview__Manifest__VendorFraudReviewOp___400_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__policy_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidence_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidenceLevel_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__consensusDisagreement_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__sensitiveDataDetected_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__vendorRisk_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__stopAndEscalate_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__escalationPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalGiven_om ;
+    sysml:ownedRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp___400_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__policy_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidence_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidenceLevel_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__consensusDisagreement_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__sensitiveDataDetected_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__vendorRisk_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__stopAndEscalate_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__escalationPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalGiven_om ;
+    sysml:ownedFeature elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__policy, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidence, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidenceLevel, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__consensusDisagreement, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__sensitiveDataDetected, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__vendorRisk, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewRequired, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewRequired, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__stopAndEscalate, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalRequired, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewPerformed, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewPerformed, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__escalationPerformed, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalGiven ;
+    sysml:ownedFeatureMembership elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__policy_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidence_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidenceLevel_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__consensusDisagreement_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__sensitiveDataDetected_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__vendorRisk_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__stopAndEscalate_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalRequired_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__escalationPerformed_om, elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalGiven_om .
 
 elmt:VendorFraudReview__Manifest__VendorFraudReviewOp_om
     a sysml:OwningMembership ;
@@ -357,14 +507,8 @@ elmt:VendorFraudReview__Manifest__VendorFraudReviewOp___400
     sysml:owner elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp___400_om ;
     sysml:owningMembership elmt:VendorFraudReview__Manifest__VendorFraudReviewOp___400_om ;
-    sysml:body """ Raw readings. adjudicated: GAP-05 — every value here is
-               oracle-provided: an identified service was called with a
-               recorded payload and answered with a recorded code and
-               response (the Track's interface graph carries the citations).
-               This model applies the policy; it does not provide the
-               numbers. provisional: GAP-04 (consensus_disagreement is
-               never defined; modeled as a scalar compared against the 0.25
-               threshold, metric semantics left open pending adjudication). """ .
+    sysml:body """ The policy's numerical parameters, factored (see
+               ValidationStrategyParameters). """ .
 
 elmt:VendorFraudReview__Manifest__VendorFraudReviewOp___400_om
     a sysml:OwningMembership ;
@@ -376,11 +520,36 @@ elmt:VendorFraudReview__Manifest__VendorFraudReviewOp___400_om
     sysml:owningRelatedElement elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:membershipOwningNamespace elmt:VendorFraudReview__Manifest__VendorFraudReviewOp .
 
+elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__policy
+    a sysml:PartUsage ;
+    sysml:qualifiedName "VendorFraudReview::Manifest::VendorFraudReviewOp::policy" ;
+    sysml:elementId "VendorFraudReview__Manifest__VendorFraudReviewOp__policy" ;
+    sysx:memberIndex "1"^^xsd:integer ;
+    sysml:owningNamespace elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
+    sysml:owner elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
+    sysml:owningRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__policy_om ;
+    sysml:owningMembership elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__policy_om ;
+    sysml:declaredName "policy" ;
+    sysml:type elmt:VendorFraudReview__Manifest__ValidationStrategyParameters ;
+    sysx:hasBody "false"^^xsd:boolean .
+
+elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__policy_om
+    a sysml:FeatureMembership ;
+    sysml:elementId "VendorFraudReview__Manifest__VendorFraudReviewOp__policy_om" ;
+    sysml:owner elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
+    sysml:memberElement elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__policy ;
+    sysml:ownedMemberElement elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__policy ;
+    sysml:ownedRelatedElement elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__policy ;
+    sysml:owningRelatedElement elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
+    sysml:membershipOwningNamespace elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
+    sysml:ownedMemberFeature elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__policy ;
+    sysml:owningType elmt:VendorFraudReview__Manifest__VendorFraudReviewOp .
+
 elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidence
     a sysml:AttributeUsage ;
     sysml:qualifiedName "VendorFraudReview::Manifest::VendorFraudReviewOp::confidence" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorFraudReviewOp__confidence" ;
-    sysx:memberIndex "1"^^xsd:integer ;
+    sysx:memberIndex "2"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owner elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidence_om ;
@@ -405,7 +574,7 @@ elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidenceLevel
     a sysml:AttributeUsage ;
     sysml:qualifiedName "VendorFraudReview::Manifest::VendorFraudReviewOp::confidenceLevel" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorFraudReviewOp__confidenceLevel" ;
-    sysx:memberIndex "2"^^xsd:integer ;
+    sysx:memberIndex "3"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owner elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__confidenceLevel_om ;
@@ -430,7 +599,7 @@ elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__consensusDisagreement
     a sysml:AttributeUsage ;
     sysml:qualifiedName "VendorFraudReview::Manifest::VendorFraudReviewOp::consensusDisagreement" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorFraudReviewOp__consensusDisagreement" ;
-    sysx:memberIndex "3"^^xsd:integer ;
+    sysx:memberIndex "4"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owner elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__consensusDisagreement_om ;
@@ -455,7 +624,7 @@ elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__sensitiveDataDetected
     a sysml:AttributeUsage ;
     sysml:qualifiedName "VendorFraudReview::Manifest::VendorFraudReviewOp::sensitiveDataDetected" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorFraudReviewOp__sensitiveDataDetected" ;
-    sysx:memberIndex "4"^^xsd:integer ;
+    sysx:memberIndex "5"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owner elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__sensitiveDataDetected_om ;
@@ -480,7 +649,7 @@ elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__vendorRisk
     a sysml:AttributeUsage ;
     sysml:qualifiedName "VendorFraudReview::Manifest::VendorFraudReviewOp::vendorRisk" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorFraudReviewOp__vendorRisk" ;
-    sysx:memberIndex "5"^^xsd:integer ;
+    sysx:memberIndex "6"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owner elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__vendorRisk_om ;
@@ -505,7 +674,7 @@ elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewRequired
     a sysml:AttributeUsage ;
     sysml:qualifiedName "VendorFraudReview::Manifest::VendorFraudReviewOp::humanReviewRequired" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewRequired" ;
-    sysx:memberIndex "6"^^xsd:integer ;
+    sysx:memberIndex "7"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owner elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewRequired_om ;
@@ -530,7 +699,7 @@ elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewRequired
     a sysml:AttributeUsage ;
     sysml:qualifiedName "VendorFraudReview::Manifest::VendorFraudReviewOp::expertReviewRequired" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewRequired" ;
-    sysx:memberIndex "7"^^xsd:integer ;
+    sysx:memberIndex "8"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owner elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewRequired_om ;
@@ -555,7 +724,7 @@ elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__stopAndEscalate
     a sysml:AttributeUsage ;
     sysml:qualifiedName "VendorFraudReview::Manifest::VendorFraudReviewOp::stopAndEscalate" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorFraudReviewOp__stopAndEscalate" ;
-    sysx:memberIndex "8"^^xsd:integer ;
+    sysx:memberIndex "9"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owner elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__stopAndEscalate_om ;
@@ -580,7 +749,7 @@ elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalRequired
     a sysml:AttributeUsage ;
     sysml:qualifiedName "VendorFraudReview::Manifest::VendorFraudReviewOp::humanApprovalRequired" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalRequired" ;
-    sysx:memberIndex "9"^^xsd:integer ;
+    sysx:memberIndex "10"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owner elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalRequired_om ;
@@ -605,7 +774,7 @@ elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewPerformed
     a sysml:AttributeUsage ;
     sysml:qualifiedName "VendorFraudReview::Manifest::VendorFraudReviewOp::humanReviewPerformed" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewPerformed" ;
-    sysx:memberIndex "10"^^xsd:integer ;
+    sysx:memberIndex "11"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owner elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanReviewPerformed_om ;
@@ -630,7 +799,7 @@ elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewPerformed
     a sysml:AttributeUsage ;
     sysml:qualifiedName "VendorFraudReview::Manifest::VendorFraudReviewOp::expertReviewPerformed" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewPerformed" ;
-    sysx:memberIndex "11"^^xsd:integer ;
+    sysx:memberIndex "12"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owner elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__expertReviewPerformed_om ;
@@ -655,7 +824,7 @@ elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__escalationPerformed
     a sysml:AttributeUsage ;
     sysml:qualifiedName "VendorFraudReview::Manifest::VendorFraudReviewOp::escalationPerformed" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorFraudReviewOp__escalationPerformed" ;
-    sysx:memberIndex "12"^^xsd:integer ;
+    sysx:memberIndex "13"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owner elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__escalationPerformed_om ;
@@ -680,7 +849,7 @@ elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalGiven
     a sysml:AttributeUsage ;
     sysml:qualifiedName "VendorFraudReview::Manifest::VendorFraudReviewOp::humanApprovalGiven" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalGiven" ;
-    sysx:memberIndex "13"^^xsd:integer ;
+    sysx:memberIndex "14"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owner elmt:VendorFraudReview__Manifest__VendorFraudReviewOp ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__VendorFraudReviewOp__humanApprovalGiven_om ;
@@ -705,7 +874,7 @@ elmt:VendorFraudReview__Manifest__ConfidenceInterface
     a sysml:RequirementDefinition ;
     sysml:qualifiedName "VendorFraudReview::Manifest::ConfidenceInterface" ;
     sysml:elementId "VendorFraudReview__Manifest__ConfidenceInterface" ;
-    sysx:memberIndex "3"^^xsd:integer ;
+    sysx:memberIndex "4"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest ;
     sysml:owner elmt:VendorFraudReview__Manifest ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__ConfidenceInterface_om ;
@@ -812,14 +981,14 @@ elmt:VendorFraudReview__Manifest__ConfidenceInterface___402___400_om
 
 expr:VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition
     a sysml:OperatorExpression ;
-    sysx:sourceText "op.confidence < 0.80 implies op.confidenceLevel == ConfidenceLevel::low" ;
+    sysx:sourceText "op.confidence < op.policy.confidenceThreshold implies op.confidenceLevel == ConfidenceLevel::low" ;
     sysml:elementId "VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition" ;
     sysml:operator "implies" ;
     sysml:argument expr:VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition_pa0, expr:VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition_pa1 .
 
 expr:VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition_pa0
     a sysml:OperatorExpression ;
-    sysx:sourceText "op.confidence < 0.80" ;
+    sysx:sourceText "op.confidence < op.policy.confidenceThreshold" ;
     sysml:elementId "VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition_pa0" ;
     sysml:operator "<" ;
     sysml:argument expr:VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition_pa0_pa0, expr:VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition_pa0_pa1 ;
@@ -841,11 +1010,27 @@ expr:VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition_pa0
     sysx:argumentIndex "0"^^xsd:integer .
 
 expr:VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition_pa0_pa1
-    a sysml:LiteralRational ;
-    sysx:sourceText "0.80" ;
+    a sysml:FeatureChainExpression ;
+    sysx:sourceText "op.policy.confidenceThreshold" ;
     sysml:elementId "VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition_pa0_pa1" ;
-    sysml:value "0.80"^^xsd:decimal ;
+    sysml:argument expr:VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition_pa0_pa1_pa0 ;
+    sysml:targetFeature "confidenceThreshold" ;
     sysx:argumentIndex "1"^^xsd:integer .
+
+expr:VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition_pa0_pa1_pa0
+    a sysml:FeatureChainExpression ;
+    sysx:sourceText "op.policy" ;
+    sysml:elementId "VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition_pa0_pa1_pa0" ;
+    sysml:argument expr:VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition_pa0_pa1_pa0_pa0 ;
+    sysml:targetFeature "policy" ;
+    sysx:argumentIndex "0"^^xsd:integer .
+
+expr:VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition_pa0_pa1_pa0_pa0
+    a sysml:FeatureReferenceExpression ;
+    sysx:sourceText "op" ;
+    sysml:elementId "VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition_pa0_pa1_pa0_pa0" ;
+    sysml:referent elmt:VendorFraudReview__Manifest__ConfidenceInterface__op ;
+    sysx:argumentIndex "0"^^xsd:integer .
 
 expr:VendorFraudReview__Manifest__ConfidenceInterface___402___400_pcondition_pa1
     a sysml:OperatorExpression ;
@@ -924,14 +1109,14 @@ elmt:VendorFraudReview__Manifest__ConfidenceInterface___403___400_om
 
 expr:VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition
     a sysml:OperatorExpression ;
-    sysx:sourceText "op.confidence >= 0.80 implies op.confidenceLevel == ConfidenceLevel::high" ;
+    sysx:sourceText "op.confidence >= op.policy.confidenceThreshold implies op.confidenceLevel == ConfidenceLevel::high" ;
     sysml:elementId "VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition" ;
     sysml:operator "implies" ;
     sysml:argument expr:VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition_pa0, expr:VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition_pa1 .
 
 expr:VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition_pa0
     a sysml:OperatorExpression ;
-    sysx:sourceText "op.confidence >= 0.80" ;
+    sysx:sourceText "op.confidence >= op.policy.confidenceThreshold" ;
     sysml:elementId "VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition_pa0" ;
     sysml:operator ">=" ;
     sysml:argument expr:VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition_pa0_pa0, expr:VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition_pa0_pa1 ;
@@ -953,11 +1138,27 @@ expr:VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition_pa0
     sysx:argumentIndex "0"^^xsd:integer .
 
 expr:VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition_pa0_pa1
-    a sysml:LiteralRational ;
-    sysx:sourceText "0.80" ;
+    a sysml:FeatureChainExpression ;
+    sysx:sourceText "op.policy.confidenceThreshold" ;
     sysml:elementId "VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition_pa0_pa1" ;
-    sysml:value "0.80"^^xsd:decimal ;
+    sysml:argument expr:VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition_pa0_pa1_pa0 ;
+    sysml:targetFeature "confidenceThreshold" ;
     sysx:argumentIndex "1"^^xsd:integer .
+
+expr:VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition_pa0_pa1_pa0
+    a sysml:FeatureChainExpression ;
+    sysx:sourceText "op.policy" ;
+    sysml:elementId "VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition_pa0_pa1_pa0" ;
+    sysml:argument expr:VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition_pa0_pa1_pa0_pa0 ;
+    sysml:targetFeature "policy" ;
+    sysx:argumentIndex "0"^^xsd:integer .
+
+expr:VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition_pa0_pa1_pa0_pa0
+    a sysml:FeatureReferenceExpression ;
+    sysx:sourceText "op" ;
+    sysml:elementId "VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition_pa0_pa1_pa0_pa0" ;
+    sysml:referent elmt:VendorFraudReview__Manifest__ConfidenceInterface__op ;
+    sysx:argumentIndex "0"^^xsd:integer .
 
 expr:VendorFraudReview__Manifest__ConfidenceInterface___403___400_pcondition_pa1
     a sysml:OperatorExpression ;
@@ -993,7 +1194,7 @@ elmt:VendorFraudReview__Manifest__ConfidenceGate
     a sysml:RequirementDefinition ;
     sysml:qualifiedName "VendorFraudReview::Manifest::ConfidenceGate" ;
     sysml:elementId "VendorFraudReview__Manifest__ConfidenceGate" ;
-    sysx:memberIndex "4"^^xsd:integer ;
+    sysx:memberIndex "5"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest ;
     sysml:owner elmt:VendorFraudReview__Manifest ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__ConfidenceGate_om ;
@@ -1097,14 +1298,14 @@ elmt:VendorFraudReview__Manifest__ConfidenceGate___402___400_om
 
 expr:VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition
     a sysml:OperatorExpression ;
-    sysx:sourceText "op.confidence < 0.80 implies op.humanReviewRequired" ;
+    sysx:sourceText "op.confidence < op.policy.confidenceThreshold implies op.humanReviewRequired" ;
     sysml:elementId "VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition" ;
     sysml:operator "implies" ;
     sysml:argument expr:VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition_pa0, expr:VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition_pa1 .
 
 expr:VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition_pa0
     a sysml:OperatorExpression ;
-    sysx:sourceText "op.confidence < 0.80" ;
+    sysx:sourceText "op.confidence < op.policy.confidenceThreshold" ;
     sysml:elementId "VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition_pa0" ;
     sysml:operator "<" ;
     sysml:argument expr:VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition_pa0_pa0, expr:VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition_pa0_pa1 ;
@@ -1126,11 +1327,27 @@ expr:VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition_pa0_pa0_
     sysx:argumentIndex "0"^^xsd:integer .
 
 expr:VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition_pa0_pa1
-    a sysml:LiteralRational ;
-    sysx:sourceText "0.80" ;
+    a sysml:FeatureChainExpression ;
+    sysx:sourceText "op.policy.confidenceThreshold" ;
     sysml:elementId "VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition_pa0_pa1" ;
-    sysml:value "0.80"^^xsd:decimal ;
+    sysml:argument expr:VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition_pa0_pa1_pa0 ;
+    sysml:targetFeature "confidenceThreshold" ;
     sysx:argumentIndex "1"^^xsd:integer .
+
+expr:VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition_pa0_pa1_pa0
+    a sysml:FeatureChainExpression ;
+    sysx:sourceText "op.policy" ;
+    sysml:elementId "VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition_pa0_pa1_pa0" ;
+    sysml:argument expr:VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition_pa0_pa1_pa0_pa0 ;
+    sysml:targetFeature "policy" ;
+    sysx:argumentIndex "0"^^xsd:integer .
+
+expr:VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition_pa0_pa1_pa0_pa0
+    a sysml:FeatureReferenceExpression ;
+    sysx:sourceText "op" ;
+    sysml:elementId "VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition_pa0_pa1_pa0_pa0" ;
+    sysml:referent elmt:VendorFraudReview__Manifest__ConfidenceGate__op ;
+    sysx:argumentIndex "0"^^xsd:integer .
 
 expr:VendorFraudReview__Manifest__ConfidenceGate___402___400_pcondition_pa1
     a sysml:FeatureChainExpression ;
@@ -1151,7 +1368,7 @@ elmt:VendorFraudReview__Manifest__ConsensusGate
     a sysml:RequirementDefinition ;
     sysml:qualifiedName "VendorFraudReview::Manifest::ConsensusGate" ;
     sysml:elementId "VendorFraudReview__Manifest__ConsensusGate" ;
-    sysx:memberIndex "5"^^xsd:integer ;
+    sysx:memberIndex "6"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest ;
     sysml:owner elmt:VendorFraudReview__Manifest ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__ConsensusGate_om ;
@@ -1255,14 +1472,14 @@ elmt:VendorFraudReview__Manifest__ConsensusGate___402___400_om
 
 expr:VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition
     a sysml:OperatorExpression ;
-    sysx:sourceText "op.consensusDisagreement > 0.25 implies op.expertReviewRequired" ;
+    sysx:sourceText "op.consensusDisagreement > op.policy.consensusDisagreementThreshold implies op.expertReviewRequired" ;
     sysml:elementId "VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition" ;
     sysml:operator "implies" ;
     sysml:argument expr:VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition_pa0, expr:VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition_pa1 .
 
 expr:VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition_pa0
     a sysml:OperatorExpression ;
-    sysx:sourceText "op.consensusDisagreement > 0.25" ;
+    sysx:sourceText "op.consensusDisagreement > op.policy.consensusDisagreementThreshold" ;
     sysml:elementId "VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition_pa0" ;
     sysml:operator ">" ;
     sysml:argument expr:VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition_pa0_pa0, expr:VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition_pa0_pa1 ;
@@ -1284,11 +1501,27 @@ expr:VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition_pa0_pa0_p
     sysx:argumentIndex "0"^^xsd:integer .
 
 expr:VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition_pa0_pa1
-    a sysml:LiteralRational ;
-    sysx:sourceText "0.25" ;
+    a sysml:FeatureChainExpression ;
+    sysx:sourceText "op.policy.consensusDisagreementThreshold" ;
     sysml:elementId "VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition_pa0_pa1" ;
-    sysml:value "0.25"^^xsd:decimal ;
+    sysml:argument expr:VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition_pa0_pa1_pa0 ;
+    sysml:targetFeature "consensusDisagreementThreshold" ;
     sysx:argumentIndex "1"^^xsd:integer .
+
+expr:VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition_pa0_pa1_pa0
+    a sysml:FeatureChainExpression ;
+    sysx:sourceText "op.policy" ;
+    sysml:elementId "VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition_pa0_pa1_pa0" ;
+    sysml:argument expr:VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition_pa0_pa1_pa0_pa0 ;
+    sysml:targetFeature "policy" ;
+    sysx:argumentIndex "0"^^xsd:integer .
+
+expr:VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition_pa0_pa1_pa0_pa0
+    a sysml:FeatureReferenceExpression ;
+    sysx:sourceText "op" ;
+    sysml:elementId "VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition_pa0_pa1_pa0_pa0" ;
+    sysml:referent elmt:VendorFraudReview__Manifest__ConsensusGate__op ;
+    sysx:argumentIndex "0"^^xsd:integer .
 
 expr:VendorFraudReview__Manifest__ConsensusGate___402___400_pcondition_pa1
     a sysml:FeatureChainExpression ;
@@ -1309,7 +1542,7 @@ elmt:VendorFraudReview__Manifest__SensitiveDataGate
     a sysml:RequirementDefinition ;
     sysml:qualifiedName "VendorFraudReview::Manifest::SensitiveDataGate" ;
     sysml:elementId "VendorFraudReview__Manifest__SensitiveDataGate" ;
-    sysx:memberIndex "6"^^xsd:integer ;
+    sysx:memberIndex "7"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest ;
     sysml:owner elmt:VendorFraudReview__Manifest ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__SensitiveDataGate_om ;
@@ -1452,7 +1685,7 @@ elmt:VendorFraudReview__Manifest__VendorRiskGate
     a sysml:RequirementDefinition ;
     sysml:qualifiedName "VendorFraudReview::Manifest::VendorRiskGate" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorRiskGate" ;
-    sysx:memberIndex "7"^^xsd:integer ;
+    sysx:memberIndex "8"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest ;
     sysml:owner elmt:VendorFraudReview__Manifest ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__VendorRiskGate_om ;
@@ -1557,14 +1790,14 @@ elmt:VendorFraudReview__Manifest__VendorRiskGate___402___400_om
 
 expr:VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition
     a sysml:OperatorExpression ;
-    sysx:sourceText "op.vendorRisk == RiskLevel::high implies op.humanApprovalRequired" ;
+    sysx:sourceText "op.vendorRisk == op.policy.vendorRiskTrigger implies op.humanApprovalRequired" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition" ;
     sysml:operator "implies" ;
     sysml:argument expr:VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition_pa0, expr:VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition_pa1 .
 
 expr:VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition_pa0
     a sysml:OperatorExpression ;
-    sysx:sourceText "op.vendorRisk == RiskLevel::high" ;
+    sysx:sourceText "op.vendorRisk == op.policy.vendorRiskTrigger" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition_pa0" ;
     sysml:operator "==" ;
     sysml:argument expr:VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition_pa0_pa0, expr:VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition_pa0_pa1 ;
@@ -1586,11 +1819,27 @@ expr:VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition_pa0_pa0_
     sysx:argumentIndex "0"^^xsd:integer .
 
 expr:VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition_pa0_pa1
-    a sysml:FeatureReferenceExpression ;
-    sysx:sourceText "RiskLevel::high" ;
+    a sysml:FeatureChainExpression ;
+    sysx:sourceText "op.policy.vendorRiskTrigger" ;
     sysml:elementId "VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition_pa0_pa1" ;
-    sysml:referent elmt:VendorFraudReview__Manifest__RiskLevel__high ;
+    sysml:argument expr:VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition_pa0_pa1_pa0 ;
+    sysml:targetFeature "vendorRiskTrigger" ;
     sysx:argumentIndex "1"^^xsd:integer .
+
+expr:VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition_pa0_pa1_pa0
+    a sysml:FeatureChainExpression ;
+    sysx:sourceText "op.policy" ;
+    sysml:elementId "VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition_pa0_pa1_pa0" ;
+    sysml:argument expr:VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition_pa0_pa1_pa0_pa0 ;
+    sysml:targetFeature "policy" ;
+    sysx:argumentIndex "0"^^xsd:integer .
+
+expr:VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition_pa0_pa1_pa0_pa0
+    a sysml:FeatureReferenceExpression ;
+    sysx:sourceText "op" ;
+    sysml:elementId "VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition_pa0_pa1_pa0_pa0" ;
+    sysml:referent elmt:VendorFraudReview__Manifest__VendorRiskGate__op ;
+    sysx:argumentIndex "0"^^xsd:integer .
 
 expr:VendorFraudReview__Manifest__VendorRiskGate___402___400_pcondition_pa1
     a sysml:FeatureChainExpression ;
@@ -1611,7 +1860,7 @@ elmt:VendorFraudReview__Manifest__ObligationsDischarged
     a sysml:RequirementDefinition ;
     sysml:qualifiedName "VendorFraudReview::Manifest::ObligationsDischarged" ;
     sysml:elementId "VendorFraudReview__Manifest__ObligationsDischarged" ;
-    sysx:memberIndex "8"^^xsd:integer ;
+    sysx:memberIndex "9"^^xsd:integer ;
     sysml:owningNamespace elmt:VendorFraudReview__Manifest ;
     sysml:owner elmt:VendorFraudReview__Manifest ;
     sysml:owningRelationship elmt:VendorFraudReview__Manifest__ObligationsDischarged_om ;

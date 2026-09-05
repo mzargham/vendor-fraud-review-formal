@@ -23,6 +23,7 @@ run:provenance {
         vfr:cogsInvoked "invoice-extraction-cog", "vendor-risk-cog", "anomaly-summary-cog" ;
         prov:used run:evidence-invoice-batch, run:evidence-vendor-risk-score ;
         vfr:finalOutput run:output-anomaly-summary ;
+        vfr:parameters run:policy-parameters ;
         prov:startedAtTime "2026-09-04T14:00:00Z"^^xsd:dateTime ;
         prov:endedAtTime "2026-09-04T14:07:42Z"^^xsd:dateTime .
 
@@ -30,6 +31,16 @@ run:provenance {
         a prov:Entity ;
         rdfs:label "Anomaly summary; vendor V-2214 flagged for review" ;
         prov:wasGeneratedBy run:execution .
+
+    # The configuration parameters in force for this run (WP section 5.3:
+    # Track contents include "the model versions and configuration
+    # parameters"). Values are the model's factored defaults.
+    run:policy-parameters
+        a vfr:ConfigurationParameters ;
+        rdfs:label "Validation Strategy parameters in force (model defaults)" ;
+        vfr:confidenceThreshold 0.80 ;
+        vfr:consensusDisagreementThreshold 0.25 ;
+        vfr:vendorRiskTrigger "high" .
 }
 
 run:interface {

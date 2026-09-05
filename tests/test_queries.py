@@ -50,6 +50,25 @@ def test_obligations_are_discharged_by_state_mutating_actions(track_dataset):
     assert int(count[0][0]) == 2, "run-001 should raise exactly two obligations"
 
 
+def test_track_records_the_configuration_parameters_in_force(track_dataset):
+    # WP section 5.3: a Track may include "the model versions and
+    # configuration parameters". The parameters the policy ran with are
+    # recorded on the execution, values matching the manifest's literals.
+    rows = [r.asdict() for r in track_dataset.query("""
+        PREFIX vfr: <https://example.org/vfr#>
+        SELECT ?confidence ?consensus ?trigger WHERE {
+            ?execution a vfr:OpExecution ;
+                       vfr:parameters ?p .
+            ?p vfr:confidenceThreshold ?confidence ;
+               vfr:consensusDisagreementThreshold ?consensus ;
+               vfr:vendorRiskTrigger ?trigger .
+        }""")]
+    assert len(rows) == 1, "run-001 must record exactly one parameter set"
+    assert float(rows[0]["confidence"]) == 0.80
+    assert float(rows[0]["consensus"]) == 0.25
+    assert str(rows[0]["trigger"]) == "high"
+
+
 def test_every_gate_variable_cites_its_oracle(track_dataset):
     # Interface contract (GAP-05 ruling): wherever the policy needs a value,
     # an oracle provides it — and the Track must cite the call: what service,

@@ -45,6 +45,12 @@ def test_notebook_shows_the_outcome_vocabulary(executed_outputs):
     assert "cantTell" in executed_outputs, "the cantTell outcome is not demonstrated"
 
 
+def test_notebook_shows_the_factored_parameters(executed_outputs):
+    assert "confidenceThreshold" in executed_outputs, (
+        "the factored policy parameters are not demonstrated"
+    )
+
+
 def test_notebook_shows_the_oracle_citations(executed_outputs):
     assert "responseCode" in executed_outputs or "response code" in executed_outputs, (
         "the oracle interface contract (service/payload/code/response) is not demonstrated"
