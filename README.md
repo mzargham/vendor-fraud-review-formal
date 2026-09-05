@@ -24,7 +24,10 @@ substrate, using only open standards:
 ## Read it
 
 The primary artifact is the notebook — every claim in it is the output of an
-executed cell:
+executed cell, including narrated worked examples that mock the oracles and
+drive each scenario (the happy path, every gate binding with its obligation
+discharged or neglected, a mislabeled category) through the committed policy
+text itself:
 
 ```sh
 uv sync

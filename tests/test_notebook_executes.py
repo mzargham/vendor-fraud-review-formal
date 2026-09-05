@@ -45,6 +45,31 @@ def test_notebook_shows_the_outcome_vocabulary(executed_outputs):
     assert "cantTell" in executed_outputs, "the cantTell outcome is not demonstrated"
 
 
+def test_notebook_narrates_the_worked_examples(executed_outputs):
+    # Narrated scenarios: the happy path, each gate binding (obligation
+    # discharged vs neglected), and the threshold rule catching a mislabel.
+    for marker in (
+        "scenario 'happy-path': POLICY SATISFIED",
+        "scenario 'low-confidence-reviewed': POLICY SATISFIED",
+        "scenario 'low-confidence-neglected': POLICY VIOLATED",
+        "scenario 'split-cogs-expert-reviewed': POLICY SATISFIED",
+        "scenario 'pii-stop-and-escalate': POLICY SATISFIED",
+        "scenario 'high-risk-vendor-approved': POLICY SATISFIED",
+        "scenario 'mislabeled-confidence': POLICY VIOLATED",
+    ):
+        assert marker in executed_outputs, f"missing worked example: {marker}"
+
+
+def test_worked_examples_invoke_the_committed_policy(executed_outputs):
+    # The scenarios must run the spec itself, not a re-implementation.
+    assert "policy reused byte-identical" in executed_outputs, (
+        "worked examples do not attest to reusing the committed policy text"
+    )
+    assert "mock oracle" in executed_outputs.lower() or "oracle " in executed_outputs, (
+        "the mocked oracle calls are not shown"
+    )
+
+
 def test_notebook_shows_the_factored_parameters(executed_outputs):
     assert "confidenceThreshold" in executed_outputs, (
         "the factored policy parameters are not demonstrated"
