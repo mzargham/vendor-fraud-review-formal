@@ -95,3 +95,12 @@ The whitepaper provides the manifest, not data. The recorded run, its
 named approver, the vendors, invoices, readings, and every human actor
 in the narration are fabricated example data; the named people are
 inventions. Nothing here comes from any real organization.
+
+## License
+
+The original content of this repository (the model, vocabulary
+structure, shapes, queries, judgment record, walkthrough, and tooling)
+is licensed under [CC BY-SA 4.0](LICENSE). The pinned whitepaper
+snapshot in `sources/` and the verbatim quotations drawn from it remain
+the property of their author; they are included as the pinned source of
+this translation and are not covered by the repository license.

@@ -13,6 +13,7 @@ project:
       orcid: 0000-0001-5279-690X
       affiliations:
         - Dynamical Systems Group
+  license: CC-BY-SA-4.0
   exclude:
     - README.md
   numbering:
